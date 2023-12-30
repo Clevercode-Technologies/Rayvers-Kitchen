@@ -1,9 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { RouteSelection } from './src/screens';
+import { CustomerHome, SearchResult } from './src/screens';
 import { useFonts } from 'expo-font';
 import { useCallback } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { NavigationContainer } from '@react-navigation/native';
+import { persistor, store } from './src/Redux/store';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const App = () => {
   const [fontLoaded] = useFonts({
@@ -27,7 +31,13 @@ const App = () => {
 
   return (
     <View>
-      <RouteSelection />
+      <NavigationContainer>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <SearchResult />
+          </PersistGate>
+        </Provider>
+      </NavigationContainer>
     </View>
   );
 }

@@ -11,9 +11,13 @@ export const colors = {
     secondaryTxt: "#646982",
     activeSlide: "#FF7622",
     inactiveSlide: "#FFE1CE",
+    inputBG: "#F0F5FA",
+    tertiaryTxt: "#1E1D1D",
+    abstractTxt:"#181C2E",
+
+    offWhite: '#F6F6F6',
     
     primaryBg: "#FF7622",
     white: "#ffffff",
-    inputBG: "#F0F5FA",
     strokeColor: "#E3EBF2"
 }

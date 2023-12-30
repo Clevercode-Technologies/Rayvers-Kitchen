@@ -5,3 +5,6 @@ export { default as ForgotPass } from "./Authentication/ForgotPass";
 export { default as VerifyCode } from "./Authentication/VerifyCode";
 export { default as Location } from "./Location";
 export { default as RouteSelection } from "./RouteSelection";
+export { default as CustomerHome } from "./Customer/Home/Home";
+export { default as CustomerSearch } from "./Customer/Search/Search";
+export { default as SearchResult } from "./Customer/Search/SearchResult";
