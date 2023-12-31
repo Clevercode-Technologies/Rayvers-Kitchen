@@ -18,12 +18,12 @@ import {
   colors,
 } from "../../../components/DEFAULTS";
 import { popularFood, restaurantData } from "../../../DATA";
-import { ItemCard } from "../../../components";
+import { FilterModal, ItemCard } from "../../../components";
 import RestaurantCard from "../../../components/Customer/RestaurantCard";
 
 const SearchResult = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [deliveryTime, setDeliveryTime] = useState<string>('');
+  
 
   const activateModal = () => setShowModal(true);
 
@@ -137,8 +137,10 @@ const SearchResult = () => {
             marginBottom: Platform.OS === "android" ? 60 : 0,
           }}
         >
-          {popularFood.map((item) => (
-            <ItemCard item={item} />
+          {popularFood.map((item, index) => (
+            <View key={index}>
+              <ItemCard item={item} />
+            </View>
           ))}
         </View>
 
@@ -187,125 +189,7 @@ const SearchResult = () => {
           }}
         >
           {/* Modal Content */}
-          <View
-            style={{
-              backgroundColor: colors.white,
-              width: SCREEN_WIDTH - 48,
-              paddingHorizontal: 24,
-              paddingVertical: 48,
-              height: SCREEN_HEIGHT - 200,
-              borderRadius: 12,
-            }}
-          >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%'}}>
-              <Text
-                style={{
-                  color: colors.abstractTxt,
-                  fontFamily: "Regular-Sen",
-                  fontSize: 17,
-                }}
-              >
-                Filter your search
-              </Text>
-              <TouchableOpacity onPress={() => setShowModal(false)}>
-                <Image
-                    source={icons.cross}
-                    style={{
-                    width: 45,
-                    height: 45,
-                    }}
-                    resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </View>
-            
-            {/* Offer */}
-            <Text style={{ marginTop: 19, fontFamily: 'Regular-Sen', fontSize: 13, textTransform: 'uppercase' }}>Offers</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              <Pressable style={{
-                padding: 10,
-                borderWidth: 2,
-                borderColor: '#EDEDED',
-                margin: 5,
-                borderRadius: 33,
-              }}>
-                <Text>Delivery</Text>
-              </Pressable>
-              <Pressable style={{
-                padding: 10,
-                borderWidth: 2,
-                borderColor: '#EDEDED',
-                margin: 5,
-                borderRadius: 33,
-              }}>
-                <Text>Pick Up</Text>
-              </Pressable>
-              <Pressable style={{
-                padding: 10,
-                borderWidth: 2,
-                borderColor: '#EDEDED',
-                margin: 5,
-                borderRadius: 33,
-              }}>
-                <Text>Online Payment available</Text>
-              </Pressable>
-              <Pressable style={{
-                padding: 10,
-                borderWidth: 2,
-                borderColor: '#EDEDED',
-                margin: 5,
-                borderRadius: 33,
-              }}>
-                <Text>Offer</Text>
-              </Pressable>
-            </View>
-
-            {/* Delivery Time */}
-            <View>
-              <Text style={{ marginTop: 32, fontFamily: 'Regular-Sen', fontSize: 13, textTransform: 'uppercase' }}>Delivery Time</Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap',marginTop: 12 }}>
-                <Pressable 
-                onPress={() => setDeliveryTime('10-15 min')}
-                style={{
-                  padding: 10,
-                  borderWidth: 2,
-                  borderColor: deliveryTime === "10-15 min" ? colors.white : '#EDEDED',
-                  margin: 5,
-                  borderRadius: 33,
-                  backgroundColor: deliveryTime === '10-15 min' ? colors.primaryBg : colors.white,
-                }}>
-                  <Text style={{ color: deliveryTime === "10-15 min" ? colors.white : colors.abstractTxt, fontFamily: 'Regular-Sen', fontSize: 16,  }}>10-15 min</Text>
-                </Pressable>
-                <Pressable 
-                onPress={() => setDeliveryTime('20 min')}
-                style={{
-                  padding: 10,
-                  borderWidth: 2,
-                  borderColor: deliveryTime === "20 min" ? colors.white : '#EDEDED',
-                  margin: 5,
-                  borderRadius: 33,
-                  backgroundColor: deliveryTime === '20 min' ? colors.primaryBg : colors.white
-                }}>
-                  <Text style={{ color: deliveryTime === "20 min" ? colors.white : colors.abstractTxt, fontFamily: 'Regular-Sen', fontSize: 16,  }}>20 min</Text>
-                </Pressable>
-                <Pressable 
-                onPress={() => setDeliveryTime('30 min')}
-                style={{
-                  padding: 10,
-                  borderWidth: 2,
-                  borderColor: deliveryTime === "30 min" ? colors.white : '#EDEDED',
-                  margin: 5,
-                  borderRadius: 33,
-                  backgroundColor: deliveryTime === '30 min' ? colors.primaryBg : colors.white
-                }}>
-                  <Text style={{ color: deliveryTime === "30 min" ? colors.white : colors.abstractTxt, fontFamily: 'Regular-Sen', fontSize: 16,  }}>30 min</Text>
-                </Pressable>
-              </View>
-            </View>
-
-            {/* Pricing */}
-            <Text style={{ marginTop: 32, fontFamily: 'Regular-Sen', fontSize: 13, textTransform: 'uppercase' }}>Pricing</Text>
-          </View>
+          <FilterModal setShowModal={setShowModal} />
         </View>
       )}
     </SafeAreaView>

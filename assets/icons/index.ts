@@ -19,4 +19,6 @@ export const icons = {
     resultSearch: require('./Search-icon.png'),
     filter: require('./Filter.png'),
     cross: require('./Cross.png'),
+    starFilled: require('./star_filled.png'),
+    starOutlined: require('./star_outline.png'),
 }
