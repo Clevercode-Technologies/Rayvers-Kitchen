@@ -17,6 +17,7 @@ const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList | null>(null);
+  
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -51,19 +52,12 @@ const ImageSlider = () => {
             extrapolate: "clamp",
           });
 
-          const ring = scrollX.interpolate({
-            inputRange,
-            outputRange: [0, 1, 0],
-            extrapolate: "clamp",
-          });
-
           return (
             <View
               style={{
                 padding: 5,
                 borderWidth: 2,
-                borderColor:
-                  ring == 0 ? "transparent" : ring == 1 ? colors.white : "",
+                borderColor: colors.white,
                 borderRadius: 100,
                 width: 20,
                 height: 20,
