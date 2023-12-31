@@ -22,4 +22,16 @@ export const icons = {
     starFilled: require('./star_filled.png'),
     starOutlined: require('./star_outline.png'),
     more: require('./More.png'),
+    broccoli: require('./broccoli.png'),
+    chicken: require('./chicken.png'),
+    garlic: require('./garlic.png'),
+    ginger: require('./ginger.png'),
+    onion: require('./onion.png'),
+    orange: require('./orange.png'),
+    pepper: require('./peppers.png'),
+    salt: require('./Salt.png'),
+    walnut: require('./walnut.png'),
+    save: require('./save.png'),
+    saveFilled: require('./save-filled.png'),
+    
 }
