@@ -14,6 +14,7 @@ export const colors = {
     inputBG: "#F0F5FA",
     tertiaryTxt: "#1E1D1D",
     abstractTxt:"#181C2E",
+    grayText: '#84899B',
 
     offWhite: '#F6F6F6',
     

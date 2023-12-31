@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { CustomerHome, SearchResult } from './src/screens';
+import { RestaurantDetails } from './src/screens';
 import { useFonts } from 'expo-font';
 import { useCallback } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
@@ -34,7 +34,7 @@ const App = () => {
       <NavigationContainer>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <SearchResult />
+            <RestaurantDetails />
           </PersistGate>
         </Provider>
       </NavigationContainer>

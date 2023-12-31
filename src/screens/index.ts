@@ -8,3 +8,4 @@ export { default as RouteSelection } from "./RouteSelection";
 export { default as CustomerHome } from "./Customer/Home/Home";
 export { default as CustomerSearch } from "./Customer/Search/Search";
 export { default as SearchResult } from "./Customer/Search/SearchResult";
+export { default as RestaurantDetails } from './Customer/Restaurant/RestaurantDetails';

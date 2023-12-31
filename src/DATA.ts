@@ -54,3 +54,11 @@ export const restaurantData: Restaurant[] = [
       id: 3
     },
   ]
+
+  export const restCategories = [
+    { category: 'Rice', id: 1 },
+    { category: 'Pasta', id: 2 },
+    { category: 'Swallow', id: 3 },
+    { category: 'Pepper Soup', id: 4 },
+    { category: 'All', id: 5 },
+  ]
