@@ -1,3 +1,4 @@
+import { icons } from "../assets/icons";
 import { images } from "../assets/images";
 
 export const restaurantData: Restaurant[] = [
@@ -61,4 +62,23 @@ export const restaurantData: Restaurant[] = [
     { category: 'Swallow', id: 3 },
     { category: 'Pepper Soup', id: 4 },
     { category: 'All', id: 5 },
+  ]
+
+  export const ingredients = [
+    { item: 'Salt', image: icons.salt, id: 1 },
+    { item: 'Chicken', image: icons.chicken, id: 2 },
+    { item: 'Onion', image: icons.onion, id: 3 },
+    { item: 'Garlic', image: icons.garlic, id: 4 },
+    { item: 'Pepper', image: icons.pepper, id: 5 },
+    { item: 'Ginger', image: icons.ginger, id: 6 },
+    { item: 'Orange', image: icons.orange, id: 7 },
+    { item: 'Walnut', image: icons.walnut, id: 8 },
+  ]
+
+  export const foodPrevSliderData = [
+    { image: images.foodPrev, id: 1},
+    { image: images.foodPrev, id: 2},
+    { image: images.foodPrev, id: 3},
+    { image: images.foodPrev, id: 4},
+    { image: images.foodPrev, id: 5},
   ]

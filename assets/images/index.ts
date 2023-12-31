@@ -18,4 +18,5 @@ export const images = {
     item4: require('./item-4.png'),
     skewedBg: require('./skewed-bg.png'),
     restBg: require('./restBg.png'),
+    foodPrev: require('./food.png'),
 }
