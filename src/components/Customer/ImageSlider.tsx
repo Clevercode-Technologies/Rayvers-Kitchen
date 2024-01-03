@@ -4,6 +4,7 @@ import {
   ImageBackground,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -54,6 +55,7 @@ const ImageSlider = () => {
 
           return (
             <View
+              key={i}
               style={{
                 padding: 5,
                 borderWidth: 2,
@@ -104,7 +106,7 @@ const ImageSlider = () => {
         renderItem={({ item }) => <SliderImage item={item} />}
       />
 
-      <View style={{ position: "absolute", top: 290 }}>
+      <View style={{ position: "absolute", top: 290, left: '30%', right: '30%' }}>
         <Indicator />
       </View>
     </>

@@ -1,4 +1,4 @@
-import { FoodDetails } from "./src/screens";
+import { Cart } from "./src/screens";
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
@@ -29,7 +29,7 @@ const App = () => {
     <NavigationContainer>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <FoodDetails />
+          <Cart />
         </PersistGate>
       </Provider>
     </NavigationContainer>

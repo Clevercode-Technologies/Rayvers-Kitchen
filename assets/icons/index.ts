@@ -33,5 +33,6 @@ export const icons = {
     walnut: require('./walnut.png'),
     save: require('./save.png'),
     saveFilled: require('./save-filled.png'),
-    
+    backArrDark: require('./backArr-dark.png'),
+    delete: require('./delete.png'),
 }

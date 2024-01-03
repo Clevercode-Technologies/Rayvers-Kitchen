@@ -19,4 +19,9 @@ export const images = {
     skewedBg: require('./skewed-bg.png'),
     restBg: require('./restBg.png'),
     foodPrev: require('./food.png'),
+    FoodItem_JollofRice: require('./jollof-rice.webp'),
+    FoodItem_Parage: require('./porage.jpeg'),
+    FoodItem_Potate: require('./potage.jpeg'),
+    FoodItem_Swallow: require('./swallow.jpeg'),
+
 }

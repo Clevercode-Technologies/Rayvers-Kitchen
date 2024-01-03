@@ -10,3 +10,4 @@ export { default as CustomerSearch } from "./Customer/Search/Search";
 export { default as SearchResult } from "./Customer/Search/SearchResult";
 export { default as RestaurantDetails } from './Customer/Restaurant/RestaurantDetails';
 export { default as FoodDetails } from './Customer/Restaurant/FoodDetails';
+export { default as Cart } from './Customer/Cart/Cart';

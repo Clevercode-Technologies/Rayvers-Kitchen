@@ -18,7 +18,7 @@ const FloatingCartAction = () => {
     <View
       style={{
         position: "absolute",
-        bottom: 0,
+        bottom: -35,
         left: 0,
         right: 0,
         width: SCREEN_WIDTH,
@@ -27,6 +27,7 @@ const FloatingCartAction = () => {
         borderTopEndRadius: 24,
         borderTopStartRadius: 24,
         padding: 27,
+        zIndex: 10
       }}
     >
       <View
