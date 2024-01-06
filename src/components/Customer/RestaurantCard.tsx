@@ -2,6 +2,7 @@ import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'r
 import React from 'react'
 import { images } from '../../../assets/images'
 import { icons } from '../../../assets/icons'
+import { useNavigation } from '@react-navigation/native'
 
 interface RestaurantCardProp {
     restaurant: {
@@ -14,8 +15,12 @@ interface RestaurantCardProp {
 }
 
 const RestaurantCard: React.FC<RestaurantCardProp> = ({ restaurant }) => {
+    const navigation = useNavigation();
+
   return (
     <Pressable
+    // @ts-ignore
+    onPress={() => navigation.navigate('RestaurantDetails')}
     style={{
         marginTop: 20,
         margin: 15,

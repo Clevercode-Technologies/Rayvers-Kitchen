@@ -13,8 +13,10 @@ import { icons } from "../../../../assets/icons";
 import { cartData } from "../../../DATA";
 import { CartBottomSheet, CartItem } from "../../../components";
 import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
+import { useNavigation } from "@react-navigation/native";
 
 const Cart = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView
       style={{
@@ -33,7 +35,7 @@ const Cart = () => {
             marginHorizontal: 24,
           }}
         >
-          <Pressable>
+          <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
             <Image
               source={icons.backArrDark}
               style={{

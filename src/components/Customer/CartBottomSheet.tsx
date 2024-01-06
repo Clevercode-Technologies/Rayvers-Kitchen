@@ -1,10 +1,20 @@
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { SCREEN_WIDTH, colors } from "../DEFAULTS";
 import { formatNumber } from "../../utils/currencyFormatter";
+import { useNavigation } from "@react-navigation/native";
 
 const CartBottomSheet = () => {
   const [address, setAddress] = useState<string>("");
+
+  const navigation = useNavigation();
 
   return (
     <ScrollView
@@ -82,6 +92,8 @@ const CartBottomSheet = () => {
       </View>
 
       <Pressable
+        // @ts-ignore 
+        onPress={() => navigation.navigate("Payment")}
         style={{
           borderRadius: 12,
           backgroundColor: colors.primaryBg,

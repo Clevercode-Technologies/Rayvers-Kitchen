@@ -19,9 +19,11 @@ import { images } from "../../../../assets/images";
 import { icons } from "../../../../assets/icons";
 import { popularFood, restCategories } from "../../../DATA";
 import { ItemCard, RestCat } from "../../../components";
+import { useNavigation } from "@react-navigation/native";
 
 const RestaurantDetails = () => {
   const [menu, setMenu] = useState<string>("All");
+  const navigation = useNavigation();
 
   return (
     <SafeAreaView
@@ -63,7 +65,7 @@ const RestaurantDetails = () => {
               marginTop: 20,
             }}
           >
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <Image
                 source={icons.back}
                 style={{

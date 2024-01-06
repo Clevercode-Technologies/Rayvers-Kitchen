@@ -11,6 +11,7 @@ import {
 import React, { useRef, useState } from "react";
 import { SCREEN_WIDTH, colors } from "../DEFAULTS";
 import { icons } from "../../../assets/icons";
+import { useNavigation } from "@react-navigation/native";
 
 interface SliderImageProps {
   item: {
@@ -21,6 +22,7 @@ interface SliderImageProps {
 
 const SliderImage: React.FC<SliderImageProps> = ({ item }) => {
   const [favourite, setFavourite] = useState<boolean>(false);
+  const navigation = useNavigation();
 
   return (
     <ImageBackground
@@ -36,7 +38,7 @@ const SliderImage: React.FC<SliderImageProps> = ({ item }) => {
       }}
       resizeMode="cover"
     >
-      <Pressable onPress={() => alert('implement navigation')}>
+      <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
         <Image
           source={icons.back}
           style={{

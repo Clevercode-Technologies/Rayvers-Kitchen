@@ -23,5 +23,10 @@ export const images = {
     FoodItem_Parage: require('./porage.jpeg'),
     FoodItem_Potate: require('./potage.jpeg'),
     FoodItem_Swallow: require('./swallow.jpeg'),
-
+    cash: require('./cash.png'),
+    visa: require('./visa.png'),
+    masterCard: require('./master.png'),
+    cardPic: require('./card-pic.png'),
+    mapDemo: require('./map-demo.png'),
+    profileDemo: require('./profile-demo.png'),
 }

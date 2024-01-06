@@ -16,8 +16,10 @@ import {
   import { Image } from "react-native";
   import { icons } from "../../../assets/icons";
   import { Button, TextInputs } from "../../components";
+import { useNavigation } from "@react-navigation/native";
   
   const Register = () => {
+    const navigation = useNavigation();
   
     return (
       <SafeAreaView style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT }}>
@@ -26,6 +28,17 @@ import {
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Header Area */}
           <ImageBackground style={styles.pageHeader} source={images.topArea}>
+            <Pressable 
+              onPress={() => navigation.canGoBack() && navigation.goBack()}
+            style={{
+              position: 'absolute',
+              left: 24, top: 30
+            }}>
+              <Image 
+                source={icons.back}
+                style={{ width: 45, height: 45 }}
+              />
+            </Pressable>
             <Text style={styles.majorTxt}>Sign Up</Text>
             <Text style={styles.minorTxt}>
                 Please sign up to get started
@@ -76,7 +89,8 @@ import {
                   fontFamily: 'SemiBold-Sen',
                   textTransform: "uppercase",
                 }}
-                onPress={() => alert("Implement navigation to Sign In page")}>Sign In</Text>
+                // @ts-ignore
+                onPress={() => navigation.navigate('Login')}>Sign In</Text>
               </Text>
             </View>
   

@@ -1,4 +1,4 @@
-import { Cart } from "./src/screens";
+import 'react-native-gesture-handler';
 import { useFonts } from "expo-font";
 import { useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
@@ -6,6 +6,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { persistor, store } from "./src/Redux/store";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import { NativeBaseProvider } from "native-base";
+import { AppRoot } from "./src/navigation";
+import { View } from "react-native";
 
 const App = () => {
   const [fontLoaded] = useFonts({
@@ -29,7 +32,11 @@ const App = () => {
     <NavigationContainer>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Cart />
+          <NativeBaseProvider>
+            <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+              <AppRoot />
+            </View>
+          </NativeBaseProvider>
         </PersistGate>
       </Provider>
     </NavigationContainer>

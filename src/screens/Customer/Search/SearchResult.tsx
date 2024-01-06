@@ -20,12 +20,14 @@ import {
 import { popularFood, restaurantData } from "../../../DATA";
 import { FilterModal, ItemCard } from "../../../components";
 import RestaurantCard from "../../../components/Customer/RestaurantCard";
+import { useNavigation } from "@react-navigation/native";
 
 const SearchResult = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   
 
   const activateModal = () => setShowModal(true);
+  const navigation = useNavigation();
 
   return (
     <SafeAreaView
@@ -34,6 +36,7 @@ const SearchResult = () => {
         alignItems: "center",
         marginTop: Platform.OS === "android" ? 20 : 0,
         position: "relative",
+        backgroundColor: colors.white,
       }}
     >
       <ScrollView
@@ -50,7 +53,7 @@ const SearchResult = () => {
               alignItems: "center",
             }}
           >
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <Image
                 source={icons.back}
                 style={{
