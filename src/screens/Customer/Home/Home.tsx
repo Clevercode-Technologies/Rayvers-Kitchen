@@ -18,9 +18,11 @@ import Categories from "../../../components/Customer/Categories";
 import RestaurantCard from "../../../components/Customer/RestaurantCard";
 import { images } from "../../../../assets/images";
 import { restaurantData } from "../../../DATA";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const CUSTOM_WIDTH = SCREEN_WIDTH - 48;
+const navigation = useNavigation();
 
   return (
     <SafeAreaView
@@ -66,7 +68,10 @@ const Home = () => {
         >
           <Text>All Categories</Text>
 
-          <Pressable style={{ flexDirection: "row", alignItems: "center" }}>
+          <Pressable 
+          // @ts-ignore
+          onPress={() => navigation.navigate('SearchResult')}
+          style={{ flexDirection: "row", alignItems: "center" }}>
             <Text>See All</Text>
             <Image
               source={icons.right_arr}

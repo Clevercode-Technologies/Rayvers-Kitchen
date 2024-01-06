@@ -82,3 +82,9 @@ export const restaurantData: Restaurant[] = [
     { image: images.foodPrev, id: 4},
     { image: images.foodPrev, id: 5},
   ]
+
+  export const cartData = [
+    { preview: images.FoodItem_JollofRice, id: 1, item: 'Pepper Rice', restaurant: 'Mama Ebo Pepper...', price: 5400 },
+    { preview: images.FoodItem_Swallow, id: 2, item: 'Egusi Assorted & Semo', restaurant: 'Pride Kitchen...', price: 2550 },
+    { preview: images.FoodItem_Potate, id: 3, item: 'Ghana Yam Potage', restaurant: 'Mama\'s Spot', price: 6475 },
+  ]

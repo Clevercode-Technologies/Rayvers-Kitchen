@@ -6,3 +6,5 @@ export { default as FilterModal } from "./Customer/FilterModal";
 export { default as RestCat } from "./Customer/RestCat";
 export { default as FloatingCartAction } from "./Customer/FloatingCartAction";
 export { default as ImageSlider } from "./Customer/ImageSlider";
+export { default as CartItem } from "./Customer/CartItem";
+export { default as CartBottomSheet } from "./Customer/CartBottomSheet";

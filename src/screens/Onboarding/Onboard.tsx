@@ -2,6 +2,7 @@ import { Animated, Button, FlatList, Image, NativeScrollEvent, NativeSyntheticEv
 import React, { memo, useRef, useState } from 'react'
 import { MARGIN, SCREEN_HEIGHT, SCREEN_WIDTH, colors } from '../../components/DEFAULTS'
 import { images } from '../../../assets/images'
+import { useNavigation } from '@react-navigation/native';
 
 interface SlideData {
     preview: any;
@@ -42,7 +43,7 @@ const Onboard = () => {
     const scrollX = useRef(new Animated.Value(0)).current;
     const flatListRef = useRef<FlatList | null>(null); // Define the flatListRef
 
-
+    const navigation = useNavigation();
     
     const skipToNext = () => {
         const nextIndex = currentIndex + 1;
@@ -162,19 +163,20 @@ const Onboard = () => {
                 <Text style={{
                     color: colors.white,
                     fontSize: 14,
-                    fontFamily: "Sen",
+                    fontFamily: "SemiBold-Sen",
                     fontStyle: "normal",
                     fontWeight: "700",
                     textTransform: "uppercase"
                 }}>Next</Text>
             </Pressable>
             <Pressable
-            onPress={() => {}}
+            // @ts-ignore
+            onPress={() => navigation.navigate('Login')}
             style={styles.skipBtn}>
                 <Text style={{
                     color: colors.secondaryTxt,
                     fontSize: 16,
-                    fontFamily: "Sen",
+                    fontFamily: "Regular-Sen",
                     fontStyle: "normal",
                     fontWeight: "400",
                 }}>Skip</Text>
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     },
     titleTxt: {
         color: colors.primaryTxt,
-        fontFamily: 'Sen',
+        fontFamily: 'ExtraBold-Sen',
         fontSize: 24,
         fontStyle: "normal",
         fontWeight: "800",
@@ -207,7 +209,7 @@ const styles = StyleSheet.create({
     descTxt: {
         textAlign: 'center',
         color: colors.secondaryTxt,
-        fontFamily: 'Sen',
+        fontFamily: 'Regular-Sen',
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: '400'

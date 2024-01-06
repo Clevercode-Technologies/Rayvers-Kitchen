@@ -2,6 +2,7 @@ import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View }
 import React, { useState } from 'react'
 import { colors } from '../DEFAULTS'
 import { icons } from '../../../assets/icons';
+import { useNavigation } from '@react-navigation/native';
 
 interface InputProps {
     type: string;
@@ -10,6 +11,7 @@ interface InputProps {
 const SearchInput: React.FC<InputProps> = ({ type }) => {
     const [focus, setFocus] = useState(false);
     const [query, setQuery] = useState<string>('');
+    const navigation = useNavigation();
 
     if(type === 'home-search') {
         return (
@@ -41,6 +43,21 @@ const SearchInput: React.FC<InputProps> = ({ type }) => {
                         left: 20
                     }}
                 />
+
+                <View>
+                    <Pressable 
+                    // @ts-ignore
+                        onPress={() => navigation.navigate('Search')}
+                    style={{ backgroundColor: colors.white, position: 'absolute', right: 20, bottom: 10, padding: 10, borderRadius: 100 }}>
+                        <Image 
+                            source={icons.send}
+                            style={{
+                                width: 20,
+                                height: 20
+                            }}
+                        />
+                    </Pressable>
+                </View>
             </View>
           )
     } else if(type === 'search-screen') {

@@ -19,10 +19,14 @@ import { ItemCard, SearchInput } from "../../../components";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
 import { popularFood, restaurantData } from "../../../DATA";
+import { useNavigation } from "@react-navigation/native";
 
 const Search = () => {
   const keywords = useSelector((state: RootState) => state.data.keywords);
-  console.log(keywords);
+
+
+  const navigation = useNavigation();
+
 
   return (
     <SafeAreaView
@@ -50,7 +54,7 @@ const Search = () => {
           }}
         >
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Pressable onPress={() => alert("should go back")}>
+            <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
               <Image
                 source={icons.back}
                 style={{ width: 45, height: 45, marginRight: 16 }}
@@ -72,7 +76,8 @@ const Search = () => {
 
           <Pressable
             style={{ position: "relative" }}
-            onPress={() => alert("should go to chart")}
+            // @ts-ignore
+            onPress={() => navigation.navigate('Cart')}
           >
             <Image
               source={icons.cart}

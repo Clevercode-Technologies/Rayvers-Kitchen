@@ -12,10 +12,16 @@ import {
 import React from "react";
 import { images } from "../../../assets/images";
 import { colors } from "../DEFAULTS";
+import { useNavigation } from "@react-navigation/native";
 
 const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
+  const navigation = useNavigation();
+  
   return (
-    <View style={{ alignItems: "center", width: 153, marginBottom: 21 }}>
+    <Pressable 
+    // @ts-ignore
+    onPress={() => navigation.navigate('FoodDetails')}
+    style={{ alignItems: "center", width: 153, marginBottom: 21 }}>
       <Image
         source={item.image}
         style={{
@@ -91,7 +97,7 @@ const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
-    </View>
+    </Pressable>
   );
 };
 
