@@ -1,0 +1,17 @@
+export { default as Onboard } from "./Onboarding/Onboard";
+export { default as Login } from "./Authentication/Login";
+export { default as Register } from "./Authentication/Register";
+export { default as ForgotPass } from "./Authentication/ForgotPass";
+export { default as VerifyCode } from "./Authentication/VerifyCode";
+export { default as Location } from "./Location";
+export { default as RouteSelection } from "./RouteSelection";
+export { default as CustomerHome } from "./Customer/Home/Home";
+export { default as CustomerSearch } from "./Customer/Search/Search";
+export { default as SearchResult } from "./Customer/Search/SearchResult";
+export { default as RestaurantDetails } from './Customer/Restaurant/RestaurantDetails';
+export { default as FoodDetails } from './Customer/Restaurant/FoodDetails';
+export { default as Cart } from './Customer/Cart/Cart';
+export { default as Payment } from "./Payment/Payment";
+export { default as AddCard } from "./Payment/AddCard";
+export { default as Success } from "./Payment/Success";
+export { default as TrackOrder } from "./Tracking/TrackOrder";
