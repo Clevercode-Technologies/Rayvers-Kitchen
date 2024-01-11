@@ -8,11 +8,13 @@ type EditProfileProps = {
 const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
+    const [bio, setBio] = useState<string>('');
 
   if(type === 'username') {
     return (
         <TextInput 
-            placeholder='I love crispy food'
+            placeholder='John Doe'
             placeholderTextColor={'#6B6E82'}
             style={{
                 width: '100%',
@@ -55,13 +57,13 @@ const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
                 backgroundColor: '#F0F5FA',
                 marginTop: 8,
             }}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={(text) => setPhone(text)}
         />
       )
   } else if(type === 'bio'){
     return (
         <TextInput 
-            placeholder='408-841-0926'
+            placeholder='I love crispy food'
             placeholderTextColor={'#6B6E82'}
             keyboardType='numeric'
             multiline
@@ -74,9 +76,11 @@ const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
                 marginTop: 8,
                 paddingTop: 20
             }}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={(text) => setBio(text)}
         />
       )
+  } else {
+    return null;
   }
 }
 
