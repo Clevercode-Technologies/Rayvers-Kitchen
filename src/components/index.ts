@@ -8,3 +8,6 @@ export { default as FloatingCartAction } from "./Customer/FloatingCartAction";
 export { default as ImageSlider } from "./Customer/ImageSlider";
 export { default as CartItem } from "./Customer/CartItem";
 export { default as CartBottomSheet } from "./Customer/CartBottomSheet";
+export { default as MyOrdersTab } from "./Customer/MyOrdersTab";
+export { default as OrderItem } from "./Customer/OrderItem";
+export { default as ProfileEditInput } from "./Inputs/EditProfile";

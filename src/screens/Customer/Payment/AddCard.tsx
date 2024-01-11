@@ -9,9 +9,9 @@ import {
   View,
 } from "react-native";
 import React from "react";
-import { icons } from "../../../assets/icons";
-import { colors } from "../../components/DEFAULTS";
 import { useNavigation } from "@react-navigation/native";
+import { colors } from "../../../components/DEFAULTS";
+import { icons } from "../../../../assets/icons";
 
 const AddCard = () => {
   const navigation = useNavigation();
@@ -172,8 +172,8 @@ const AddCard = () => {
 
       {/* Bottom Button */}
       <Pressable
-      // @ts-ignore
-      onPress={() => navigation.navigate('Success')}
+        // @ts-ignore
+        onPress={() => navigation.navigate("Success")}
         style={{
           width: "100%",
           height: 63,
@@ -190,7 +190,7 @@ const AddCard = () => {
             fontSize: 14,
             fontFamily: "SemiBold-Sen",
             color: colors.white,
-            textTransform: 'uppercase',
+            textTransform: "uppercase",
           }}
         >
           Add & Make Payment
