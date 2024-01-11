@@ -31,4 +31,5 @@ export const images = {
     profileDemo: require('./profile-demo.png'),
     logisticProfilePic: require('./logistic-profile-pic.png'),
     myProfile: require('./my-profile.png'),
+    routeBg: require('./route-bg.png'),
 }

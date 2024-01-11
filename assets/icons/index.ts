@@ -83,4 +83,13 @@ export const icons = {
     phoneIconProfile: require('./phone_no_profile.png'),
     mailIconProfile: require('./mail_profile.png'),
     editProfile: require('./edit-profile.png'),
+    homeIcon: require('./home.png'),
+    officeIcon: require('./office.png'),
+    editIcon: require('./edit-icon.png'),
+    wasteBin: require('./waste-bin.png'),
+    location: require('./location.png'),
+    customer: require('./customer.png'),
+    chef: require('./chef.png'),
+    check: require('./check.png'),
+    logistics: require('./logistics.png'),
 }

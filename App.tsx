@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { NativeBaseProvider } from "native-base";
 import { AppRoot } from "./src/navigation";
 import { View } from "react-native";
-import { EditProfile } from './src/screens';
+import { RouteSelection } from './src/screens';
 
 const App = () => {
   const [fontLoaded] = useFonts({
@@ -35,7 +35,7 @@ const App = () => {
         <PersistGate loading={null} persistor={persistor}>
           <NativeBaseProvider>
             <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-              <EditProfile />
+              <RouteSelection />
             </View>
           </NativeBaseProvider>
         </PersistGate>
