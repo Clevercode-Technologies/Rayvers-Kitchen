@@ -5,12 +5,12 @@ import {
   StyleSheet,
   Text,
   View,
+  Pressable
 } from "react-native";
 import React from "react";
-import { icons } from "../../../assets/icons";
-import { Pressable } from "react-native";
-import { colors } from "../../components/DEFAULTS";
 import { useNavigation } from "@react-navigation/native";
+import { icons } from "../../../../assets/icons";
+import { colors } from "../../../components/DEFAULTS";
 
 const Success = () => {
   const navigation = useNavigation();
@@ -22,7 +22,7 @@ const Success = () => {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginHorizontal: 24
+        marginHorizontal: 24,
       }}
     >
       <View style={{}}>
@@ -31,7 +31,7 @@ const Success = () => {
           style={{
             width: 260.28,
             height: 181,
-            marginLeft: 60
+            marginLeft: 60,
           }}
           resizeMode="contain"
         />
@@ -43,7 +43,7 @@ const Success = () => {
             fontFamily: "SemiBold-Sen",
             color: "#111A2C",
             marginBottom: 16,
-            marginTop: 50
+            marginTop: 50,
           }}
         >
           Congratulations!
@@ -63,11 +63,10 @@ const Success = () => {
         </Text>
       </View>
 
-
       {/* Bottom Button */}
       <Pressable
-      // @ts-ignore
-      onPress={() => navigation.navigate('TrackOrder')}
+        // @ts-ignore
+        onPress={() => navigation.navigate("TrackOrder")}
         style={{
           width: "100%",
           height: 63,
@@ -75,11 +74,20 @@ const Success = () => {
           position: "absolute",
           bottom: 50,
           borderRadius: 12,
-          justifyContent: 'center',
-          alignItems: 'center'
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 14, fontFamily: 'SemiBold-Sen', color: colors.white, textTransform: 'uppercase' }}>Track Order</Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: "SemiBold-Sen",
+            color: colors.white,
+            textTransform: "uppercase",
+          }}
+        >
+          Track Order
+        </Text>
       </Pressable>
     </SafeAreaView>
   );

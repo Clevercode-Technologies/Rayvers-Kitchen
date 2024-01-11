@@ -9,13 +9,13 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import { icons } from "../../../assets/icons";
-import { images } from "../../../assets/images";
-import { SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
-import { formatNumber } from "../../utils/currencyFormatter";
 import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
 import { useNavigation } from "@react-navigation/native";
+import { RootState } from "../../../Redux/store";
+import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
+import { images } from "../../../../assets/images";
+import { icons } from "../../../../assets/icons";
+import { formatNumber } from "../../../utils/currencyFormatter";
 
 const Payment = () => {
   const [paymentMethod, setPaymentMethod] = useState<string>("master");
@@ -284,8 +284,8 @@ const Payment = () => {
 
             {/* Add New Card */}
             <TouchableOpacity
-              // @ts-ignore 
-              onPress={() => navigation.navigate('AddCard')}
+              // @ts-ignore
+              onPress={() => navigation.navigate("AddCard")}
               style={{
                 width: "100%",
                 height: 62,
@@ -399,8 +399,8 @@ const Payment = () => {
                 ))}
 
                 <TouchableOpacity
-                // @ts-ignore
-                  onPress={() => navigation.navigate('addCard')}
+                  // @ts-ignore
+                  onPress={() => navigation.navigate("addCard")}
                   style={{
                     width: "100%",
                     height: 62,
@@ -511,8 +511,8 @@ const Payment = () => {
                 ))}
 
                 <TouchableOpacity
-                // @ts-ignore
-                  onPress={() => navigation.navigate('AddCard')}
+                  // @ts-ignore
+                  onPress={() => navigation.navigate("AddCard")}
                   style={{
                     width: "100%",
                     height: 62,
@@ -613,8 +613,8 @@ const Payment = () => {
             </Text>
           </View>
           <Pressable
-          // @ts-ignore
-          onPress={() => navigation.navigate('Success')}
+            // @ts-ignore
+            onPress={() => navigation.navigate("Success")}
             style={{
               width: "100%",
               height: 62,

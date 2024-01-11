@@ -302,6 +302,8 @@ const TrackOrder = () => {
             </View>
           </View>
 
+
+          {/* Tracking indicators absolutely positioned */}
           <View
             style={{
               position: "absolute",

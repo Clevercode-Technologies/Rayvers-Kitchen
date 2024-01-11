@@ -29,4 +29,6 @@ export const images = {
     cardPic: require('./card-pic.png'),
     mapDemo: require('./map-demo.png'),
     profileDemo: require('./profile-demo.png'),
+    logisticProfilePic: require('./logistic-profile-pic.png'),
+    myProfile: require('./my-profile.png'),
 }
