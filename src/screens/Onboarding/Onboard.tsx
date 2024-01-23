@@ -171,7 +171,7 @@ const Onboard = () => {
             </Pressable>
             <Pressable
             // @ts-ignore
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('RouteSelection')}
             style={styles.skipBtn}>
                 <Text style={{
                     color: colors.secondaryTxt,

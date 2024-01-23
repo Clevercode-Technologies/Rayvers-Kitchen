@@ -1,17 +1,24 @@
 import {
   Image,
   ImageBackground,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import { images } from "../../../assets/images";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import { icons } from "../../../assets/icons";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { USER_TYPE, setUserType } from "../../Redux/Splice/AppSplice";
 
 const RouteSelection = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   return (
     <ImageBackground
       source={images.routeBg}
@@ -19,23 +26,33 @@ const RouteSelection = () => {
         width: SCREEN_WIDTH + 1,
         height: SCREEN_HEIGHT,
         marginLeft: -1,
-        justifyContent: "center",
+        justifyContent: "flex-start",
+        paddingTop: Platform.OS === "ios" ? 80 : 90,
         alignItems: "center",
       }}
       resizeMode="cover"
     >
-      <View>
-        <Text
-          style={{
-            fontSize: 30,
-            fontFamily: "SemiBold-Sen",
-            color: colors.white,
-            textAlign: "center",
-          }}
+      <View style={{ width: SCREEN_WIDTH, paddingHorizontal: 24 }}>
+        <Pressable
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+          style={{ flexDirection: "row", alignItems: "center" }}
         >
-          Login
-        </Text>
+          <Image source={icons.back} style={{ width: 45, height: 45 }} />
 
+          <Text
+            style={{
+              fontSize: 30,
+              fontFamily: "SemiBold-Sen",
+              color: colors.white,
+              marginLeft: 18,
+            }}
+          >
+            Route
+          </Text>
+        </Pressable>
+      </View>
+
+      <View style={{ marginTop: 60 }}>
         <View
           style={{
             height: 435.75,
@@ -48,7 +65,11 @@ const RouteSelection = () => {
           }}
         >
           <Pressable
-          onPress={() => alert('Switch to customer')}
+            onPress={() => {
+              dispatch(setUserType(USER_TYPE.CUSTOMER));
+              // @ts-ignore
+              navigation.navigate("Login");
+            }}
             style={{
               backgroundColor: "#181C2E",
               flexDirection: "row",
@@ -87,7 +108,11 @@ const RouteSelection = () => {
             />
           </Pressable>
           <Pressable
-          onPress={() => alert('Switch to Chef')}
+            onPress={() => {
+              dispatch(setUserType(USER_TYPE.CHEF));
+              // @ts-ignore
+              navigation.navigate("ChefLogin");
+            }}
             style={{
               backgroundColor: "#181C2E",
               flexDirection: "row",
@@ -126,7 +151,7 @@ const RouteSelection = () => {
             />
           </Pressable>
           <Pressable
-          onPress={() => alert('Switch to Logistics')}
+            onPress={() => alert("Switch to Logistics")}
             style={{
               backgroundColor: "#181C2E",
               flexDirection: "row",
@@ -170,6 +195,6 @@ const RouteSelection = () => {
   );
 };
 
-export default RouteSelection;
+export default memo(RouteSelection);
 
 const styles = StyleSheet.create({});

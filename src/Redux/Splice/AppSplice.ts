@@ -8,15 +8,23 @@ interface CardInfo {
   holderName: string; 
 }
 
+export enum USER_TYPE {
+  CUSTOMER = 'Customer',
+  CHEF = 'Chef',
+  DRIVER = 'Driver',
+}
+
 interface AppState {
   token: string | null;
   keywords: Array<string> | null;
-  availableCards: null | Array<CardInfo>
+  availableCards: null | Array<CardInfo>;
+  userType: USER_TYPE | null;
 }
 
 const initialState: AppState = {
   token: null,
   keywords: ['inside', 'best', 'terrible', 'bad'],
+  userType: null,
   availableCards: [
     {
       type: 'master',
@@ -74,6 +82,11 @@ export const appSlice = createSlice({
     // } 
     addCard: (state, action: PayloadAction<CardInfo>) => {
       state.availableCards?.push(action.payload);
+    },
+    setUserType: (state, action: PayloadAction<USER_TYPE>) => {
+      state.userType = action.payload;
+      // console.log("State" + state.userType);
+      // console.log("Payload" + action.payload);
     }
   }
 });
@@ -83,6 +96,7 @@ export const {
   setToken,
   setKeyWord,
   addCard,
+  setUserType
 } = appSlice.actions;
 
 export default appSlice.reducer;

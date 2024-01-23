@@ -23,3 +23,4 @@ interface ItemCrdProp {
     image: ImageSourcePropType;
     id: number;
   }
+

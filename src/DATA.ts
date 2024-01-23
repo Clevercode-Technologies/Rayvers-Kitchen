@@ -352,3 +352,339 @@ export const favorite = [
     id: 8,
   },
 ]
+
+export const chartData = [
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+  Math.random() * 100,
+];
+
+export const foodListData = [
+  {
+    id: 1,
+    item: 'Chicken Thai Biriyani',
+    category: 'Breakfast',
+    price: 1200,
+    reviews: 45,
+    deliveryMode: 'Pick Up',
+    image: images.FoodItem_JollofRice,
+    rating: '4.5',
+  },
+  {
+    id: 2,
+    item: 'Chicken Thai Biriyani',
+    category: 'Lunch',
+    price: 2000,
+    reviews: 32,
+    deliveryMode: 'Delivery',
+    image: images.FoodItem_Parage,
+    rating: '5',
+  },
+  {
+    id: 3,
+    item: 'Chicken Thai Biriyani',
+    category: 'Dinner',
+    price: 3100,
+    reviews: 67,
+    deliveryMode: 'Pick Up',
+    image: images.FoodItem_Potate,
+    rating: '3.8',
+  },
+  {
+    id: 4,
+    item: 'Chicken Thai Biriyani',
+    category: 'Breakfast',
+    price: 1500,
+    reviews: 21,
+    deliveryMode: 'Delivery',
+    image: images.FoodItem_Potate,
+    rating: '4.6',
+  },
+  {
+    id: 5,
+    item: 'Chicken Thai Biriyani',
+    category: 'Lunch',
+    price: 700,
+    reviews: 5,
+    deliveryMode: 'Pick Up',
+    image: images.FoodItem_Swallow,
+    rating: '4.9',
+  },
+  {
+    id: 6,
+    item: 'Chicken Thai Biriyani',
+    category: 'Dinner',
+    price: 850,
+    reviews: 25,
+    deliveryMode: 'Delivery',
+    image: images.FoodItem_JollofRice,
+    rating: '5'
+  },
+  {
+    id: 7,
+    item: 'Chicken Thai Biriyani',
+    category: 'Breakfast',
+    price: 7500,
+    reviews: 12,
+    deliveryMode: 'Pick Up',
+    image: images.FoodItem_Parage,
+    rating: '3.6',
+  },
+  {
+    id: 8,
+    item: 'Chicken Thai Biriyani',
+    category: 'Lunch',
+    price: 1350,
+    reviews: 21,
+    deliveryMode: 'Delivery',
+    image: images.FoodItem_Potate,
+    rating: '4.2',
+  },
+  {
+    id: 9,
+    item: 'Chicken Thai Biriyani',
+    category: 'Dinner',
+    price: 1940,
+    reviews: 20,
+    deliveryMode: 'Pick Up',
+    image: images.FoodItem_Swallow,
+    rating: '3.9',
+  },
+]
+
+export const notifications: Array<{
+  name: string;
+  info: string;
+  time: string;
+  id: number;
+  image: ImageSourcePropType;
+  preview: ImageSourcePropType;
+}> = [  
+  {
+    id: 1,
+    name: 'Tanbir Ahmed',
+    info: 'Placed a new order',
+    time: '25 min ago',
+    image: images.noti1,
+    preview: images.FoodItem_JollofRice,
+  },
+  {
+    id: 2,
+    name: 'Salim Smith',
+    info: 'left a 5 star review',
+    time: '5 min ago',
+    image: images.noti2,
+    preview: images.FoodItem_Parage,
+  },
+  {
+    id: 3,
+    name: 'Royal Bengol',
+    info: 'agreed to cancel',
+    time: '12 min ago',
+    image: images.noti3,
+    preview: images.FoodItem_Potate,
+  },
+  {
+    id: 4,
+    name: 'Pabel Vuiya',
+    info: 'Placed a new order',
+    time: '19 min ago',
+    image: images.noti4,
+    preview: images.FoodItem_Swallow,
+  },
+]
+
+export const messages: Array<{
+  id: number;
+  name: string;
+  online: boolean;
+  time: string;
+  person: ImageSourcePropType;
+  unread: number;
+  message: string;
+}> = [
+  {
+    id: 1,
+    name: 'Royal Parvej',
+    message: 'Sounds awesome!',
+    online: false,
+    time: '19:37',
+    person: images.msg1,
+    unread: 2,
+  },
+  {
+    id: 2,
+    name: 'Cameron Williamson',
+    message: 'Ok, Just hurry up little bit...😊',
+    online: true,
+    time: '19:37',
+    person: images.msg2,
+    unread: 3,
+  },
+  {
+    id: 3,
+    name: 'Ralph Edwards',
+    message: 'Thanks dude.',
+    online: false,
+    time: '19:20',
+    person: images.msg3,
+    unread: 0,
+  }, 
+  {
+    id: 4,
+    name: 'Cody Fisher',
+    message: 'How is going...?',
+    online: false,
+    time: '19:17',
+    person: images.msg4,
+    unread: 0,
+  },
+  {
+    id: 5,
+    name: 'Eleanor Pena',
+    message: 'Thanks for the awesome food man...!',
+    online: true,
+    time: '19:13',
+    person: images.noti3,
+    unread: 0,
+  }
+]
+
+export const reviews: Array<{
+  date: string;
+  profilePhoto: ImageSourcePropType;
+  desc: string;
+  name: string;
+  id: number;
+  star: number;
+}> = [
+  {
+    name: 'Ijah Manthum',
+    id: 1,
+    desc: 'This Food so tasty & delicious. Breakfast so fast Delivered in my place. Chef is very friendly. I’m really like chef for Home Food Order. Thanks.',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer1,
+    star: 3,
+  },
+  {
+    name: 'Usman Yori',
+    id: 2,
+    desc: 'This Food so tasty & delicious. Breakfast so fast Delivered in my place.',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer2,
+    star: 4,
+  },
+  {
+    name: 'Bingo Cutter',
+    id: 3,
+    desc: 'This Food so tasty & delicious.',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer3,
+    star: 5,
+  },
+  {
+    name: 'Bright Miller',
+    id: 3,
+    desc: 'This Food so tasty & delicious. Breakfast so fast Delivered in my place. ',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer4,
+    star: 5
+  },
+  {
+    name: 'Bright Miller',
+    id: 3,
+    desc: 'This Food so tasty & delicious. Breakfast so fast Delivered in my place. ',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer4,
+    star: 4
+  },
+  {
+    name: 'Puller Shedege',
+    id: 3,
+    desc: 'This Food so tasty & delicious. Breakfast so fast Delivered in my place.',
+    date: '20/12/2020',
+    profilePhoto: images.reviewer5,
+    star: 3,
+  },
+]
+
+export const drivers: Array<{
+  image: ImageSourcePropType;
+  name: string;
+  online: boolean;
+  id: number;
+}> = [
+  {
+    id: 1,
+    name: 'Royal Parvej',
+    image: images.noti4,
+    online: true,
+  },
+  {
+    id: 2,
+    name: 'Cameron Williamson',
+    image: images.msg1,
+    online: true,
+  },
+  {
+    id: 3,
+    name: 'Ralph Edwards',
+    image: images.noti3,
+    online: true,
+  },
+  {
+    id: 4,
+    name: 'Cody Fisher',
+    image: images.msg3,
+    online: true,
+  },
+  {
+    id: 5,
+    name: 'Eleanor Pena',
+    image: images.noti2,
+    online: false,
+  },
+]
+
+export const foodAssign: Array<{
+  id: number;
+  image: ImageSourcePropType;
+  assigned: boolean;
+  price: number;
+  name: string;
+
+}> = [
+  {
+    id: 1,
+    name: 'Chicken Thai Biriyani',
+    assigned: false,
+    price: 6070,
+    image: images.assignedDrivers1
+  },
+  {
+    id: 2,
+    name: 'Fried Chicken',
+    assigned: true,
+    price: 5670,
+    image: images.assignedDrivers2
+  },
+  {
+    id: 3,
+    name: 'Cripsy Beef',
+    assigned: false,
+    price: 5670,
+    image: images.assignedDrivers3
+  },
+  {
+    id: 4,
+    name: 'Crisp Chicken',
+    assigned: false,
+    price: 5670,
+    image: images.FoodItem_Parage
+  },
+]

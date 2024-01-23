@@ -10,7 +10,7 @@ const AppStack = createNativeStackNavigator();
 
 const AppRoot = () => {
   const token = useSelector((state: RootState) => state.data.token);
-  const [accessToken, setAccessToken] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string>("hjhjh");
 
 
 

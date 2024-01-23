@@ -90,7 +90,10 @@ const Login = () => {
               </Text>
             </View>
 
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {
+              // @ts-ignore
+              navigation.navigate('ForgotPass');
+            }}>
               <Text style={styles.forgotTxt}>Forgot Password</Text>
             </TouchableOpacity>
           </View>

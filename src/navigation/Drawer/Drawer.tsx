@@ -21,9 +21,13 @@ import { SCREEN_HEIGHT, colors } from "../../components/DEFAULTS";
 import { images } from "../../../assets/images";
 import { icons } from "../../../assets/icons";
 import CustomerAppTabs from "../Tabs/CustomerAppTabs";
+import ChefAppTab from "../Tabs/ChefAppTab";
+import DriverAppTab from "../Tabs/DriverAppTab";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 
 const Drawer = createDrawerNavigator();
-
+// @ts-ignore
 const CustomDrawerContent = (props) => {
   const [profileFocus, setProfileFocus] = useState<boolean>();
   const [favoriteFocus, setFavoriteFocus] = useState<boolean>();
@@ -278,7 +282,17 @@ const CustomDrawerContent = (props) => {
   );
 };
 
+enum UserType {
+  CUSTOMER = 'Customer',
+  CHEF = 'Chef',
+  DRIVER = 'DRIVER'
+}
+
+// @ts-ignore
 const DrawerNavigation = (props) => {
+  const userType = useSelector((state: RootState) => state.data.userType);
+  console.log("userType: ", userType);
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -292,7 +306,8 @@ const DrawerNavigation = (props) => {
         },
       })}
     >
-      <Drawer.Screen
+      {userType === 'Customer' ? (
+        <Drawer.Screen
         options={() => ({
           drawerActiveBackgroundColor: "white",
           drawerActiveTintColor: "white",
@@ -305,6 +320,35 @@ const DrawerNavigation = (props) => {
         // @ts-ignore
         component={CustomerAppTabs}
       />
+      ) : userType === 'Chef' ? (
+        <Drawer.Screen
+        options={() => ({
+          drawerActiveBackgroundColor: "white",
+          drawerActiveTintColor: "white",
+          headerTitle: "",
+          drawerContentStyle: {
+            display: "none",
+          },
+        })}
+        name="ChefTabs"
+        // @ts-ignore
+        component={ChefAppTab}
+      />
+      ) : (
+        <Drawer.Screen
+        options={() => ({
+          drawerActiveBackgroundColor: "white",
+          drawerActiveTintColor: "white",
+          headerTitle: "",
+          drawerContentStyle: {
+            display: "none",
+          },
+        })}
+        name="DriverTabs"
+        // @ts-ignore
+        component={DriverAppTab}
+      />
+      )}
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="Favorite" component={Favourite} />
       <Drawer.Screen name="Orders" component={Orders} />
