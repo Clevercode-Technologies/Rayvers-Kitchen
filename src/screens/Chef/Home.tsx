@@ -458,7 +458,7 @@ const Home = () => {
           <Actionsheet isOpen={isOpenOrder} onClose={onCloseOrder}>
             <Actionsheet.Content style={{  }}>
               <View style={{ width: '100%', paddingHorizontal: 24 }}>
-                <Text style={{ color: '#181C2E', fontSize: 17, fontFamily: 'Regular-Sen' }}>20 Running Orders</Text>
+                <Text style={{ color: '#181C2E', fontSize: 17, fontFamily: 'Regular-Sen' }}>05 Order Request</Text>
 
                 <RunningOrdersCard type={'requests'} />
                 <RunningOrdersCard type={'requests'} />

@@ -108,7 +108,7 @@ const Onboard = () => {
     }
 
   return (
-      <>
+      <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
         <StatusBar backgroundColor={'white'} barStyle={'light-content'} />
         <View style={styles.container}>
            <Animated.FlatList 
@@ -122,6 +122,7 @@ const Onboard = () => {
                 style={{
                     // flex: 4,
                     width: SCREEN_WIDTH - 48,
+                    backgroundColor: colors.white
                 }}
                 data={slideData}
                 keyExtractor={(item,) => item.id.toString()}
@@ -184,7 +185,7 @@ const Onboard = () => {
            </View>
 
         </View>
-      </>
+      </SafeAreaView>
   )
 }
 

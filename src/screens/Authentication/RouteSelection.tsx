@@ -13,7 +13,13 @@ import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import { icons } from "../../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { USER_TYPE, setUserType } from "../../Redux/Splice/AppSplice";
+import { setUserType } from "../../Redux/Splice/AppSplice";
+
+enum USER_TYPE {
+  CUSTOMER = "Customer",
+  CHEF = "Chef",
+  DRIVER = "Driver",
+}
 
 const RouteSelection = () => {
   const navigation = useNavigation();

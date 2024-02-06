@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { FoodList } from "../../../screens";
+import { AddNewFood, FoodList } from "../../../screens";
+import FoodDetails from "../../../screens/Chef/FoodDetails";
 
 const RootChefListStack = createNativeStackNavigator();
 
@@ -12,6 +13,8 @@ const ChefListStack = () => {
       screenOptions={{ headerShown: false }}
     >
       <RootChefListStack.Screen name="ChefList" component={FoodList} />
+      <RootChefListStack.Screen name="ChefFoodDetails" component={FoodDetails} />
+      <RootChefListStack.Screen name="CreateItem" component={AddNewFood} />
     </RootChefListStack.Navigator>
   );
 };

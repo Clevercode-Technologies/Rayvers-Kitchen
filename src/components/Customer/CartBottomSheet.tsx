@@ -49,7 +49,9 @@ const CartBottomSheet = () => {
           Delivery Address
         </Text>
 
-        <Pressable>
+        <Pressable 
+        // @ts-ignore
+        onPress={() => navigation.navigate('AddNewAddress')}>
           <Text
             style={{
               color: colors.primaryBg,

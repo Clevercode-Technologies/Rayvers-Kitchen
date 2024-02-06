@@ -9,6 +9,8 @@ import {
 import React from "react";
 import { SCREEN_WIDTH, colors } from "../../DEFAULTS";
 import { icons } from "../../../../assets/icons";
+import { Menu, VStack } from "native-base";
+import { useNavigation } from "@react-navigation/native";
 
 interface FoodItemProps {
   data: {
@@ -24,6 +26,9 @@ interface FoodItemProps {
 }
 
 const FoodItem: React.FC<FoodItemProps> = ({ data }) => {
+  const [position, setPosition] = React.useState<string>("auto");
+  const navigation = useNavigation();
+
   return (
     <View
       style={{ marginVertical: 10, flexDirection: "row", alignItems: "center" }}
@@ -51,13 +56,48 @@ const FoodItem: React.FC<FoodItemProps> = ({ data }) => {
           >
             {data.item}
           </Text>
-          <Pressable onPress={() => alert("add an Edit interface for here!")}>
-            <Image
-              source={icons.more}
-              style={{ width: 17.64, height: 4.6 }}
-              resizeMode="contain"
-            />
-          </Pressable>
+          <View>
+            <VStack space={6} alignSelf="flex-start" w="100%">
+              <Menu
+                w="160"
+                shouldOverlapWithTrigger={false} // @ts-ignore
+                placement={position == "auto" ? undefined : position}
+                trigger={(triggerProps) => {
+                  return (
+                    <Pressable
+                      {...triggerProps}
+                      style={{
+                        height: 25,
+                        width: 25,
+                        padding: 5,
+                        borderRadius: 25 / 2,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        source={icons.more}
+                        style={{ width: 17.64, height: 4.6 }}
+                        resizeMode="contain"
+                      />
+                    </Pressable>
+                  );
+                }}
+              >
+                <Menu.Item
+                  // @ts-ignore
+                  onPress={() => navigation.navigate("ChefFoodDetails")}
+                >
+                  Preview
+                </Menu.Item>
+                <Menu.Item 
+                // @ts-ignore
+                onPress={() => navigation.navigate("CreateItem")}>
+                  Edit
+                </Menu.Item>
+              </Menu>
+            </VStack>
+          </View>
         </View>
 
         <View

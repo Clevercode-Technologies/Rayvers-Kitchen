@@ -25,6 +25,8 @@ const FoodDetails = () => {
         justifyContent: "center",
         alignItems: "center",
         position: "relative",
+        backgroundColor: colors.white,
+        flex: 1
       }}
     >
 

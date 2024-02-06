@@ -7,6 +7,7 @@ import {
 import { icons } from "../../../assets/icons";
 import ChefHomeStack from "../Stacks/ChefStacks/ChefHomeStack";
 import ChefListStack from "../Stacks/ChefStacks/ChefListStack";
+import CreateItemStack from "../Stacks/ChefStacks/CreateItemStack";
 
 const Tabs = createBottomTabNavigator();
 
@@ -83,7 +84,7 @@ const ChefAppTab = () => {
             ),
         }}
         name="CreateItems"
-        component={ChefListStack}
+        component={CreateItemStack}
       />
        <Tabs.Screen
         options={{

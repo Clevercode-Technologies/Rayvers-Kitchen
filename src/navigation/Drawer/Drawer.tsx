@@ -23,8 +23,9 @@ import { icons } from "../../../assets/icons";
 import CustomerAppTabs from "../Tabs/CustomerAppTabs";
 import ChefAppTab from "../Tabs/ChefAppTab";
 import DriverAppTab from "../Tabs/DriverAppTab";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
+import { setAccessToken } from "../../Redux/Splice/AppSplice";
 
 const Drawer = createDrawerNavigator();
 // @ts-ignore
@@ -33,9 +34,9 @@ const CustomDrawerContent = (props) => {
   const [favoriteFocus, setFavoriteFocus] = useState<boolean>();
   const [ordersFocus, setOrdersFocus] = useState<boolean>();
   const [notification, setNotification] = useState<boolean>();
-  const [logout, setLogout] = useState<boolean>(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   return (
     <DrawerContentScrollView {...props}>
@@ -249,7 +250,7 @@ const CustomDrawerContent = (props) => {
         </Pressable>
 
         <Pressable
-        onPress={() => {}}
+        onPress={() => dispatch(setAccessToken(null))}
           style={{
             position: "absolute",
             bottom: 100,

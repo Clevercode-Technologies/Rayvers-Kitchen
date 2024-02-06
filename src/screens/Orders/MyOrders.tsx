@@ -42,50 +42,23 @@ const MyOrders = () => {
       style={{
         marginTop: Platform.OS === "android" ? 25 : 0,
         height: SCREEN_HEIGHT,
+        backgroundColor: colors.white,
+        flex: 1
       }}
     >
       {/* Order Header */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginHorizontal: 24,
-        }}
-      >
-        <Pressable
-          onPress={() => {}}
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={icons.back}
-            style={{ width: 45, height: 45 }}
-            resizeMode="contain"
-          />
-          <Text
+      {/* <Text
             style={{
               color: colors.tertiaryTxt,
               fontSize: 17,
               fontFamily: "Regular-Sen",
-              marginLeft: 16,
+              textAlign: 'center',
+              marginTop: 10
+              // marginLeft: 16,
             }}
           >
             My Orders
-          </Text>
-        </Pressable>
-
-        <Image
-          source={icons.moreDetailed}
-          style={{
-            width: 45,
-            height: 45,
-          }}
-        />
-      </View>
+          </Text> */}
 
       {/* Tab Selector */}
       <View

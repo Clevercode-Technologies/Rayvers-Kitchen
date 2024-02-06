@@ -35,3 +35,4 @@ export { default as WithdrawSuccess } from './Chef/WithdrawSuccess';
 export { default as Notification } from "./Chef/Notifications";
 export { default as ChefReviews } from "./Chef/Reviews";
 export { default as ChefDriversList } from "./Chef/DriversList";
+export { default as ChefFoodDetails } from "./Chef/FoodDetails";

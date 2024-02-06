@@ -16,7 +16,8 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: [
-    // things to persist would be here
+    'token',
+    'userType'
   ],
 };
 

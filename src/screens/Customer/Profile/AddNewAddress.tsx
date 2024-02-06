@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
 import { icons } from "../../../../assets/icons";
 import { TextInput } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 enum LABEL {
   HOME = "Home",
@@ -25,17 +26,20 @@ const AddNewAddress = () => {
   const [aptNo, setAptNo] = useState<number>(0);
   const [label, setLabel] = useState<LABEL>(LABEL.HOME);
 
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView
       style={
         {
           // position: 'relative',
+          backgroundColor: colors.white
         }
       }
     >
       {/* MapView Header */}
       <View style={{ position: "relative" }}>
-        <Pressable onPress={() => alert("Implement navigation to go back")}>
+        <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
           <Image
             source={icons.backArrDark}
             style={{

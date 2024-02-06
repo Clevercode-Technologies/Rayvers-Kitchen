@@ -22,3 +22,5 @@ export const colors = {
     white: "#ffffff",
     strokeColor: "#E3EBF2"
 }
+
+export const BASE_URL = 'https://rayvers-kitchen-api.vercel.app/';

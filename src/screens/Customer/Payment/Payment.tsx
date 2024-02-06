@@ -28,11 +28,12 @@ const Payment = () => {
 
   return (
     <SafeAreaView
-      style={{ marginHorizontal: 24, position: "relative", flex: 1 }}
+      style={{ position: "relative", flex: 1, backgroundColor: colors.white }}
     >
+      <View style={{ marginHorizontal: 24, flex: 1 }}>
       <ScrollView contentContainerStyle={{ flex: 1 }}>
         {/* Header */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()} style={{ flexDirection: "row", alignItems: "center" }}>
           <Image
             source={icons.back}
             style={{
@@ -52,7 +53,7 @@ const Payment = () => {
           >
             Payment
           </Text>
-        </View>
+        </Pressable>
 
         {/* Card Selection */}
         <View
@@ -638,6 +639,7 @@ const Payment = () => {
           </Pressable>
         </View>
       </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

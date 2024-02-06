@@ -1,5 +1,6 @@
 import {
   Image,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -14,12 +15,14 @@ import { SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import { UploadItemPhotos } from "../../components";
 import { Checkbox } from "native-base";
 import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
 const AddNewFood = () => {
   const [focusItemName, setFocusItemName] = useState<boolean>(false);
   const [focusPrice, setFocusPrice] = useState<boolean>(false);
   const [itemPrice, setItemPrice] = useState<string>("3,450");
 
+  // Selected Ingredients -------->
   const [saltSelected, setSaltSelected] = useState<boolean>(false);
   const [chickenSelected, setChickenSelected] = useState<boolean>(false);
   const [onionSelected, setOnionSelected] = useState<boolean>(false);
@@ -29,22 +32,43 @@ const AddNewFood = () => {
   const [broccoliSelected, setBroccoliSelected] = useState<boolean>(false);
   const [walnutSelected, setWalnutSelected] = useState<boolean>(false);
   const [orangeSelected, setOrangeSelected] = useState<boolean>(false);
+  // Ingredients ends here -------->
 
+  // Selected Preview Images -------->
   const [image1, setImage1] = useState<string | null>(null);
   const [image2, setImage2] = useState<string | null>(null);
   const [image3, setImage3] = useState<string | null>(null);
   const [image4, setImage4] = useState<string | null>(null);
   const [image5, setImage5] = useState<string | null>(null);
+  // Selected Preview Images ends here -------->
+
+  const navigation = useNavigation();
 
   enum PICK_UP_MODE {
     DELIVERY = "Delivery",
     PICK_UP = "Pick up",
   }
+
+  enum MEAL_TYPE {
+    BREAKFAST = "Breakfast",
+    LAUNCH = "Launch",
+    SUPPER = "Supper",
+  }
+
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [meal, setMeal] = useState<string | null>(null);
+
+  const [details, setDetails] = useState<string>("");
+  const [itemName, setItemName] = useState<string>("");
 
   const handleCheckboxChange = (mode: string | null) => {
     setSelectedMode(mode);
     console.log(`Selected mode: ${mode}`);
+  };
+
+  const handleMealChange = (mode: string | null) => {
+    setMeal(mode);
+    console.log(`Set meal: ${mode}`);
   };
 
   const pickImage1 = async () => {
@@ -113,8 +137,12 @@ const AddNewFood = () => {
     }
   };
 
+  const resetState = () => {};
+
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{ backgroundColor: colors.white, flex: 1, paddingTop: 35 }}
+    >
       {/* Add New Item Header */}
       <View
         style={{
@@ -126,7 +154,9 @@ const AddNewFood = () => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image source={icons.back} style={{ width: 45, height: 45 }} />
+          <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
+            <Image source={icons.back} style={{ width: 45, height: 45 }} />
+          </Pressable>
           <Text
             style={{
               fontFamily: "Regular-Sen",
@@ -180,6 +210,8 @@ const AddNewFood = () => {
               }}
               onFocus={() => setFocusItemName(true)}
               onBlur={() => setFocusItemName(false)}
+              onChangeText={(text) => setItemName(text)}
+              value={itemName}
             />
           </View>
 
@@ -309,6 +341,77 @@ const AddNewFood = () => {
                   }}
                 >
                   Delivery
+                </Text>
+              </View>
+            </View>
+
+            {/* Meal Selection */}
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 24,
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Checkbox
+                  value={MEAL_TYPE.BREAKFAST}
+                  accessibilityLabel="Breakfast"
+                  id="meal-selection"
+                  aria-label="Breakfast"
+                  onChange={() => handleMealChange(MEAL_TYPE.BREAKFAST)}
+                  isChecked={meal === "Breakfast"}
+                />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "Regular-Sen",
+                    color: "#9C9BA6",
+                    marginLeft: 10,
+                  }}
+                >
+                  Breakfast
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Checkbox
+                  value={MEAL_TYPE.LAUNCH}
+                  onChange={() => handleMealChange(MEAL_TYPE.LAUNCH)}
+                  accessibilityLabel="Launch"
+                  aria-label="Launch"
+                  id="meal-selection"
+                  isChecked={meal === "Launch"}
+                />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "Regular-Sen",
+                    color: "#9C9BA6",
+                    marginLeft: 10,
+                  }}
+                >
+                  Launch
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Checkbox
+                  value={MEAL_TYPE.SUPPER}
+                  onChange={() => handleMealChange(MEAL_TYPE.SUPPER)}
+                  accessibilityLabel="Dinner"
+                  aria-label="Dinner"
+                  id="meal-selection"
+                  isChecked={meal === "Supper"}
+                />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontFamily: "Regular-Sen",
+                    color: "#9C9BA6",
+                    marginLeft: 10,
+                  }}
+                >
+                  Dinner
                 </Text>
               </View>
             </View>
@@ -599,6 +702,8 @@ const AddNewFood = () => {
                   placeholder="Jollof rice, a West African classic, combines aromatic rice with a flavorful tomato-based sauce, creating a savory masterpiece celebrated for its rich taste and cultural significance."
                   placeholderTextColor={"#6B6E82"}
                   multiline
+                  onChangeText={(text) => setDetails(text)}
+                  value={details}
                 />
               </View>
 

@@ -4,22 +4,19 @@ import { colors } from '../DEFAULTS';
 
 interface ButtonProps {
   type: string;
+  loading?: boolean;
+  onPress?: () => Promise<void>;
 }
 
-const Button:React.FC<ButtonProps> = ({ type }) => {
+const Button:React.FC<ButtonProps> = ({ type, loading, onPress }) => {
 
-  const onLogin = () => {
-    alert("Awaiting Login Implementations");
-  }
 
   return (
     <Pressable 
-      style={styles.btn}
-      onPress={() => {
-        if(type === "login") {
-          onLogin();
-        } 
-      }}>
+      style={[{ backgroundColor: loading ? '#A0A5BA' : colors.primaryBg }, styles.btn]}
+      onPress={onPress}
+      disabled={loading}
+      >
       <Text style={styles.btnTxt}>{type === "login" ? "Login" : type === 'register' ? 'Sign Up' : type === 'code' ? 'Send Code' : type === 'verify' ? "Verify" : ""}</Text>
     </Pressable>
   )
@@ -33,7 +30,6 @@ const styles = StyleSheet.create({
     height: 62,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.primaryBg,
     borderRadius: 12
   },
   btnTxt: {

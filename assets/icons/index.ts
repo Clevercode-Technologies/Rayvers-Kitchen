@@ -135,4 +135,6 @@ export const icons = {
     newItemBroccoliNew: require('./broccoli-new.png'),
     newItemBroccoliNewActive: require('./broccoli-new-active.png'),
     // Ingredients ends here ------------------------------------>
+    locationFD: require('./LocationFD.png'),
+    profileIcon: require('./profile-icon.png'),
 }
