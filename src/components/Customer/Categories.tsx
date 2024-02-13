@@ -10,77 +10,32 @@ import {
 import React, { useState } from "react";
 import { images } from "../../../assets/images";
 import { colors } from "../DEFAULTS";
+import { useDispatch } from "react-redux";
+import { setCategoryQuery } from "../../Redux/Splice/AppSplice";
+import { generateRandomNumber } from "../../utils/idGenerator";
 
-const categoryData = [
-  {
-    name: "All",
-    preview: "",
-    id: 1,
-  },
-  {
-    name: "Rice",
-    preview: images.foodCat1,
-    id: 2,
-  },
-  {
-    name: "Pasta",
-    preview: images.foodCat2,
-    id: 3,
-  },
-  {
-    name: "Swallow Food",
-    preview: images.foodCat3,
-    id: 4,
-  },
-  {
-    name: "Pepper Soup",
-    preview: images.foodCat4,
-    id: 5,
-  },
-];
+interface CategoriesProp {
+  data: Array<{
+    id: number;
+    name: string;
+    image: string;
+  }> | null;
+}
 
-const Categories = () => {
-  const [index, setIndex] = useState<number>(0);
+const Categories: React.FC<CategoriesProp> = ({ data }) => {
+  const [index, setIndex] = useState<number>(6);
+
+  const dispatch = useDispatch();
 
   return (
     <>
       <ScrollView horizontal style={{}}>
+        {/* All Categories */}
         <Pressable
-          onPress={() => setIndex(0)}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            borderRadius: 1000,
-            elevation: 1,
-            shadowColor: "#BABDCF",
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.19,
-            shadowRadius: 7.84,
-            backgroundColor: index === 0 ? "#FFD27C" : colors.white,
-            marginRight: 13,
-            marginVertical: 25,
-            width: 60,
-            justifyContent: "center",
+          onPress={() => {
+            dispatch(setCategoryQuery("default"));
+            setIndex(6);
           }}
-        >
-          <Text
-            style={{
-              color: colors.primaryTxt,
-              fontSize: 14,
-              fontWeight: "700",
-              fontFamily: "Bold-Sen",
-              fontStyle: "normal",
-            }}
-          >
-            {categoryData[0].name}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => setIndex(1)}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -94,108 +49,20 @@ const Categories = () => {
             },
             shadowOpacity: 0.19,
             shadowRadius: 7.84,
-            backgroundColor: index === 1 ? "#FFD27C" : colors.white,
-            marginRight: 13,
-            marginVertical: 25,
-            maxWidth: 135,
-          }}
-        >
-          <Image
-            source={categoryData[1].preview}
-            resizeMode="cover"
-            style={{
-              width: 44,
-              height: 44,
-              marginRight: 12,
-              borderRadius: 44 / 2,
-            }}
-          />
-          <Text
-            style={{
-              color: colors.primaryTxt,
-              fontSize: 14,
-              fontWeight: "700",
-              fontFamily: "Bold-Sen",
-              fontStyle: "normal",
-            }}
-          >
-            {categoryData[1].name}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => setIndex(2)}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            padding: 8,
-            borderRadius: 50,
-            elevation: 1,
-            shadowColor: "#BABDCF",
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.19,
-            shadowRadius: 7.84,
-            backgroundColor: index === 2 ? "#FFD27C" : colors.white,
-            marginRight: 13,
-            marginVertical: 25,
-            maxWidth: 135,
-          }}
-        >
-          <Image
-            source={categoryData[2].preview}
-            resizeMode="cover"
-            style={{
-              width: 44,
-              height: 44,
-              marginRight: 12,
-              borderRadius: 44 / 2,
-            }}
-          />
-          <Text
-            style={{
-              color: colors.primaryTxt,
-              fontSize: 14,
-              fontWeight: "700",
-              fontFamily: "Bold-Sen",
-              fontStyle: "normal",
-            }}
-          >
-            {categoryData[2].name}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => setIndex(3)}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            padding: 8,
-            borderRadius: 50,
-            elevation: 1,
-            shadowColor: "#BABDCF",
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.19,
-            shadowRadius: 7.84,
-            backgroundColor: index === 3 ? "#FFD27C" : colors.white,
+            backgroundColor: index === 6 ? "#FFD27C" : colors.white,
             marginRight: 13,
             marginVertical: 25,
             maxWidth: 175,
+            minWidth: 135,
           }}
         >
-          <Image
-            source={categoryData[3].preview}
-            resizeMode="cover"
+          <View
             style={{
               width: 44,
               height: 44,
-              marginRight: 12,
-              borderRadius: 44 / 2,
+              borderRadius: 22,
+              backgroundColor: colors.offWhite,
+              marginRight: 10,
             }}
           />
           <Text
@@ -207,53 +74,60 @@ const Categories = () => {
               fontStyle: "normal",
             }}
           >
-            {categoryData[3].name}
+            All
           </Text>
         </Pressable>
-
-        <Pressable
-          onPress={() => setIndex(4)}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            padding: 8,
-            borderRadius: 50,
-            elevation: 1,
-            shadowColor: "#BABDCF",
-            shadowOffset: {
-              width: 0,
-              height: 7,
-            },
-            shadowOpacity: 0.19,
-            shadowRadius: 7.84,
-            backgroundColor: index === 4 ? "#FFD27C" : colors.white,
-            marginRight: 13,
-            marginVertical: 25,
-            maxWidth: 165,
-          }}
-        >
-          <Image
-            source={categoryData[4].preview}
-            resizeMode="cover"
-            style={{
-              width: 44,
-              height: 44,
-              marginRight: 12,
-              borderRadius: 44 / 2,
+        {data?.map((item, _) => (
+          <Pressable
+            key={`${_}-${generateRandomNumber(4)}`}
+            onPress={() => {
+              console.log(_);
+              setIndex(_);
+              dispatch(setCategoryQuery(item?.name));
             }}
-          />
-          <Text
             style={{
-              color: colors.primaryTxt,
-              fontSize: 14,
-              fontWeight: "700",
-              fontFamily: "Bold-Sen",
-              fontStyle: "normal",
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 8,
+              borderRadius: 50,
+              elevation: 1,
+              shadowColor: "#BABDCF",
+              shadowOffset: {
+                width: 0,
+                height: 7,
+              },
+              shadowOpacity: 0.19,
+              shadowRadius: 7.84,
+              backgroundColor: index === _ ? "#FFD27C" : colors.white,
+              marginRight: 13,
+              marginVertical: 25,
+              maxWidth: 175,
+              minWidth: 135,
             }}
           >
-            {categoryData[4].name}
-          </Text>
-        </Pressable>
+            <Image
+              source={{ uri: item?.image }}
+              resizeMode="cover"
+              style={{
+                width: 44,
+                height: 44,
+                marginRight: 12,
+                borderRadius: 44 / 2,
+              }}
+            />
+            <Text
+              style={{
+                color: colors.primaryTxt,
+                fontSize: 14,
+                fontWeight: "700",
+                fontFamily: "Bold-Sen",
+                fontStyle: "normal",
+              }}
+            >
+              {item?.name}
+            </Text>
+          </Pressable>
+        ))}
       </ScrollView>
     </>
   );

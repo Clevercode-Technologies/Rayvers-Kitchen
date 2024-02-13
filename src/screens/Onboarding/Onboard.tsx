@@ -3,40 +3,7 @@ import React, { memo, useRef, useState } from 'react'
 import { MARGIN, SCREEN_HEIGHT, SCREEN_WIDTH, colors } from '../../components/DEFAULTS'
 import { images } from '../../../assets/images'
 import { useNavigation } from '@react-navigation/native';
-
-interface SlideData {
-    preview: any;
-    title: string;
-    desc: string;
-    id: number;
-}
-
-const slideData: SlideData[] = [
-    {
-        id: 1,
-        preview: images.onboardOne,
-        title: "All your favorites",
-        desc: "Get all your loved foods in one once place, you just place the orer we do the rest",
-    },
-    {
-        id: 2,
-        preview: images.onboardTwo,
-        title: "All your favorites",
-        desc: "Get all your loved foods in one once place, you just place the orer we do the rest",
-    },
-    {
-        id: 3,
-        preview: images.onboardThree,
-        title: "Order from choosen chef",
-        desc: "Get all your loved foods in one once place, you just place the orer we do the rest",
-    },
-    {
-        id: 4,
-        preview: images.onboardThree,
-        title: "Free delivery offers",
-        desc: "Get all your loved foods in one once place, you just place the orer we do the rest",
-    },
-]
+import { slideData } from '../../DATA';
 
 const Onboard = () => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -108,7 +75,7 @@ const Onboard = () => {
     }
 
   return (
-      <>
+      <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
         <StatusBar backgroundColor={'white'} barStyle={'light-content'} />
         <View style={styles.container}>
            <Animated.FlatList 
@@ -122,6 +89,7 @@ const Onboard = () => {
                 style={{
                     // flex: 4,
                     width: SCREEN_WIDTH - 48,
+                    backgroundColor: colors.white
                 }}
                 data={slideData}
                 keyExtractor={(item,) => item.id.toString()}
@@ -171,7 +139,7 @@ const Onboard = () => {
             </Pressable>
             <Pressable
             // @ts-ignore
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('RouteSelection')}
             style={styles.skipBtn}>
                 <Text style={{
                     color: colors.secondaryTxt,
@@ -184,7 +152,7 @@ const Onboard = () => {
            </View>
 
         </View>
-      </>
+      </SafeAreaView>
   )
 }
 

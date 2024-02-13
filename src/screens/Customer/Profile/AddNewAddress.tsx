@@ -7,10 +7,15 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
 import { icons } from "../../../../assets/icons";
 import { TextInput } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { setAddress } from "../../../Redux/Splice/AppSplice";
+import { RootState } from "../../../Redux/store";
+import { Spinner } from "native-base";
 
 enum LABEL {
   HOME = "Home",
@@ -18,24 +23,91 @@ enum LABEL {
   OTHER = "Other",
 }
 
-const AddNewAddress = () => {
-  const [address, setAddress] = useState<string>("");
+interface AddNewAddressProps {
+  route: {
+    params: {
+      navType: string;
+    };
+  };
+}
+
+const AddNewAddress: React.FC<AddNewAddressProps> = ({ route }) => {
+  const [addressData, setAddressData] = useState<string>("");
   const [street, setStreet] = useState<string>("");
   const [postCode, setPostCode] = useState<string>("");
-  const [aptNo, setAptNo] = useState<number>(0);
-  const [label, setLabel] = useState<LABEL>(LABEL.HOME);
+  const [aptNo, setAptNo] = useState<string>("");
+  const [error, setError] = useState<string | null>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const address = useSelector((state: RootState) => state.data.address);
+
+  const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
+  const [label, setLabel] = useState<LABEL>(
+    isEditAddress ? (address?.addressType as LABEL) || LABEL.HOME : LABEL.HOME
+  );
+
+  console.log(isEditAddress);
+
+  useEffect(() => {
+    if (route.params?.navType && route.params?.navType === "Edit") {
+      setIsEditAddress(true);
+    } else {
+      setIsEditAddress(false);
+    }
+  }, [route.params?.navType]);
+
+  const dispatch = useDispatch();
+
+  const saveAddress = () => {
+    setLoading(true);
+  };
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (loading) {
+      setTimeout(() => {
+        setLoading(false);
+
+        if (!addressData || !street || !postCode || !aptNo || !label) {
+          setError("All fields are required!");
+          dispatch(setAddress(null));
+        } else {
+          dispatch(
+            setAddress({
+              address: addressData,
+              addressType: label,
+              apartment: aptNo,
+              postCode,
+              street,
+            })
+          );
+
+          setError("");
+          setAddressData("");
+          setAptNo("");
+          setLabel(LABEL.HOME);
+          setPostCode("");
+          setStreet("");
+
+          console.log(address);
+        }
+      }, 3000);
+    }
+  }, [loading]);
 
   return (
     <SafeAreaView
-      style={
-        {
-          // position: 'relative',
-        }
-      }
+      style={{
+        // position: 'relative',
+        backgroundColor: colors.white,
+      }}
     >
       {/* MapView Header */}
       <View style={{ position: "relative" }}>
-        <Pressable onPress={() => alert("Implement navigation to go back")}>
+        <Pressable
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+        >
           <Image
             source={icons.backArrDark}
             style={{
@@ -60,7 +132,7 @@ const AddNewAddress = () => {
         </View>
       </View>
 
-      <ScrollView style={{  }}>
+      <ScrollView style={{ paddingBottom: 50 }}>
         <View
           style={{
             marginHorizontal: 24,
@@ -93,7 +165,8 @@ const AddNewAddress = () => {
                   paddingVertical: 15,
                   paddingLeft: 46,
                 }}
-                onChangeText={(text) => setAddress(text)}
+                onChangeText={(text) => setAddressData(text)}
+                value={isEditAddress ? address?.address : addressData}
                 placeholder="3235 Royal Ln. mesa, new jersy 34567"
                 placeholderTextColor={"#6B6E82"}
               />
@@ -132,13 +205,17 @@ const AddNewAddress = () => {
                 street
               </Text>
               <TextInput
-                placeholder="hason nagar"
+                placeholder="cross axis main"
                 placeholderTextColor={"#6B6E82"}
+                value={isEditAddress ? address?.address : street}
                 style={{
                   padding: 18.5,
                   backgroundColor: "#F0F5FA",
                   height: 50,
                   borderRadius: 10,
+                  color: "#6B6E82",
+                  fontSize: 12,
+                  fontFamily: "Regular-Sen",
                 }}
                 onChangeText={(text) => setStreet(text)}
               />
@@ -156,7 +233,7 @@ const AddNewAddress = () => {
                 Post code
               </Text>
               <TextInput
-                placeholder="34567"
+                placeholder="300271"
                 placeholderTextColor={"#6B6E82"}
                 onChangeText={(text) => setPostCode(text)}
                 style={{
@@ -164,7 +241,11 @@ const AddNewAddress = () => {
                   backgroundColor: "#F0F5FA",
                   height: 50,
                   borderRadius: 10,
+                  color: "#6B6E82",
+                  fontSize: 12,
+                  fontFamily: "Regular-Sen",
                 }}
+                value={isEditAddress ? address?.postCode : postCode}
               />
             </View>
           </View>
@@ -195,8 +276,9 @@ const AddNewAddress = () => {
                   padding: 18.5,
                 }}
                 placeholder="345"
-                onChangeText={(number) => setAptNo(Number(number))}
+                onChangeText={(number) => setAptNo(number)}
                 placeholderTextColor={"#6B6E82"}
+                value={isEditAddress ? address?.apartment : aptNo}
               />
             </View>
           </View>
@@ -291,16 +373,25 @@ const AddNewAddress = () => {
           </View>
 
           {/* Save btn */}
+          <View style={{ marginTop: 32 }}>
+            <Text
+              style={{ color: "red", fontSize: 12, fontFamily: "Regular-Sen" }}
+            >
+              {error && error}
+            </Text>
+          </View>
           <Pressable
-          onPress={() => alert('Implement Saving the user\'s location to database')}
+            onPress={saveAddress}
             style={{
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 12,
-              backgroundColor: colors.primaryBg,
+              backgroundColor: loading ? "#A0A5BA" : colors.primaryBg,
               height: 62,
-              marginTop: 32,
+              marginTop: 5,
+              marginBottom: 50,
             }}
+            disabled={loading}
           >
             <Text
               style={{
@@ -314,6 +405,27 @@ const AddNewAddress = () => {
             </Text>
           </Pressable>
         </View>
+        {/* Bottom Spacing */}
+        {/* <View style={{ paddingBottom: 50 }} /> */}
+        {loading && (
+          <View
+            style={{
+              position: "absolute",
+              top: "35%",
+              bottom: "65%",
+              left: "40%",
+              right: "70%",
+              width: 100,
+              height: 100,
+              backgroundColor: "#121223",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 12,
+            }}
+          >
+            <Spinner color={colors.white} size="lg" />
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

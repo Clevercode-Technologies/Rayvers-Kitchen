@@ -1,6 +1,6 @@
 import {
-    Animated,
-    Image,
+  Animated,
+  Image,
   ImageBackground,
   ImageSourcePropType,
   Pressable,
@@ -8,33 +8,69 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SCREEN_WIDTH, colors } from "../DEFAULTS";
 import { icons } from "../../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
+import Toast, { BaseToast } from "react-native-toast-message";
+import { useDispatch } from "react-redux";
+import { Dish, Popular } from "../../../type";
+import { addFavorite, deleteFavorite } from "../../Redux/Splice/AppSplice";
+
+const toastConfig = {
+  success: (props: any) => (
+    <BaseToast
+      {...props}
+      style={{ borderLeftColor: "green" }}
+      contentContainerStyle={{ paddingHorizontal: 15 }}
+      text1Style={{
+        fontSize: 15,
+        fontWeight: "400",
+        fontFamily: "SemiBold-Sen",
+      }}
+      text1="Added to Favorite ❤️"
+    />
+  ),
+};
 
 interface SliderImageProps {
-  item: {
-    image: ImageSourcePropType;
-    id: number;
-  };
+  image: { file: string; lable: string; id: number };
+  mainData: Dish;
 }
 
-const SliderImage: React.FC<SliderImageProps> = ({ item }) => {
+const SliderImage: React.FC<SliderImageProps> = ({ image, mainData }) => {
   const [favourite, setFavourite] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const addToFavorite = () => {
+    if (!favourite) {
+      dispatch(addFavorite(mainData));
+    } else {
+      dispatch(deleteFavorite(mainData.id));
+    }
+  };
+
+  useEffect(() => {
+    if (favourite) {
+      return Toast.show({
+        type: "success",
+      });
+    }
+  }, [favourite]);
 
   return (
     <ImageBackground
-      source={item.image}
+      source={{ uri: image.file }}
       style={{
         width: SCREEN_WIDTH,
         height: 321,
         paddingHorizontal: 24,
         paddingTop: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
       }}
       resizeMode="cover"
     >
@@ -48,16 +84,20 @@ const SliderImage: React.FC<SliderImageProps> = ({ item }) => {
           resizeMode="contain"
         />
       </Pressable>
-      <Pressable 
-      style={{
-        width: 45,
-        height: 45,
-        backgroundColor: colors.white,
-        borderRadius: 45 / 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-      onPress={() => setFavourite((prevState) => !prevState)}>
+      <Pressable
+        style={{
+          width: 45,
+          height: 45,
+          backgroundColor: colors.white,
+          borderRadius: 45 / 2,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onPress={() => {
+          setFavourite((prevState) => !prevState);
+          addToFavorite();
+        }}
+      >
         <Image
           source={favourite ? icons.saveFilled : icons.save}
           style={{
@@ -67,6 +107,8 @@ const SliderImage: React.FC<SliderImageProps> = ({ item }) => {
           resizeMode="contain"
         />
       </Pressable>
+
+      <Toast config={toastConfig} />
     </ImageBackground>
   );
 };

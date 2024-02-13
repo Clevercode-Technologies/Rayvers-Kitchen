@@ -1,15 +1,15 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setProfileBio, setProfileEmail, setProfileName, setProfileNumber } from '../../Redux/Splice/AppSplice';
 
 type EditProfileProps = {
     type: string;
 }
 
 const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
-    const [username, setUsername] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
-    const [bio, setBio] = useState<string>('');
+    const dispatch = useDispatch();
+
 
   if(type === 'username') {
     return (
@@ -24,23 +24,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
                 backgroundColor: '#F0F5FA',
                 marginTop: 8,
             }}
-            onChangeText={(text) => setUsername(text)}
-        />
-      )
-  } else if(type === 'email'){
-    return (
-        <TextInput 
-            placeholder='hello@email.com'
-            placeholderTextColor={'#6B6E82'}
-            style={{
-                width: '100%',
-                height: 56,
-                borderRadius: 10,
-                paddingLeft: 20,
-                backgroundColor: '#F0F5FA',
-                marginTop: 8,
-            }}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={(text) => dispatch(setProfileName(text))}
         />
       )
   } else if(type === 'phone'){
@@ -57,7 +41,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
                 backgroundColor: '#F0F5FA',
                 marginTop: 8,
             }}
-            onChangeText={(text) => setPhone(text)}
+            onChangeText={(text) => dispatch(setProfileNumber(text))}
         />
       )
   } else if(type === 'bio'){
@@ -76,7 +60,7 @@ const EditProfile: React.FC<EditProfileProps> = ({ type }) => {
                 marginTop: 8,
                 paddingTop: 20
             }}
-            onChangeText={(text) => setBio(text)}
+            onChangeText={(text) => dispatch(setProfileBio(text))}
         />
       )
   } else {

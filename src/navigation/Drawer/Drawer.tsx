@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -17,21 +17,51 @@ import Favourite from "../Stacks/Favourite";
 import Orders from "../Stacks/Orders";
 import Notification from "../Stacks/Notification";
 import { useNavigation } from "@react-navigation/native";
-import { SCREEN_HEIGHT, colors } from "../../components/DEFAULTS";
+import { BASE_URL, SCREEN_HEIGHT, colors } from "../../components/DEFAULTS";
 import { images } from "../../../assets/images";
 import { icons } from "../../../assets/icons";
 import CustomerAppTabs from "../Tabs/CustomerAppTabs";
+import ChefAppTab from "../Tabs/ChefAppTab";
+import DriverAppTab from "../Tabs/DriverAppTab";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
+import { Location } from "../../screens";
+import { userAddress } from "../../../type";
 
 const Drawer = createDrawerNavigator();
-
+// @ts-ignore
 const CustomDrawerContent = (props) => {
   const [profileFocus, setProfileFocus] = useState<boolean>();
   const [favoriteFocus, setFavoriteFocus] = useState<boolean>();
   const [ordersFocus, setOrdersFocus] = useState<boolean>();
   const [notification, setNotification] = useState<boolean>();
-  const [logout, setLogout] = useState<boolean>(false);
+
+  const token = useSelector((state: RootState) => state.data.token);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}auth/logout/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        return;
+      } else {
+        const responseBody = await response.json();
+        console.log(responseBody);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <DrawerContentScrollView {...props}>
@@ -245,13 +275,18 @@ const CustomDrawerContent = (props) => {
         </Pressable>
 
         <Pressable
-        onPress={() => {}}
+          onPress={() => {
+            handleLogout();
+            dispatch(setUserAddress(null));
+            dispatch(setAccessToken(null));
+            dispatch(setUserAddress(null));
+          }}
           style={{
             position: "absolute",
             bottom: 100,
             left: 20,
-            flexDirection: 'row',
-            alignItems: 'center'
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
           <Text
@@ -264,12 +299,12 @@ const CustomDrawerContent = (props) => {
             Sign out
           </Text>
 
-          <Image 
+          <Image
             source={icons.forward}
             style={{
               width: 33,
               height: 24,
-              marginLeft: 20
+              marginLeft: 20,
             }}
           />
         </Pressable>
@@ -278,11 +313,27 @@ const CustomDrawerContent = (props) => {
   );
 };
 
+enum UserType {
+  CUSTOMER = "Customer",
+  CHEF = "Chef",
+  DRIVER = "DRIVER",
+}
+
+// @ts-ignore
 const DrawerNavigation = (props) => {
+  const userType = useSelector((state: RootState) => state.data.userType);
+  const userAddress = useSelector((state: RootState) => state.data.userAddress);
+  const [address, setAddress] = useState<userAddress | null>(null);
+  console.log("userType: ", userType);
+
+  useEffect(() => {
+    setAddress(userAddress);
+  }, [userAddress]);
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      initialRouteName="AppTabs"
+      initialRouteName={address === null ? "Location" : "AppTabs"}
       defaultStatus={"closed"}
       screenOptions={() => ({
         headerShown: false,
@@ -292,19 +343,53 @@ const DrawerNavigation = (props) => {
         },
       })}
     >
-      <Drawer.Screen
-        options={() => ({
-          drawerActiveBackgroundColor: "white",
-          drawerActiveTintColor: "white",
-          headerTitle: "",
-          drawerContentStyle: {
-            display: "none",
-          },
-        })}
-        name="AppTabs"
-        // @ts-ignore
-        component={CustomerAppTabs}
-      />
+      {address === null && (
+        <Drawer.Screen name="Location" component={Location} />
+      )}
+
+      {userType === "Customer" ? (
+        <Drawer.Screen
+          options={() => ({
+            drawerActiveBackgroundColor: "white",
+            drawerActiveTintColor: "white",
+            headerTitle: "",
+            drawerContentStyle: {
+              display: "none",
+            },
+          })}
+          name="AppTabs"
+          // @ts-ignore
+          component={CustomerAppTabs}
+        />
+      ) : userType === "Chef" ? (
+        <Drawer.Screen
+          options={() => ({
+            drawerActiveBackgroundColor: "white",
+            drawerActiveTintColor: "white",
+            headerTitle: "",
+            drawerContentStyle: {
+              display: "none",
+            },
+          })}
+          name="ChefTabs"
+          // @ts-ignore
+          component={ChefAppTab}
+        />
+      ) : (
+        <Drawer.Screen
+          options={() => ({
+            drawerActiveBackgroundColor: "white",
+            drawerActiveTintColor: "white",
+            headerTitle: "",
+            drawerContentStyle: {
+              display: "none",
+            },
+          })}
+          name="DriverTabs"
+          // @ts-ignore
+          component={DriverAppTab}
+        />
+      )}
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="Favorite" component={Favourite} />
       <Drawer.Screen name="Orders" component={Orders} />

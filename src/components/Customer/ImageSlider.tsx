@@ -2,6 +2,7 @@ import {
   Animated,
   FlatList,
   ImageBackground,
+  ImageSourcePropType,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Platform,
@@ -9,16 +10,26 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { foodPrevSliderData } from "../../DATA";
 import { SCREEN_WIDTH, colors } from "../DEFAULTS";
 import SliderImage from "./SliderImage";
+import { generateRandomNumber } from "../../utils/idGenerator";
+import { Dish, Popular } from "../../../type";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
 
-const ImageSlider = () => {
+interface ImageSliderProp {
+  item: Dish;
+}
+
+const ImageSlider: React.FC<ImageSliderProp> = ({ item }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList | null>(null);
   
+  const carouselImages = useSelector((state: RootState) => state.data.carouselImages);
+
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -40,7 +51,7 @@ const ImageSlider = () => {
           flexDirection: "row",
         }}
       >
-        {foodPrevSliderData.map((_, i) => {
+        {item?.images.map((_, i) => {
           const inputRange = [
             (i - 1) * SCREEN_WIDTH,
             i * SCREEN_WIDTH,
@@ -76,7 +87,7 @@ const ImageSlider = () => {
                   opacity,
                   backgroundColor: colors.white,
                   marginHorizontal:
-                    i !== 0 || i !== foodPrevSliderData.length - 1 ? 5 : 0,
+                    i !== 0 || carouselImages && i !== carouselImages.length - 1 ? 5 : 0,
                   borderRadius: 10.29 / 2,
                 }}
               />
@@ -90,8 +101,8 @@ const ImageSlider = () => {
   return (
     <>
       <FlatList
-        data={foodPrevSliderData}
-        keyExtractor={(item) => item.id.toString()}
+        data={carouselImages}
+        keyExtractor={() => generateRandomNumber(6)}
         horizontal
         showsHorizontalScrollIndicator={false}
         pagingEnabled
@@ -103,7 +114,7 @@ const ImageSlider = () => {
           borderBottomRightRadius: 30,
           borderBottomLeftRadius: 30,
         }}
-        renderItem={({ item }) => <SliderImage item={item} />}
+        renderItem={({ item: imageList }) => <SliderImage image={imageList} mainData={item}  />}
       />
 
       <View style={{ position: "absolute", top: 290, left: '30%', right: '30%' }}>
@@ -113,6 +124,6 @@ const ImageSlider = () => {
   );
 };
 
-export default ImageSlider;
+export default memo(ImageSlider);
 
 const styles = StyleSheet.create({});

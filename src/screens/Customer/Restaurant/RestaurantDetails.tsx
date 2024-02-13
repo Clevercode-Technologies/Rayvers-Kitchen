@@ -9,7 +9,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
@@ -17,13 +17,35 @@ import {
 } from "../../../components/DEFAULTS";
 import { images } from "../../../../assets/images";
 import { icons } from "../../../../assets/icons";
-import { popularFood, restCategories } from "../../../DATA";
 import { ItemCard, RestCat } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
+import { restCategories } from "../../../DATA";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
+import { Restaurant } from "../../../../type";
 
-const RestaurantDetails = () => {
+interface RestaurantProps {
+  route: {
+    params: {
+      data: Restaurant | undefined;
+    };
+  };
+}
+
+const RestaurantDetails: React.FC<RestaurantProps> = ({ route }) => {
   const [menu, setMenu] = useState<string>("All");
+  const [restaurant, setRestaurant] = useState<Restaurant | undefined>(undefined); 
+  const dishes = useSelector((state: RootState) => state.data.dishes);
+
+  // console.log(restaurant);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    if(route.params.data !== undefined) {
+      setRestaurant(route.params?.data); 
+    } 
+  }, [route?.params?.data])
 
   return (
     <SafeAreaView
@@ -45,12 +67,14 @@ const RestaurantDetails = () => {
         }}
       >
         <ImageBackground
-          source={images.restBg}
+        // @ts-ignore
+          source={{  uri: restaurant?.image }}
           style={{
             width: SCREEN_WIDTH,
             height: 321,
             alignItems: "center",
           }}
+          resizeMode="cover"
           imageStyle={{
             borderBottomLeftRadius: 24,
             borderBottomRightRadius: 24,
@@ -118,7 +142,7 @@ const RestaurantDetails = () => {
                 fontSize: 20,
               }}
             >
-              Spicy restaurant
+              {restaurant?.name}
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Image
@@ -129,7 +153,7 @@ const RestaurantDetails = () => {
               <Text
                 style={{ fontFamily: "Bold-Sen", fontSize: 16, marginLeft: 10 }}
               >
-                4.7
+                {restaurant?.ratings}
               </Text>
             </View>
           </View>
@@ -143,8 +167,7 @@ const RestaurantDetails = () => {
               lineHeight: 24,
             }}
           >
-            Maecenas sed diam eget risus varius blandit sit amet non magna.
-            Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+            {restaurant?.description}
           </Text>
 
           <ScrollView
@@ -152,7 +175,7 @@ const RestaurantDetails = () => {
             showsHorizontalScrollIndicator={false}
             style={{ flexDirection: "row" }}
           >
-            {restCategories.map((item) => (
+            {restCategories?.map((item) => (
               <View key={item.id}>
                 <RestCat item={item} menu={menu} setMenu={setMenu} />
               </View>
@@ -181,7 +204,7 @@ const RestaurantDetails = () => {
               marginBottom: 60,
             }}
           >
-            {popularFood.map((item, index) => (
+            {dishes?.map((item, index) => (
               <View key={index}>
                 <ItemCard item={item} />
               </View>

@@ -1,15 +1,18 @@
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MyOrders from "../../screens/Orders/MyOrders";
 
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+const StackOrder = createNativeStackNavigator();
 
-const Orders = () => {
+const OrderStack = () => {
   return (
-    <View>
-      <Text>Orders</Text>
-    </View>
-  )
-}
+    <StackOrder.Navigator initialRouteName="" screenOptions={() => ({ headerShown: false })}>
+      <StackOrder.Screen name="MyOrders" component={MyOrders} />
+    </StackOrder.Navigator>
+  );
+};
 
-export default Orders
+export default OrderStack;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

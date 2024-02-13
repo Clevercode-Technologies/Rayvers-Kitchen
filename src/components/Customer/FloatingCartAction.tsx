@@ -5,29 +5,44 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SCREEN_WIDTH, colors } from "../DEFAULTS";
+import { useDispatch } from "react-redux";
+import { Dish, Popular } from "../../../type";
+import { addCart } from "../../Redux/Splice/AppSplice";
+import { formatNumber } from "../../utils/currencyFormatter";
 
 const itemInfo: { price: number } = {
   price: 32,
 };
 
-const FloatingCartAction = () => {
+interface FloatingCartActionProps {
+  item: Dish;
+}
+
+const FloatingCartAction: React.FC<FloatingCartActionProps> = ({ item }) => {
   const [itemCount, setItemCount] = useState<number>(1);
+  const [showToast, setShowToast] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    showToast &&
+      setTimeout(() => {
+        setShowToast(false);
+      }, 1000);
+  }, [showToast]);
+
   return (
     <View
       style={{
-        position: "absolute",
-        bottom: -35,
-        left: 0,
-        right: 0,
         width: SCREEN_WIDTH,
         backgroundColor: "#F0F5FA",
         // height: 184,
         borderTopEndRadius: 24,
         borderTopStartRadius: 24,
         padding: 27,
-        zIndex: 10
+        zIndex: 10,
       }}
     >
       <View
@@ -40,7 +55,7 @@ const FloatingCartAction = () => {
         <Text
           style={{ fontSize: 28, fontFamily: "Regular-Sen", color: "#181C2E" }}
         >
-          ₦{itemInfo.price * itemCount}
+          ₦{formatNumber(Number(item.price) * itemCount)}
         </Text>
         <View
           style={{
@@ -114,7 +129,10 @@ const FloatingCartAction = () => {
 
       {/* Final touch - Cart btn */}
       <Pressable
-      onPress={() => {}}
+        onPress={() => {
+          dispatch(addCart(item));
+          setShowToast(true);
+        }}
         style={{
           marginTop: 24,
           height: 62,
@@ -123,11 +141,36 @@ const FloatingCartAction = () => {
           backgroundColor: colors.primaryBg,
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: 50
+          marginBottom: 50,
         }}
       >
-        <Text style={{ fontSize: 16, fontFamily: 'Bold-Sen', color: colors.white }}>Add To Cart</Text>
+        <Text
+          style={{ fontSize: 16, fontFamily: "Bold-Sen", color: colors.white }}
+        >
+          Add To Cart
+        </Text>
       </Pressable>
+
+      {showToast && (
+        <View
+          style={{
+            backgroundColor: colors.white,
+            borderLeftColor: "green",
+            borderLeftWidth: 4,
+            padding: 10,
+            height: 50,
+            justifyContent: "center",
+            position: 'absolute',
+            bottom: 10,
+            width: SCREEN_WIDTH - 48,
+            left: '7%'
+          }}
+        >
+          <Text style={{ fontFamily: "SemiBold-Sen", fontSize: 16 }}>
+            Successfully Added ✅
+          </Text>
+        </View>
+      )}
     </View>
   );
 };

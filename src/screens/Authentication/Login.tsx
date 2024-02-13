@@ -12,18 +12,117 @@ import {
 } from "react-native";
 import React, { memo, useState } from "react";
 import { images } from "../../../assets/images";
-import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
+import {
+  BASE_URL,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  colors,
+} from "../../components/DEFAULTS";
 import { Image } from "react-native";
 import { icons } from "../../../assets/icons";
 import { Button, TextInputs } from "../../components";
 import { useNavigation } from "@react-navigation/native";
+import { RootState } from "../../Redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { Spinner } from "native-base";
+import { setAccessToken } from "../../Redux/Splice/AppSplice";
 
 const Login = () => {
   const [remember, setRemember] = useState<boolean>(false);
+  const name = useSelector((state: RootState) => state.data.name);
+  const email = useSelector((state: RootState) => state.data.email);
+  const password = useSelector((state: RootState) => state.data.password);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  console.log("name: ", name, "email: ", email, "password: ", password);
+
+  // Profile Update Begins
+  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+  // Profile Update Ends
+
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
 
+  const loginUser = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}auth/token/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+        if(response.ok) {
+          setLoading(false);
+          try {
+            const responseBody = await response.json();
+            if(response.status === 200 && responseBody.token) {
+              const token = responseBody.token;
+              if(name.length > 0) {
+                await updateProfile(token);
+              } else {
+                dispatch(setAccessToken(token));
+              }
+            }
+          } catch (error) {
+            
+          }
+        }  else {
+          setLoading(false);
+          try {
+            const responseBody = await response.json(); // Parse the JSON response
+            if (response.status === 400 && responseBody.non_field_errors) {
+              setError(responseBody.non_field_errors[0]);
+            } else {
+              setError('An error occurred. Please try again.');
+            }
+          } catch (error: any) {
+            setLoading(false);
+            console.error(error);
+            setError(`Login Error: ${error.message}`);
+          }
+        } 
+    } catch (error) {}
+  };
+
+  const updateProfile = async (token: string) => {
+    setLoadingUpdate(true);
+    try {
+      const response = await fetch(`${BASE_URL}auth/users/me/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+        body: JSON.stringify({ name }),
+      })
+      
+      if(response.ok) {
+        setLoading(false);
+        if(response.status === 201) {
+          dispatch(setAccessToken(token));
+        }
+      } else {
+        dispatch(setAccessToken(token));
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  }
+
   return (
-    <SafeAreaView style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT }}>
+    <SafeAreaView
+      style={{
+        width: SCREEN_WIDTH,
+        height: SCREEN_HEIGHT,
+        backgroundColor: colors.white,
+        flex: 1,
+      }}
+    >
       <StatusBar backgroundColor={"#121223"} barStyle={"light-content"} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -90,14 +189,27 @@ const Login = () => {
               </Text>
             </View>
 
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity
+              onPress={() => {
+                // @ts-ignore
+                navigation.navigate("ForgotPass");
+              }}
+            >
               <Text style={styles.forgotTxt}>Forgot Password</Text>
             </TouchableOpacity>
           </View>
 
           {/* Authenticate button */}
           <View style={{ marginTop: 53 }}>
-            <Button type="login" />
+            <Button loading={loading} onPress={loginUser} type="login" />
+            {error && (
+              <Text style={{
+                fontSize: 12,
+                fontFamily: 'Regular-Sen',
+                color: 'red',
+                marginTop: 5
+              }}>{error}</Text>
+            )}
           </View>
 
           {/* Alternative Solution */}
@@ -129,7 +241,7 @@ const Login = () => {
                   textTransform: "uppercase",
                 }}
                 // @ts-ignore
-                onPress={() => navigation.navigate('Register')}
+                onPress={() => navigation.navigate("Register")}
               >
                 SIGN UP
               </Text>
@@ -137,7 +249,7 @@ const Login = () => {
           </View>
 
           {/* Or Demarcator */}
-          <View
+          {/* <View
             style={{
               width: "100%",
               justifyContent: "center",
@@ -157,10 +269,10 @@ const Login = () => {
             >
               Or
             </Text>
-          </View>
+          </View> */}
 
           {/* Social Icons */}
-          <View>
+          {/* <View>
             <View
               style={{
                 flexDirection: "row",
@@ -199,8 +311,48 @@ const Login = () => {
                 />
               </Pressable>
             </View>
-          </View>
+          </View> */}
         </View>
+
+        {loading && (
+          <View
+            style={{
+              position: "absolute",
+              top: "35%",
+              bottom: "65%",
+              left: "40%",
+              right: "70%",
+              width: 100,
+              height: 100,
+              backgroundColor: "#121223",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 12,
+            }}
+          >
+            <Spinner color={colors.white} size="lg" />
+          </View>
+        )}
+        {loadingUpdate && (
+          <View
+            style={{
+              position: "absolute",
+              top: "35%",
+              bottom: "65%",
+              left: "40%",
+              right: "70%",
+              width: 100,
+              height: 100,
+              backgroundColor: "#121223",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 12,
+            }}
+          >
+            <Spinner color={colors.white} size="lg" />
+            <Text style={{ color: colors.white, fontFamily: 'Regular-Sen', fontSize: 10, marginTop: 10 }}>Updating User</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

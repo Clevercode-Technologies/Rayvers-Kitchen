@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../../screens/Customer/Home/Home";
 import {
   AddCard,
+  AddNewAddress,
+  Address,
   Cart,
   FoodDetails,
   Payment,
@@ -35,6 +37,8 @@ const HomeStack = () => {
       <RootHomeStack.Screen name="AddCard" component={AddCard} />
       <RootHomeStack.Screen name="Success" component={Success} />
       <RootHomeStack.Screen name="TrackOrder" component={TrackOrder} />
+      <RootHomeStack.Screen name="AddNewAddress" component={AddNewAddress} />
+      <RootHomeStack.Screen name="Address" component={Address} />
     </RootHomeStack.Navigator>
   );
 };

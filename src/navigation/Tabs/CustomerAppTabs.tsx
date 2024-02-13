@@ -12,7 +12,7 @@ import { icons } from "../../../assets/icons";
 
 const Tabs = createBottomTabNavigator();
 
-const CustomerAppTabs = ({ children, onPress }) => {
+const CustomerAppTabs = () => {
   return (
     <Tabs.Navigator
       initialRouteName="Explore"

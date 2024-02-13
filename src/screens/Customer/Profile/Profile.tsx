@@ -11,363 +11,304 @@ import React from "react";
 import { icons } from "../../../../assets/icons";
 import { colors } from "../../../components/DEFAULTS";
 import { images } from "../../../../assets/images";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { setAccessToken } from "../../../Redux/Splice/AppSplice";
 
 const Profile = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   return (
-    <SafeAreaView style={{ marginHorizontal: 24 }}>
-      <ScrollView style={{ marginBottom: 30 }}>
-        {/* Profile Header */}
-        <View
+    <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
+      <View style={{ marginHorizontal: 24 }}>
+        <ScrollView style={{ marginBottom: 30 }}>
+          {/* Profile Header */}
+          {/* <Text
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
+            color: colors.tertiaryTxt,
+            fontSize: 17,
+            fontFamily: "Regular-Sen",
+            textAlign: 'center',
+            marginTop: 10,         
           }}
         >
-          <Pressable
-            onPress={() => {}}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={icons.back}
-              style={{ width: 45, height: 45 }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                color: colors.tertiaryTxt,
-                fontSize: 17,
-                fontFamily: "Regular-Sen",
-                marginLeft: 16,
-              }}
-            >
-              Profile
-            </Text>
-          </Pressable>
+          Profile
+        </Text> */}
 
-          <Image
-            source={icons.moreDetailed}
-            style={{
-              width: 45,
-              height: 45,
-            }}
-          />
-        </View>
-
-        {/* Name and About */}
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginTop: 24 }}
-        >
-          <Image
-            source={images.myProfile}
-            style={{
-              width: 102.95,
-              height: 102.95,
-            }}
-            resizeMode="contain"
-          />
-
+          {/* Name and About */}
           <View
             style={{
-              marginLeft: 23,
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 24,
             }}
           >
-            <Text
+            <Image
+              source={images.myProfile}
               style={{
-                color: colors.primaryTxt,
-                fontSize: 20,
-                fontFamily: "SemiBold-Sen",
-                marginBottom: 8,
+                width: 102.95,
+                height: 102.95,
+              }}
+              resizeMode="contain"
+            />
+
+            <View
+              style={{
+                marginLeft: 23,
               }}
             >
-              Vishal Khadok
-            </Text>
-            <Text
-              style={{
-                color: "#A0A5BA",
-                fontSize: 14,
-                fontFamily: "Regular-Sen",
-              }}
-            >
-              I love fast food
-            </Text>
+              <Text
+                style={{
+                  color: colors.primaryTxt,
+                  fontSize: 20,
+                  fontFamily: "SemiBold-Sen",
+                  marginBottom: 8,
+                }}
+              >
+                Vishal Khadok
+              </Text>
+              <Text
+                style={{
+                  color: "#A0A5BA",
+                  fontSize: 14,
+                  fontFamily: "Regular-Sen",
+                }}
+              >
+                I love fast food
+              </Text>
+            </View>
           </View>
-        </View>
 
-        {/* Badge 1 */}
-        <View
-          style={{
-            backgroundColor: "#F6F8FA",
-            padding: 20,
-            marginTop: 30,
-            borderRadius: 16,
-          }}
-        >
-          <Pressable
+          {/* Badge 1 */}
+          <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
+              backgroundColor: "#F6F8FA",
+              padding: 20,
+              marginTop: 30,
+              borderRadius: 16,
             }}
-            onPress={() => alert("Profile Information")}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.personProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>Personal Info</Text>
-            </View>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+              onPress={() => 
+                // @ts-ignore
+                navigation.navigate("PersonalInfo")}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.personProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Personal Info</Text>
+              </View>
 
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-          <Pressable
+              <Image
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
+              />
+            </Pressable>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+              onPress={() => 
+              // @ts-ignore
+              navigation.navigate("Address")}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.mapProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Address</Text>
+              </View>
+
+              <Image
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
+              />
+            </Pressable>
+          </View>
+
+          {/* Badge 2 */}
+          <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
+              backgroundColor: "#F6F8FA",
+              padding: 20,
+              marginTop: 30,
+              borderRadius: 16,
+              // marginTop:
             }}
-            onPress={() => alert("Address")}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+              onPress={() => // @ts-ignore
+              navigation.navigate("CartScreen")}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.cartProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Cart</Text>
+              </View>
+
               <Image
-                source={icons.mapProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
               />
-              <Text style={{ marginLeft: 14 }}>Addresses</Text>
-            </View>
+            </Pressable>
 
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-        </View>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+              onPress={() => 
+              // @ts-ignore 
+              navigation.navigate("Favorite")}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.favoriteProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Favourite</Text>
+              </View>
 
-        {/* Badge 2 */}
-        <View
-          style={{
-            backgroundColor: "#F6F8FA",
-            padding: 20,
-            marginTop: 30,
-            borderRadius: 16,
-            // marginTop:
-          }}
-        >
-          <Pressable
+              <Image
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
+              />
+            </Pressable>
+
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+              onPress={() => 
+                // @ts-ignore
+                navigation.navigate('Notification')}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.notificationProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Notification</Text>
+              </View>
+
+              <Image
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
+              />
+            </Pressable>
+
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 16,
+              }}
+              onPress={() => 
+              // @ts-ignore
+              navigation.navigate('Payment')}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.paymentProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Payment Methods</Text>
+              </View>
+
+              <Image
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
+              />
+            </Pressable>
+          </View>
+
+          {/* Badge 3 */}
+          <View
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
+              backgroundColor: "#F6F8FA",
+              padding: 20,
+              marginTop: 30,
+              borderRadius: 16,
             }}
-            onPress={() => alert("Profile Information")}
           >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Pressable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+              onPress={() => dispatch(setAccessToken(null))}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={icons.logoutProfile}
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+                <Text style={{ marginLeft: 14 }}>Log Out</Text>
+              </View>
+
               <Image
-                source={icons.cartProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
+                source={icons.chevronRight}
+                style={{ width: 24, height: 24 }}
+                resizeMode="contain"
               />
-              <Text style={{ marginLeft: 14 }}>Cart</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-            onPress={() => alert("Address")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.favoriteProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>Favourite</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-            onPress={() => alert("Address")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.notificationProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>Notification</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-            onPress={() => alert("Address")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.paymentProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>Payment</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 16,
-            }}
-            onPress={() => alert("Address")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.faqsProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>FAQs</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-            onPress={() => alert("Address")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.faqsProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>FAQs</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-        </View>
-        
-        {/* Badge 3 */}
-        <View
-          style={{
-            backgroundColor: "#F6F8FA",
-            padding: 20,
-            marginTop: 30,
-            borderRadius: 16,
-          }}
-        >
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-            onPress={() => alert("Profile Information")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                source={icons.logoutProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-              <Text style={{ marginLeft: 14 }}>Log Out</Text>
-            </View>
-
-            <Image
-              source={icons.chevronRight}
-              style={{ width: 24, height: 24 }}
-              resizeMode="contain"
-            />
-          </Pressable>
-        </View>
-      </ScrollView>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
