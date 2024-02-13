@@ -6,22 +6,34 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { colors } from "../DEFAULTS";
 import { icons } from "../../../assets/icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  decrementCartCount,
+  deleteCart,
+  getCartSubTotal,
+  incrementCartCount,
+} from "../../Redux/Splice/AppSplice";
+import { RootState } from "../../Redux/store";
+import { formatNumber } from "../../utils/currencyFormatter";
+import { Dish } from "../../../type";
 
 interface CartItemProps {
-  item: {
-    preview: ImageSourcePropType;
-    id: number;
-    price: number;
-    item: string;
-    restaurant: string;
-  };
+  item: Dish;
 }
 
 const CartItem: React.FC<CartItemProps> = ({ item }) => {
-  const [count, setCount] = useState<number>(1);
+  const [count, setCount] = useState<number>(item.itemCount);
+  const carts = useSelector((state: RootState) => state.data.carts);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCartSubTotal());
+  }, [carts, count]);
+
 
   return (
     <View
@@ -32,7 +44,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       }}
     >
       <Image
-        source={item.preview}
+        source={{ uri: item?.images[0].file }}
         style={{
           width: 117,
           height: 117,
@@ -49,7 +61,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             color: colors.white,
           }}
         >
-          {item.item}
+          {item.name}
         </Text>
         <Text
           style={{
@@ -58,7 +70,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             color: colors.white,
           }}
         >
-          {item.restaurant}
+          {item?.restaurant_details.name}
         </Text>
         <Text
           style={{
@@ -68,11 +80,12 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             color: colors.white,
           }}
         >
-          ₦{item.price}
+          ₦{formatNumber(Number(item.price) * count)}
         </Text>
       </View>
 
-      <View
+      <Pressable
+        onPress={() => dispatch(deleteCart(item.id))}
         style={{
           position: "absolute",
           top: 0,
@@ -86,19 +99,22 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             height: 27,
           }}
         />
-      </View>
+      </Pressable>
 
       <View
         style={{
           position: "absolute",
           right: 0,
           bottom: 0,
-          flexDirection: 'row',
-          alignItems: 'center'
+          flexDirection: "row",
+          alignItems: "center",
         }}
       >
         <Pressable
-          onPress={() => setCount((prevState) => count <= 1 ? 1 : prevState - 1)}
+          onPress={() => {
+            setCount((prevState) => (count <= 1 ? 1 : prevState - 1));
+            dispatch(decrementCartCount(item.id));
+          }}
           style={{
             backgroundColor: count <= 1 ? colors.primaryBg : "#41414F",
             width: 22,
@@ -124,14 +140,17 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
             fontSize: 16,
             fontFamily: "SemiBold-Sen",
             color: colors.white,
-            marginHorizontal: 20
+            marginHorizontal: 20,
           }}
         >
           {count}
         </Text>
 
         <Pressable
-          onPress={() => setCount((prevState) => prevState + 1)}
+          onPress={() => {
+            setCount((prevState) => prevState + 1);
+            dispatch(incrementCartCount(item.id));
+          }}
           style={{
             backgroundColor: "#41414F",
             width: 22,
@@ -156,6 +175,6 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
   );
 };
 
-export default CartItem;
+export default memo(CartItem);
 
 const styles = StyleSheet.create({});

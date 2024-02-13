@@ -135,7 +135,7 @@ const Profile = () => {
                     height: 40,
                   }}
                 />
-                <Text style={{ marginLeft: 14 }}>Addresses</Text>
+                <Text style={{ marginLeft: 14 }}>Address</Text>
               </View>
 
               <Image

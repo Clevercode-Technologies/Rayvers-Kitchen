@@ -1,5 +1,6 @@
 import {
   Image,
+  ImageSourcePropType,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -7,7 +8,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import {
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
@@ -16,8 +17,27 @@ import {
 import { icons } from "../../../../assets/icons";
 import { ingredients } from "../../../DATA";
 import { FloatingCartAction, ImageSlider } from "../../../components";
+import { Dish } from "../../../../type";
+import { useDispatch } from "react-redux";
+import { setCarouselImages } from "../../../Redux/Splice/AppSplice";
 
-const FoodDetails = () => {
+interface FoodDetailsProps {
+  route: {
+    params: {
+      data: Dish;
+    };
+  };
+}
+
+const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
+  const { data } = route.params;
+
+  // console.log(data.images);
+
+  const dispatch = useDispatch();
+
+  dispatch(setCarouselImages(data.images));
+
   return (
     <SafeAreaView
       style={{
@@ -26,16 +46,13 @@ const FoodDetails = () => {
         alignItems: "center",
         position: "relative",
         backgroundColor: colors.white,
-        flex: 1
+        flex: 1,
       }}
     >
-
       {/* Main Content */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
-        <ImageSlider />
-        
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ImageSlider item={data} />
+
         <View style={{ marginHorizontal: 24 }}>
           <Text
             style={{
@@ -45,7 +62,7 @@ const FoodDetails = () => {
               marginTop: 24,
             }}
           >
-            Burger Bistro
+            {data?.name}
           </Text>
           <View style={{ marginTop: 10 }}>
             <Image source={{}} style={{}} resizeMode="contain" />
@@ -56,7 +73,7 @@ const FoodDetails = () => {
                 color: "#181C2E",
               }}
             >
-              Rose Garden
+              {data?.restaurant_details.name}
             </Text>
           </View>
 
@@ -85,7 +102,7 @@ const FoodDetails = () => {
                   color: "#181C2E",
                 }}
               >
-                4.7
+                {data?.ratings}
               </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
@@ -119,7 +136,7 @@ const FoodDetails = () => {
                   color: "#181C2E",
                 }}
               >
-                20 min
+                30 min
               </Text>
             </View>
           </View>
@@ -133,8 +150,7 @@ const FoodDetails = () => {
               marginBottom: 20,
             }}
           >
-            Maecenas sed diam eget risus varius blandit sit amet non magna.
-            Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+            {data?.description}
           </Text>
 
           <Text
@@ -149,8 +165,8 @@ const FoodDetails = () => {
             Ingredients
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {ingredients.map((item) => (
-              <View key={item.id} style={{ margin: 10, alignItems: "center" }}>
+            {data._ingredients.map((item) => (
+              <View key={item} style={{ margin: 10, alignItems: "center" }}>
                 <View
                   style={{
                     backgroundColor: "#FFEBE4",
@@ -161,11 +177,61 @@ const FoodDetails = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Image
-                    source={item.image}
-                    style={{ width: 24, height: 24 }}
-                    resizeMode="contain"
-                  />
+                  {item === "Salt" ? (
+                    <Image
+                      source={icons.salt}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Chicken" ? (
+                    <Image
+                      source={icons.chicken}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Pepper" ? (
+                    <Image
+                      source={icons.pepper}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Onion" ? (
+                    <Image
+                      source={icons.onion}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Garlic" ? (
+                    <Image
+                      source={icons.garlic}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Ginger" ? (
+                    <Image
+                      source={icons.ginger}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Broccoli" ? (
+                    <Image
+                      source={icons.broccoli}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Orange" ? (
+                    <Image
+                      source={icons.orange}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : item === "Walnut" ? (
+                    <Image
+                      source={icons.walnut}
+                      style={{ width: 24, height: 24 }}
+                      resizeMode="contain"
+                    />
+                  ) : null}
                 </View>
                 <Text
                   style={{
@@ -175,20 +241,20 @@ const FoodDetails = () => {
                     marginTop: 5,
                   }}
                 >
-                  {item.item}
+                  {item}
                 </Text>
               </View>
             ))}
           </View>
         </View>
 
-        <View style={{ height: Platform.OS === 'android' ? 235 : 200 }} />
+        <View style={{ height: Platform.OS === "android" ? 35 : 50 }} />
       </ScrollView>
-      <FloatingCartAction />
+      <FloatingCartAction item={data} />
     </SafeAreaView>
   );
 };
 
-export default FoodDetails;
+export default memo(FoodDetails);
 
 const styles = StyleSheet.create({});

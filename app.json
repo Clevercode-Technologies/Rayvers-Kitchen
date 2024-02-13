@@ -30,7 +30,13 @@
       "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share items with the community."
-        }
+        },
+        [
+          "expo-location",
+          {
+            "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          }
+        ]
     ]
   }
 }

@@ -17,7 +17,15 @@ const persistConfig = {
   storage: AsyncStorage,
   whitelist: [
     'token',
-    'userType'
+    'userType',
+    'carts',
+    'address',
+    'userId',
+    'userInfo',
+    'userAddress',
+    'restaurants',
+    'dishes',
+    'availableCards',
   ],
 };
 

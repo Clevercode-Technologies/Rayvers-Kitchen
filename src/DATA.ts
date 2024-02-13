@@ -1,6 +1,7 @@
 import { ImageSourcePropType } from "react-native";
 import { icons } from "../assets/icons";
 import { images } from "../assets/images";
+import { Popular, Restaurant, SlideData } from "../type";
 
 export const restaurantData: Restaurant[] = [
   {
@@ -8,52 +9,84 @@ export const restaurantData: Restaurant[] = [
     id: 1,
     name: "Rose garden restaurant",
     desc: "Burger - Chiken - Riche - Wings",
-    rating: "4.5",
+    ratings: "4.5",
   },
   {
     image: images.rest2,
     id: 2,
     name: "Tasty treat Gallery",
     desc: "Burger - Chiken - Riche - Wings",
-    rating: "5.0",
+    ratings: "5.0",
   },
   {
     image: images.rest3,
     id: 3,
     name: "Spicy restaurant",
     desc: "Burger - Chiken - Riche - Wings",
-    rating: "4.2",
+    ratings: "4.2",
   },
 ];
 
 export const popularFood: Popular[] = [
   {
     item: "Burger Bistro",
-    price: "₦2500",
+    price: 2500,
     kitchen: "Rose garden",
     image: images.item1,
     id: 1,
+    itemCount: 0,
+    preview: [
+      images.FoodItem_JollofRice,
+      images.FoodItem_Potate,
+      images.FoodItem_Swallow,
+      images.foodCat1,
+      images.foodCat2
+    ]
   },
   {
     item: "Smokin Burger",
-    price: "₦2500",
+    price: 2500,
     kitchen: "Cafenio Restaurant",
     image: images.item2,
     id: 2,
+    itemCount: 0,
+    preview: [
+      images.FoodItem_JollofRice,
+      images.FoodItem_Potate,
+      images.FoodItem_Swallow,
+      images.foodCat1,
+      images.foodCat2
+    ]
   },
   {
     item: "Buffalo Burgers",
-    price: "₦7300",
+    price: 7300,
     kitchen: "Kaji Firm Kitchen",
     image: images.item3,
     id: 3,
+    itemCount: 0,
+    preview: [
+      images.FoodItem_JollofRice,
+      images.FoodItem_Potate,
+      images.FoodItem_Swallow,
+      images.foodCat1,
+      images.foodCat2
+    ]
   },
   {
     item: "Bullseye Burgers",
-    price: "₦9400",
+    price: 9400,
     kitchen: "Kabab restaurant",
     image: images.item4,
     id: 4,
+    itemCount: 0,
+    preview: [
+      images.FoodItem_JollofRice,
+      images.FoodItem_Potate,
+      images.FoodItem_Swallow,
+      images.foodCat1,
+      images.foodCat2
+    ]
   },
 ];
 
@@ -238,120 +271,6 @@ export const historyData: {
   },
 ]
 
-export const favorite = [
-  {
-    item: "Burger Bistro",
-    price: "₦2500",
-    kitchen: "Rose garden",
-    image: images.item1,
-    id: 1,
-  },
-  {
-    item: "Smokin Burger",
-    price: "₦2500",
-    kitchen: "Cafenio Restaurant",
-    image: images.item2,
-    id: 2,
-  },
-  {
-    item: "Buffalo Burgers",
-    price: "₦7300",
-    kitchen: "Kaji Firm Kitchen",
-    image: images.item3,
-    id: 3,
-  },
-  {
-    item: "Bullseye Burgers",
-    price: "₦9400",
-    kitchen: "Kabab restaurant",
-    image: images.item4,
-    id: 4,
-  },
-  {
-    item: "Burger Bistro",
-    price: "₦2500",
-    kitchen: "Rose garden",
-    image: images.item1,
-    id: 5,
-  },
-  {
-    item: "Smokin Burger",
-    price: "₦2500",
-    kitchen: "Cafenio Restaurant",
-    image: images.item2,
-    id: 6,
-  },
-  {
-    item: "Buffalo Burgers",
-    price: "₦7300",
-    kitchen: "Kaji Firm Kitchen",
-    image: images.item3,
-    id: 7,
-  },
-  {
-    item: "Bullseye Burgers",
-    price: "₦9400",
-    kitchen: "Kabab restaurant",
-    image: images.item4,
-    id: 8,
-  },
-  {
-    item: "Burger Bistro",
-    price: "₦2500",
-    kitchen: "Rose garden",
-    image: images.item1,
-    id: 1,
-  },
-  {
-    item: "Smokin Burger",
-    price: "₦2500",
-    kitchen: "Cafenio Restaurant",
-    image: images.item2,
-    id: 2,
-  },
-  {
-    item: "Buffalo Burgers",
-    price: "₦7300",
-    kitchen: "Kaji Firm Kitchen",
-    image: images.item3,
-    id: 3,
-  },
-  {
-    item: "Bullseye Burgers",
-    price: "₦9400",
-    kitchen: "Kabab restaurant",
-    image: images.item4,
-    id: 4,
-  },
-  {
-    item: "Burger Bistro",
-    price: "₦2500",
-    kitchen: "Rose garden",
-    image: images.item1,
-    id: 5,
-  },
-  {
-    item: "Smokin Burger",
-    price: "₦2500",
-    kitchen: "Cafenio Restaurant",
-    image: images.item2,
-    id: 6,
-  },
-  {
-    item: "Buffalo Burgers",
-    price: "₦7300",
-    kitchen: "Kaji Firm Kitchen",
-    image: images.item3,
-    id: 7,
-  },
-  {
-    item: "Bullseye Burgers",
-    price: "₦9400",
-    kitchen: "Kabab restaurant",
-    image: images.item4,
-    id: 8,
-  },
-]
 
 export const chartData = [
   Math.random() * 100,
@@ -688,3 +607,30 @@ export const foodAssign: Array<{
     image: images.FoodItem_Parage
   },
 ]
+
+export const slideData: SlideData[] = [
+  {
+    id: 1,
+    preview: images.onboardOne,
+    title: "Discover Culinary Wonders",
+    desc: "Explore a world of flavors, where every bite is a journey to delight. Place your order, and let the magic unfold.",
+  },
+  {
+    id: 2,
+    preview: images.onboardTwo,
+    title: "Savor the Extraordinary",
+    desc: "Indulge in a symphony of tastes. Your favorite foods, expertly curated in one place. Order now for a culinary adventure!",
+  },
+  {
+    id: 3,
+    preview: images.onboardThree,
+    title: "Culinary Artistry Unleashed",
+    desc: "Embark on a gastronomic odyssey with dishes crafted by renowned chefs. Your order is the first step to a feast of excellence.",
+  },
+  {
+    id: 4,
+    preview: images.onboardThree,
+    title: "Journey to Your Doorstep",
+    desc: "Experience the joy of free delivery! Your favorite foods, delivered to your door—because great tastes should come to you effortlessly.",
+  },
+];

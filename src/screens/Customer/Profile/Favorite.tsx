@@ -5,18 +5,42 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { memo, useState } from "react";
 import { icons } from "../../../../assets/icons";
-import { colors } from "../../../components/DEFAULTS";
-import { favorite } from "../../../DATA";
+import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  colors,
+} from "../../../components/DEFAULTS";
 import { ItemCard } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
 
 const Favorite = () => {
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   // Using the plus icon implement favorite such that when the icon is clicked it is added to favorite and then the heart icons shows, if the heart icon is clicked then the item is removed from the favorite list.
   const navigation = useNavigation();
+
+  const favorite = useSelector((state: RootState) => state.data.favorite);
+
+  const handleSearch = (searchQuery: string) => {
+  if (!searchQuery) return favorite;
+  
+  return favorite?.filter((event) =>
+    Object.values(event).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+};
+
+  const searchResult = handleSearch(searchQuery);
 
   return (
     <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
@@ -24,7 +48,9 @@ const Favorite = () => {
         {/* Favorite Header */}
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Pressable onPress={() => navigation.canGoBack() && navigation.goBack()}>
+            <Pressable
+              onPress={() => navigation.canGoBack() && navigation.goBack()}
+            >
               <Image
                 source={icons.back}
                 style={{
@@ -46,7 +72,7 @@ const Favorite = () => {
             </Text>
           </View>
 
-          <Pressable onPress={() => alert("Implement search functionality")}>
+          <Pressable onPress={() => setShowSearch((prevState) => !prevState)}>
             <Image
               source={icons.resultSearch}
               style={{
@@ -56,6 +82,28 @@ const Favorite = () => {
             />
           </Pressable>
         </View>
+
+        {showSearch && (
+          <View>
+            <TextInput
+              placeholder="Search anything..."
+              placeholderTextColor={colors.primaryTxt}
+              style={{
+                height: 50,
+                width: SCREEN_WIDTH - 48,
+                color: colors.primaryTxt,
+                fontFamily: "Regular-Sen",
+                fontSize: 14,
+                marginTop: 24,
+                borderWidth: 1,
+                borderColor: colors.primaryTxt,
+                borderRadius: 10,
+                paddingLeft: 20,
+              }}
+              onChangeText={(text) => setSearchQuery(text)}
+            />
+          </View>
+        )}
 
         {/* Main Content */}
         <ScrollView
@@ -71,11 +119,45 @@ const Favorite = () => {
               paddingBottom: 50,
             }}
           >
-            {favorite.map((item, index) => (
-              <View key={index}>
-                <ItemCard item={item} />
+            {favorite?.length === 0 && searchResult?.length === 0 && (
+              <View
+                style={{
+                  flex: 1,
+                  height: SCREEN_HEIGHT / 2,
+                  justifyContent: "center",
+                }}
+              >
+                <View
+                  style={{
+                    width: SCREEN_WIDTH - 48,
+                    borderWidth: 3,
+                    borderColor: colors.primaryTxt,
+                    borderStyle: "dashed",
+                    padding: 24,
+                  }}
+                >
+                  <Text style={{ fontSize: 18, fontFamily: "Regular-Sen" }}>
+                    You have'nt added any items to favorite yet 😌
+                  </Text>
+                </View>
               </View>
-            ))}
+            )}
+            {searchQuery && favorite?.length !== 0 && searchResult?.length !== 0 && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  alignItems: "flex-end",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                {searchResult?.map((item, index) => (
+                  <View key={index}>
+                    <ItemCard item={item} />
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>
@@ -83,6 +165,6 @@ const Favorite = () => {
   );
 };
 
-export default Favorite;
+export default memo(Favorite);
 
 const styles = StyleSheet.create({});

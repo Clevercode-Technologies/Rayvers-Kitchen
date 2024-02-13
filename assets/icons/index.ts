@@ -137,4 +137,5 @@ export const icons = {
     // Ingredients ends here ------------------------------------>
     locationFD: require('./LocationFD.png'),
     profileIcon: require('./profile-icon.png'),
+    buldEnergy: require('./energy.png'),
 }

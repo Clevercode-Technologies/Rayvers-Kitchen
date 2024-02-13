@@ -99,12 +99,14 @@ const Login = () => {
         },
         body: JSON.stringify({ name }),
       })
-
+      
       if(response.ok) {
         setLoading(false);
         if(response.status === 201) {
           dispatch(setAccessToken(token));
         }
+      } else {
+        dispatch(setAccessToken(token));
       }
     } catch (error) {
       setLoading(false);

@@ -11,6 +11,7 @@ import { SCREEN_WIDTH, colors } from "../../DEFAULTS";
 import { icons } from "../../../../assets/icons";
 import { Menu, VStack } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import { formatNumber } from "../../../utils/currencyFormatter";
 
 interface FoodItemProps {
   data: {
@@ -133,7 +134,7 @@ const FoodItem: React.FC<FoodItemProps> = ({ data }) => {
               color: colors.primaryTxt,
             }}
           >
-            ₦{data.price}
+            ₦{formatNumber(data.price)}
           </Text>
         </View>
 

@@ -17,7 +17,7 @@ const Button:React.FC<ButtonProps> = ({ type, loading, onPress }) => {
       onPress={onPress}
       disabled={loading}
       >
-      <Text style={styles.btnTxt}>{type === "login" ? "Login" : type === 'register' ? 'Sign Up' : type === 'code' ? 'Send Code' : type === 'verify' ? "Verify" : ""}</Text>
+      <Text style={styles.btnTxt}>{type === "login" ? "Login" : type === 'register' ? 'Sign Up' : type === 'code' ? 'Send Code' : type === 'verify' ? "Verify" : type === "resend" ? "Resend Code" : type === "verifyAndReset" ? "Verify And Reset Password" : ""}</Text>
     </Pressable>
   )
 }

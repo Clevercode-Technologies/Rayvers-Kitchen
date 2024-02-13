@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 import { colors } from '../DEFAULTS'
 import { icons } from '../../../assets/icons';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { addRecent, setSearchQuery } from '../../Redux/Splice/AppSplice';
+import { RootState } from '../../Redux/store';
+import { G } from 'react-native-svg';
 
 interface InputProps {
     type: string;
@@ -10,8 +14,19 @@ interface InputProps {
 
 const SearchInput: React.FC<InputProps> = ({ type }) => {
     const [focus, setFocus] = useState(false);
-    const [query, setQuery] = useState<string>('');
+    const searchQuery = useSelector((state: RootState) => state.data.searchQuery);
+    const recent = useSelector((state: RootState) => state.data.keywords);
+
+    console.log(recent);
+
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const handleSearchSubmit = () => {
+        dispatch(setSearchQuery(searchQuery));
+        if(searchQuery?.length > 4) dispatch(addRecent({ prevSearch: searchQuery, id: recent.length !== 0 ? recent[recent.length - 1].id + 1 : 1 }));
+    }
+
 
     if(type === 'home-search') {
         return (
@@ -31,6 +46,13 @@ const SearchInput: React.FC<InputProps> = ({ type }) => {
                     placeholderTextColor={'#676767'}
                     onFocus={() => setFocus(true)}
                     onBlur={() => setFocus(false)}
+                    value={searchQuery}
+                    onChangeText={(text) => dispatch(setSearchQuery(text))}
+                    onSubmitEditing={() => {
+                        handleSearchSubmit();
+                        // @ts-ignore
+                        navigation.navigate('Search');
+                    }}
                 />
         
                 <Image 
@@ -76,10 +98,11 @@ const SearchInput: React.FC<InputProps> = ({ type }) => {
                     }}
                     placeholder='Search dishes, restaurants'
                     placeholderTextColor={'#676767'}
-                    onChangeText={(text) => setQuery(text)}
+                    onChangeText={(text) => dispatch(setSearchQuery(text))}
+                    onSubmitEditing={() => handleSearchSubmit()}
                     onFocus={() => setFocus(true)}
                     onBlur={() => setFocus(false)}
-                    value={query}
+                    value={searchQuery}
                     returnKeyType='send'
                     blurOnSubmit
                 />
@@ -97,7 +120,7 @@ const SearchInput: React.FC<InputProps> = ({ type }) => {
 
                 <TouchableOpacity 
                 style={{ padding: 7, position: 'absolute', right: 20, top: 37, borderRadius: 100 }}
-                onPress={() => setQuery('')}>
+                onPress={() => dispatch(setSearchQuery(''))}>
                     <Image 
                         source={icons.close}
                         style={{

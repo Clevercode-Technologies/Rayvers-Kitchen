@@ -24,26 +24,38 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
 import { Spinner } from "native-base";
 import * as ImagePicker from "expo-image-picker";
-import { useToast } from 'native-base';
+import { useToast } from "native-base";
+
+type ImageType = {
+  assetId?: string | null | undefined;
+  base64?: null | string | undefined;
+  duration?: null | number | undefined;
+  exif?: Record<string, any> | null | undefined;
+  fileName?: string | null | undefined;
+  fileSize?: number | undefined;
+  height?: number | undefined;
+  type?: "image" | "video" | undefined;
+  uri?: string | undefined;
+  width?: number | undefined;
+};
 
 const EditProfile = () => {
   const [error, setError] = useState<string | null>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  // const [image, setImage] = useState<ImageType | null>(null);
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const toast = useToast();
-
 
   const navigation = useNavigation();
 
   const profileName = useSelector((state: RootState) => state.data.profileName);
-  const profileNumber = useSelector(
-    (state: RootState) => state.data.profileNumber
-  );
+  const profileNumber = useSelector((state: RootState) => state.data.profileNumber);
   const profileBio = useSelector((state: RootState) => state.data.profileBio);
 
   const token = useSelector((state: RootState) => state.data.token);
 
-  console.log('token: ', token);
+  console.log("token: ", token);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -55,50 +67,81 @@ const EditProfile = () => {
       base64: true,
     });
 
-
     if (!result.canceled) {
-      setImage(String(result.assets[0].base64));
+      setImage(result.assets[0]);
     }
   };
 
-  const updateProfile = async () => {
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append("name", profileName);
-      formData.append("bio", profileBio);
-      formData.append("phone_number", profileNumber);
-      formData.append("profile_picture", image);
 
-      const response = await fetch(`${BASE_URL}auth/users/me/`, {
+  const convertBase642Url = async () => {
+    try {
+      const response = await fetch(`https://img2url-converter.onrender.com/upload/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: image?.base64,
+          imageFormat: image?.uri.split('.')[1]
+        }),
+      });
+  
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Image uploaded successfully. Cloudinary URL:', responseData.url);
+        return responseData.url;
+      }
+    } catch (error: any) {
+      console.error("Error converting img to url:", error);
+      setError(`Error converting img to url:${ error.message}`);
+    }
+  };
+  
+  const updateProfile = async () => {
+    setLoading(true);
+  
+    try {
+      let imageUrl = null;
+  
+      // Check if image base64 data is available
+      if (image?.base64) {
+        imageUrl = await convertBase642Url();
+      }
+  
+      const formData = new FormData();
+      formData.append('name', profileName);
+      formData.append('bio', profileBio);
+      formData.append('phone_number', profileNumber);
+  
+      if (imageUrl) {
+        formData.append('image_url', imageUrl);
+      }
+  
+      const response = await fetch(`${BASE_URL}auth/users/me/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Token ${token}`
         },
         body: formData,
       });
-
-      
+  
       if (response.ok) {
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-          const responseData = await response.json();
-          // Handle responseData if needed
-          console.log(responseData);
-        }
+        // Handle success if needed
+        const userInfo = await response.json();
+        console.log(userInfo);
         setLoading(false);
-        toast.show({
-          description: "Profile Saved Successfully ✅"
-        });
       }
-      
     } catch (error: any) {
+      // Handle error if needed
       console.log(error);
-      setError(`error: ${error.message}`);
+      setLoading(false);
+      setError(`Error updating profile: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
-
+  
   return (
     <SafeAreaView
       style={{
@@ -149,7 +192,7 @@ const EditProfile = () => {
         >
           <ScrollView style={{}}>
             {/* Profle Image and edit */}
-            {image.length === 0 ? (
+            {image === null ? (
               <ImageBackground
                 source={icons.profileIcon}
                 style={{
@@ -180,7 +223,7 @@ const EditProfile = () => {
               </ImageBackground>
             ) : (
               <ImageBackground
-                source={{ uri: `data:image/jpeg;base64,${image}` }}
+                source={{ uri: `data:image/jpeg;base64,${image.base64}` }}
                 style={{
                   width: 102.95,
                   height: 102.95,
@@ -256,7 +299,7 @@ const EditProfile = () => {
           onPress={updateProfile}
           style={{
             width: "100%",
-            backgroundColor: loading ? "#F0F5FA" : colors.primaryBg,
+            backgroundColor: loading ? "#A0A5BA" : colors.primaryBg,
             marginTop: 32,
             borderRadius: 12,
             height: 62,
@@ -277,6 +320,9 @@ const EditProfile = () => {
             Save
           </Text>
         </Pressable>
+        {error && (
+          <Text style={{  }}>{error}</Text>
+        )}
       </View>
 
       {loading && (

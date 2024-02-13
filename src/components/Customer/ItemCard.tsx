@@ -9,21 +9,45 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "../../../assets/images";
 import { colors } from "../DEFAULTS";
 import { useNavigation } from "@react-navigation/native";
+import { ItemCardProp } from "../../../type";
+import { RootState } from "../../Redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addCart, deleteCart } from "../../Redux/Splice/AppSplice";
+import { formatNumber } from "../../utils/currencyFormatter";
 
-const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
+const ItemCard: React.FC<ItemCardProp> = ({ item }) => {
+  const [cartItem, setCartItem] = useState<boolean>(false);
+  const [existInCart, setExistInCart] = useState<boolean>(false);
+
   const navigation = useNavigation();
+
+  const carts = useSelector((state: RootState) => state.data.carts);
+  const dispatch = useDispatch();
+
   
+  useEffect(() => {
+    const isInCartAlready = carts?.filter((stateCart) => stateCart.id === item.id);
+    if(isInCartAlready?.length === 1) {
+      setExistInCart(true);
+    } else {
+      setExistInCart(false);
+    }
+  }, [carts]); 
+  
+  // console.log('Item Image: ', item);
+
   return (
-    <Pressable 
-    // @ts-ignore
-    onPress={() => navigation.navigate('FoodDetails')}
-    style={{ alignItems: "center", width: 153, marginBottom: 21 }}>
+    <Pressable
+      // @ts-ignore
+      onPress={() => navigation.navigate("FoodDetails", { data: item })}
+      style={{ alignItems: "center", width: 153, marginBottom: 21 }}
+    >
       <Image
-        source={item.image}
+        source={{ uri: item?.images?.[0]?.file }}
         style={{
           width: 122,
           height: 84,
@@ -38,7 +62,7 @@ const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
         source={images.skewedBg}
         style={{
           width: 153,
-          height: 130,
+          // height: 130,
           shadowColor: "#000000",
           shadowOffset: {
             width: 0,
@@ -58,12 +82,12 @@ const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
             fontFamily: "Bold-Sen",
           }}
         >
-          {item.item}
+          {item?.name}
         </Text>
         <Text
           style={{ color: "#646982", fontSize: 13, fontFamily: "Regular-Sen" }}
         >
-          {item.kitchen}
+          {item?.restaurant_details.name}
         </Text>
         <View
           style={{
@@ -80,10 +104,21 @@ const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
               fontFamily: "Bold-Sen",
             }}
           >
-            {item.price}
+            ₦{formatNumber(Number(item?.price))}
           </Text>
           <TouchableOpacity
-            onPress={() => alert("Item added")}
+            onPress={() => {
+              setCartItem((prevState) => !prevState);
+              if (!cartItem) {
+                dispatch(addCart({
+                  ...item,
+                  itemCount: 0,
+                }));
+              } else {
+                dispatch(deleteCart(item.id));
+              }
+            }}
+
             style={{
               backgroundColor: colors.primaryBg,
               width: 30,
@@ -93,7 +128,27 @@ const ItemCard: React.FC<ItemCrdProp> = ({ item }) => {
               borderRadius: 100,
             }}
           >
-            <Text style={{ fontSize: 25, color: colors.white, marginTop: Platform.OS === 'android' ? -4 : 0 }}>+</Text>
+            {cartItem && existInCart ? (
+              <Text
+                style={{
+                  fontSize: 25,
+                  color: colors.white,
+                  marginTop: Platform.OS === "android" ? - 4 : 0,
+                }}
+              >
+                -
+              </Text>
+            ) : (
+              <Text
+                style={{
+                  fontSize: 25,
+                  color: colors.white,
+                  marginTop: Platform.OS === "android" ? - 4 : 0,
+                }}
+              >
+                +
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </ImageBackground>

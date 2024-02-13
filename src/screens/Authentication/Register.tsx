@@ -12,23 +12,33 @@ import {
 } from "react-native";
 import React, { memo, useState } from "react";
 import { images } from "../../../assets/images";
-import { BASE_URL, SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
+import {
+  BASE_URL,
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
+  colors,
+} from "../../components/DEFAULTS";
 import { Image } from "react-native";
 import { icons } from "../../../assets/icons";
 import { Button, TextInputs } from "../../components";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { Spinner } from "native-base";
+import { Modal, Spinner } from "native-base";
+import { setUserId, setUserInfo } from "../../Redux/Splice/AppSplice";
+
 
 const Register = () => {
   const email = useSelector((state: RootState) => state.data.email);
   const password = useSelector((state: RootState) => state.data.password);
   const rePassword = useSelector((state: RootState) => state.data.rePassword);
+  const name = useSelector((state: RootState) => state.data.name);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handleRegistration = async () => {
     setLoading(true);
@@ -44,27 +54,37 @@ const Register = () => {
       if (response.ok) {
         setLoading(false);
         if (response.status === 201) {
-          // Successful registration, navigate to login
-          // @ts-ignore
-          navigation.navigate("Login");
-        }
-      } else {
-        setLoading(false);
-        try {
-          const responseBody = await response.json(); // Parse the JSON response
-          // console.log(responseBody);
-          if (response.status === 400 && responseBody.email) {
-            setError(responseBody.email[0]);
-          } else {
-            setError('An error occurred. Please try again.');
+          // Successful registration, navigate to Verify Code screen
+          const responseBody = await response.json();
+          console.log(responseBody);
+          if (response.status === 201 && responseBody.user_id) {
+            setModalVisible(true);
+
+            dispatch(setUserId(responseBody.user_id));
+            dispatch(setUserInfo({ name, email }))
           }
-        } catch (error) {
-          console.error('Error parsing JSON:', error);
-          setError('Unexpected error occurred. Please try again.');
+          setTimeout(() => {
+            setModalVisible(false);
+            // @ts-ignore
+            navigation.navigate("VerifyCode");
+          }, 3000);
         }
       }
-      
-      
+      // else {
+      //   setLoading(false);
+      //   try {
+      //     const responseBody = await response.json(); // Parse the JSON response
+      //     // console.log(responseBody);
+      //     if (response.status === 400 && responseBody.email) {
+      //       setError(responseBody.email[0]);
+      //     } else {
+      //       setError("An error occurred. Please try again.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error parsing JSON:", error);
+      //     setError("Unexpected error occurred. Please try again.");
+      //   }
+      // }
       // store token temporarily and use for the next phase
       // update profile
       // make token global
@@ -76,7 +96,14 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT, backgroundColor: colors.white, flex: 1 }}>
+    <SafeAreaView
+      style={{
+        width: SCREEN_WIDTH,
+        height: SCREEN_HEIGHT,
+        backgroundColor: colors.white,
+        flex: 1,
+      }}
+    >
       <StatusBar backgroundColor={"#121223"} barStyle={"light-content"} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -117,14 +144,22 @@ const Register = () => {
 
           {/* Authenticate button */}
           <View style={{ marginTop: 53 }}>
-            <Button onPress={handleRegistration} loading={loading} type="register" />
+            <Button
+              onPress={handleRegistration}
+              loading={loading}
+              type="register"
+            />
             {error && (
-              <Text style={{
-                fontSize: 12,
-                fontFamily: 'Regular-Sen',
-                color: 'red',
-                marginTop: 5
-              }}>{error}</Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Regular-Sen",
+                  color: "red",
+                  marginTop: 5,
+                }}
+              >
+                {error}
+              </Text>
             )}
           </View>
 
@@ -248,6 +283,25 @@ const Register = () => {
             <Spinner color={colors.white} size="lg" />
           </View>
         )}
+        <Modal style={{ zIndex: 100 }} isOpen={modalVisible} onClose={setModalVisible} size={'sm'}>
+          <Modal.Content maxH="212">
+            <Modal.CloseButton />
+            <Modal.Body>
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Image 
+                  source={{ uri: 'https://gifdb.com/images/high/email-icon-notification-cx5j6sw64pod96cr.gif' }}
+                  style={{ 
+                    width: 100,
+                    height: 100,
+                    marginBottom: 10
+                  }}
+                />
+                <Text style={{ textAlign: 'center', fontFamily: 'Regular-Sen', fontSize: 14 }}>A verification code has been sent to your mail.</Text>
+              </View>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
+
       </ScrollView>
     </SafeAreaView>
   );

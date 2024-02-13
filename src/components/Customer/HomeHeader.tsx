@@ -3,9 +3,16 @@ import React from "react";
 import { icons } from "../../../assets/icons";
 import { colors } from "../DEFAULTS";
 import { useNavigation } from "@react-navigation/native";
+import { RootState } from "../../Redux/store";
+import { useSelector } from "react-redux";
 
 const HomeHeader = () => {
+  const carts = useSelector((state: RootState) => state.data.carts);
+  const userAddress = useSelector((state: RootState) => state.data.userAddress);
+  const address = useSelector((state: RootState) => state.data.address);
+  
   const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -35,7 +42,9 @@ const HomeHeader = () => {
             alignItems: "center",
           }}
         >
-          <Pressable onPress={() => {}} style={{ marginLeft: 18 }}>
+          <Pressable onPress={() => 
+            // @ts-ignore
+            navigation.navigate('Address')} style={{ marginLeft: 18 }}>
             <Text
               style={{
                 color: colors.primaryBg,
@@ -61,10 +70,12 @@ const HomeHeader = () => {
                   fontSize: 14,
                   fontStyle: "normal",
                   fontWeight: "400",
+                  width: 200,
                   color: colors.secondaryTxt,
                 }}
               >
-                Add your address
+                {userAddress && address === null && `${userAddress.city}, ${userAddress.country}`}
+                {address !== null ? address.address : 'Add your address'}
               </Text>
 
               <Image
@@ -79,9 +90,11 @@ const HomeHeader = () => {
         </View>
       </View>
 
-      <Pressable 
-    //   @ts-ignore
-      onPress={() => navigation.navigate("Cart")}>
+      <Pressable
+        style={{ position: "relative" }}
+        //   @ts-ignore
+        onPress={() => navigation.navigate("Cart")}
+      >
         <Image
           source={icons.cart}
           style={{
@@ -90,6 +103,31 @@ const HomeHeader = () => {
           }}
           resizeMode="contain"
         />
+        <>
+          {carts && carts?.length >= 1 && (
+            <View
+              style={{
+                position: "absolute",
+                backgroundColor: colors.primaryBg,
+                width: 25,
+                height: 25,
+                borderRadius: 25 / 2,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Bold-Sen",
+                  fontSize: 16,
+                  color: colors.white,
+                }}
+              >
+                {carts?.length ? carts?.length : 0}
+              </Text>
+            </View>
+          )}
+        </>
       </Pressable>
     </View>
   );
