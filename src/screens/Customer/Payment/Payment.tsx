@@ -9,106 +9,84 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { RootState } from "../../../Redux/store";
 import { BASE_URL, SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
 import { images } from "../../../../assets/images";
 import { icons } from "../../../../assets/icons";
 import { formatNumber } from "../../../utils/currencyFormatter";
-import { CardDetails } from "../../../../type";
+import { CardDetails, RedirectParams } from "../../../../type";
 import { useStripe } from "@stripe/stripe-react-native";
-import { Spinner } from "native-base";
-
-enum CardType {
-  "MASTER" = "master",
-  "VISA" = "visa",
-}
+import { Center, Spinner } from "native-base";
+import { resetCart } from "../../../Redux/Splice/AppSplice";
+import { generateRandomNumber } from "../../../utils/idGenerator";
+import { PayWithFlutterwave } from "flutterwave-react-native";
 
 const Payment = () => {
-  const [paymentMethod, setPaymentMethod] = useState<string>(CardType.MASTER);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-  const availableCards = useSelector(
-    (state: RootState) => state.data.availableCards
-  );
+  const [loadingOrders, setLoadingOrders] = useState<boolean>(false);
   const cartSubTotal = useSelector(
     (state: RootState) => state.data.cartSubTotal
   );
+  const carts = useSelector((state: RootState) => state.data.carts);
 
   // console.log(cartSubTotal);
   const token = useSelector((state: RootState) => state.data.token);
   const userInfo = useSelector((state: RootState) => state.data.userInfo);
-  const [cards, setCards] = useState<null | CardDetails[]>(null);
-
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
-
-  // console.log("cards: ", cards);
-
-  useEffect(() => {
-    setCards(availableCards);
-  }, [availableCards]);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const masterCards = cards?.filter((card) => card.type === CardType.MASTER);
-  const visaCards = cards?.filter((card) => card.type === CardType.VISA);
-
-  const makePayments = async () => {
-    setLoading(true);
+  const sendOrders = async (payment_status: boolean) => {
+    setLoadingOrders(true);
     try {
-      const result = await fetch(`${BASE_URL}api/payment/intent/`, {
+      const response = await fetch(`${BASE_URL}api/orders/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
         },
         body: JSON.stringify({
-          amount: Number(cartSubTotal * 100),
-          currency_code: "ngn",
+          total_price: cartSubTotal,
+          payment_status,
+          is_delivered: false,
+          items: carts?.flatMap((item) => ({
+            dish_id: item.id,
+            restaurant_id: item.restaurant,
+            amount: item.price,
+            quantity: item.itemCount,
+          })),
         }),
       });
 
-      if (result.ok) {
-        setLoading(false);
-        const response = await result.json();
+      if (response.ok) {
+        setLoadingOrders(false);
 
-        console.log("payment_intent_secret: ", response.payment_intent_secret);
+        const result = await response.json();
+        // console.log('result: from sending orders', result);
 
-        const { error: paymentSheetError } = await initPaymentSheet({
-          merchantDisplayName: "Rayvers Kitchen",
-          paymentIntentClientSecret: response.payment_intent_secret,
-          defaultBillingDetails: {
-            name: userInfo?.name,
-          },
-        });
-
-        if (paymentSheetError) {
-          console.log(
-            `Error from PaymentSheet:  ${paymentSheetError.code}`,
-            paymentSheetError.message
-          );
-          return;
-        }
-
-        const { error: paymentError } = await presentPaymentSheet();
-        if (paymentError) {
-          console.log(
-            `Error code from Payment: ${paymentError.code}`,
-            paymentError.message
-          );
-          return;
-        }
+        dispatch(resetCart());
+        setTimeout(() => {
+          // @ts-ignore
+          navigation.navigate("Success");
+        }, 2000);
       } else {
-        setLoading(false);
-        const response = await result.json();
-        console.log(`Request Failed: ${JSON.stringify(response)}`);
+        setLoadingOrders(false);
+
+        const res = await response.json();
+        console.log(JSON.stringify(res));
       }
     } catch (error: any) {
-      console.log(`Request Error: ${JSON.stringify(error.message)}`);
+      console.log(`Error from sendOrders: ${error.message}`);
     }
   };
-  
+
+  const makePayments = (data: RedirectParams) => {
+    console.log("data: ", data);
+    // sendOrders(true);
+  };
+
   return (
     <SafeAreaView
       style={{ position: "relative", flex: 1, backgroundColor: colors.white }}
@@ -142,7 +120,7 @@ const Payment = () => {
           </Pressable>
 
           {/* Card Selection */}
-          <View
+          {/* <View
             style={{
               marginTop: 30,
               width: SCREEN_WIDTH,
@@ -289,441 +267,7 @@ const Payment = () => {
                 />
               )}
             </View>
-          </View>
-
-          {/* Conditional to check if card information exists or not. */}
-          {/* No cards */}
-          {cards === null ? (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#F7F8F9",
-                  marginTop: 25,
-                  alignItems: "center",
-                  paddingVertical: 30,
-                  borderRadius: 10,
-                }}
-              >
-                <Image
-                  source={images.cardPic}
-                  style={{
-                    width: 168,
-                    height: 106,
-                  }}
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontSize: 16,
-                    fontFamily: "SemiBold-Sen",
-                    marginTop: 15,
-                  }}
-                >
-                  No cards added
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontFamily: "Regular-Sen",
-                    marginHorizontal: 61,
-                    textAlign: "center",
-                    color: "#2D2D2D",
-                    marginTop: 10,
-                  }}
-                >
-                  You can add a card and save it for later
-                </Text>
-              </View>
-
-              {/* Add New Card */}
-              <TouchableOpacity
-                // @ts-ignore
-                onPress={() => navigation.navigate("AddCard")}
-                style={{
-                  width: "100%",
-                  height: 62,
-                  borderWidth: 2,
-                  borderColor: "#F0F5FA",
-                  borderRadius: 10,
-                  marginTop: 15,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    color: colors.primaryBg,
-                    fontSize: 14,
-                    fontFamily: "SemiBold-Sen",
-                    textTransform: "uppercase",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    source={icons.add}
-                    style={{ width: 15, height: 15, marginRight: 10 }}
-                    resizeMode="contain"
-                  />
-                  Add New
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View>
-              {paymentMethod === "visa" ? (
-                !visaCards?.length ? (
-                  <View
-                    style={{
-                      backgroundColor: "#F7F8F9",
-                      marginTop: 25,
-                      alignItems: "center",
-                      paddingVertical: 30,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Image
-                      source={images.cardPic}
-                      style={{
-                        width: 168,
-                        height: 106,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        fontSize: 16,
-                        fontFamily: "SemiBold-Sen",
-                        marginTop: 15,
-                      }}
-                    >
-                      No visa cards added
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontFamily: "Regular-Sen",
-                        marginHorizontal: 61,
-                        textAlign: "center",
-                        color: "#2D2D2D",
-                        marginTop: 10,
-                      }}
-                    >
-                      You can add a visa card and save it for later
-                    </Text>
-                  </View>
-                ) : (
-                  <View>
-                    {visaCards?.map((vc, index) => (
-                      <Pressable
-                        style={{
-                          width: "100%",
-                          height: 82,
-                          backgroundColor: "#F4F5F7",
-                          borderRadius: 10,
-                          padding: 20,
-                          marginTop: 25,
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                        key={index}
-                      >
-                        <View>
-                          <Text
-                            style={{ fontSize: 16, fontFamily: "SemiBold-Sen" }}
-                          >
-                            Visa Card
-                          </Text>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              marginTop: 10,
-                            }}
-                          >
-                            <View
-                              style={{
-                                backgroundColor: colors.white,
-                                width: 28,
-                                height: 17.65,
-                                borderRadius: 5,
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Image
-                                source={images.visa}
-                                style={{
-                                  width: 20,
-                                  height: 15,
-                                }}
-                                resizeMode="contain"
-                              />
-                            </View>
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontFamily: "Regular-Sen",
-                                color: "#32343E",
-                              }}
-                            >
-                              *************
-                            </Text>
-                            <Text>
-                              {vc.number.split(",").join()[
-                                vc.number.split(",").join().length - 3
-                              ] +
-                                vc.number.split(",").join()[
-                                  vc.number.split(",").join().length - 2
-                                ] +
-                                vc.number.split(",").join()[
-                                  vc.number.split(",").join().length - 1
-                                ]}
-                            </Text>
-                          </View>
-                        </View>
-
-                        <Image
-                          source={icons.downFinance}
-                          style={{ width: 10.75, height: 7.68 }}
-                          resizeMode="contain"
-                        />
-                      </Pressable>
-                    ))}
-
-                    <TouchableOpacity
-                      // @ts-ignore
-                      onPress={() => navigation.navigate("addCard")}
-                      style={{
-                        width: "100%",
-                        height: 62,
-                        borderWidth: 2,
-                        borderColor: "#F0F5FA",
-                        borderRadius: 10,
-                        marginTop: 15,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: colors.primaryBg,
-                          fontSize: 14,
-                          fontFamily: "SemiBold-Sen",
-                          textTransform: "uppercase",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          source={icons.add}
-                          style={{ width: 15, height: 15, marginRight: 10 }}
-                          resizeMode="contain"
-                        />
-                        Add New
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )
-              ) : paymentMethod === "master" ? (
-                !masterCards?.length ? (
-                  <View
-                    style={{
-                      backgroundColor: "#F7F8F9",
-                      marginTop: 25,
-                      alignItems: "center",
-                      paddingVertical: 30,
-                      borderRadius: 10,
-                    }}
-                  >
-                    <Image
-                      source={images.cardPic}
-                      style={{
-                        width: 168,
-                        height: 106,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        textAlign: "center",
-                        fontSize: 16,
-                        fontFamily: "SemiBold-Sen",
-                        marginTop: 15,
-                      }}
-                    >
-                      No master cards added
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontFamily: "Regular-Sen",
-                        marginHorizontal: 61,
-                        textAlign: "center",
-                        color: "#2D2D2D",
-                        marginTop: 10,
-                      }}
-                    >
-                      You can add a master card and save it for later
-                    </Text>
-                  </View>
-                ) : (
-                  <View>
-                    {masterCards?.map((mc, index) => (
-                      <Pressable
-                        style={{
-                          width: "100%",
-                          height: 82,
-                          backgroundColor: "#F4F5F7",
-                          borderRadius: 10,
-                          padding: 20,
-                          marginTop: 25,
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                        key={index}
-                      >
-                        <View>
-                          <Text
-                            style={{ fontSize: 16, fontFamily: "SemiBold-Sen" }}
-                          >
-                            Master Card
-                          </Text>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              marginTop: 10,
-                            }}
-                          >
-                            <View
-                              style={{
-                                backgroundColor: "#2D2D2D",
-                                width: 28,
-                                height: 17.65,
-                                borderRadius: 5,
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Image
-                                source={images.masterCard}
-                                style={{
-                                  width: 20,
-                                  height: 10,
-                                }}
-                              />
-                            </View>
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontFamily: "Regular-Sen",
-                                color: "#32343E",
-                              }}
-                            >
-                              *************
-                            </Text>
-                            <Text>
-                              {mc.number.split(",").join()[
-                                mc.number.split(",").join().length - 3
-                              ] +
-                                mc.number.split(",").join()[
-                                  mc.number.split(",").join().length - 2
-                                ] +
-                                mc.number.split(",").join()[
-                                  mc.number.split(",").join().length - 1
-                                ]}
-                            </Text>
-                          </View>
-                        </View>
-
-                        <Image
-                          source={icons.downFinance}
-                          style={{ width: 10.75, height: 7.68 }}
-                          resizeMode="contain"
-                        />
-                      </Pressable>
-                    ))}
-
-                    <TouchableOpacity
-                      // @ts-ignore
-                      onPress={() => navigation.navigate("AddCard")}
-                      style={{
-                        width: "100%",
-                        height: 62,
-                        borderWidth: 2,
-                        borderColor: "#F0F5FA",
-                        borderRadius: 10,
-                        marginTop: 15,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: colors.primaryBg,
-                          fontSize: 14,
-                          fontFamily: "SemiBold-Sen",
-                          textTransform: "uppercase",
-                          flexDirection: "row",
-                          alignItems: "center",
-                        }}
-                      >
-                        <Image
-                          source={icons.add}
-                          style={{ width: 15, height: 15, marginRight: 10 }}
-                          resizeMode="contain"
-                        />
-                        Add New
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )
-              ) : (
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      fontFamily: "SemiBold-Sen",
-                      marginTop: 32,
-                      textAlign: "center",
-                      color: colors.primaryTxt,
-                    }}
-                  >
-                    Confirm Payment
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontFamily: "Regular-Sen",
-                      textAlign: "center",
-                      color: colors.abstractTxt,
-                    }}
-                  >
-                    on delivery
-                  </Text>
-
-                  <View
-                    style={{
-                      width: "100%",
-                      alignItems: "center",
-                      marginTop: 90,
-                    }}
-                  >
-                    <Image
-                      source={icons.successVerified}
-                      style={{
-                        width: 260.28,
-                        height: 181,
-                      }}
-                      resizeMode="contain"
-                    />
-                  </View>
-                </View>
-              )}
-            </View>
-          )}
+          </View> */}
 
           <View style={{ position: "absolute", bottom: 60, width: "100%" }}>
             <View
@@ -753,56 +297,106 @@ const Payment = () => {
                 ₦{formatNumber(cartSubTotal)}
               </Text>
             </View>
-            <Pressable
-              // @ts-ignore
-              // onPress={() => navigation.navigate("Success")}
-              onPress={() => {
-                makePayments();
-              }}
-              style={{
-                width: "100%",
-                height: 62,
-                borderRadius: 12,
-                backgroundColor: loading ? "#A0A5BA" : colors.primaryBg,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 28,
-              }}
-              disabled={loading}
-            >
-              <Text
-                style={{
-                  color: colors.white,
-                  textTransform: "uppercase",
-                  fontSize: 14,
-                  fontFamily: "SemiBold-Sen",
+
+            {userInfo && (
+              <PayWithFlutterwave
+                onRedirect={makePayments}
+                options={{
+                  tx_ref: generateRandomNumber(10),
+                  authorization:
+                    "FLWPUBK_TEST-6475cbf72a720613da57b786be2f2604-X",
+                  customer: {
+                    email: userInfo?.email,
+                  },
+                  amount: cartSubTotal,
+                  currency: "NGN",
+                  payment_options: "card",
                 }}
-              >
-                Pay & Confirm
-              </Text>
-            </Pressable>
+                customButton={(props) => (
+                  <Pressable
+                    {...props}
+                    style={{
+                      width: "100%",
+                      height: 62,
+                      borderRadius: 12,
+                      backgroundColor: loading ? "#A0A5BA" : colors.primaryBg,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop: 28,
+                    }}
+                    disabled={loading}
+                  >
+                    <Text
+                      style={{
+                        color: colors.white,
+                        textTransform: "uppercase",
+                        fontSize: 14,
+                        fontFamily: "SemiBold-Sen",
+                      }}
+                    >
+                      Pay & Confirm
+                    </Text>
+                  </Pressable>
+                )}
+              />
+            )}
           </View>
         </ScrollView>
       </View>
 
       {loading && (
-        <View
-          style={{
-            position: "absolute",
-            top: "35%",
-            bottom: "65%",
-            left: "40%",
-            right: "70%",
-            width: 100,
-            height: 100,
-            backgroundColor: "#121223",
-            justifyContent: "center",
-            alignItems: "center",
-            borderRadius: 12,
-          }}
-        >
-          <Spinner color={colors.white} size="lg" />
-        </View>
+        <Center>
+          <View
+            style={{
+              marginTop: -1000,
+              width: 200,
+              height: 110,
+              backgroundColor: "#121223",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 12,
+            }}
+          >
+            <Spinner color={colors.white} size="lg" />
+            <Text
+              style={{
+                fontFamily: "Regular-Sen",
+                fontSize: 18,
+                color: colors.white,
+                marginTop: 10,
+              }}
+            >
+              Preparing Payments
+            </Text>
+          </View>
+        </Center>
+      )}
+
+      {loadingOrders && (
+        <Center>
+          <View
+            style={{
+              marginTop: -1000,
+              width: 200,
+              height: 110,
+              backgroundColor: "#121223",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 12,
+            }}
+          >
+            <Spinner color={colors.white} size="lg" />
+            <Text
+              style={{
+                fontFamily: "Regular-Sen",
+                fontSize: 18,
+                color: colors.white,
+              }}
+            >
+              Sending Orders
+            </Text>
+          </View>
+        </Center>
       )}
     </SafeAreaView>
   );

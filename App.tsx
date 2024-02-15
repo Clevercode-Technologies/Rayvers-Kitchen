@@ -10,8 +10,7 @@ import { NativeBaseProvider } from "native-base";
 import { AppRoot } from "./src/navigation";
 import { View } from "react-native";
 import { StripeProvider } from "@stripe/stripe-react-native";
-// import { enableFreeze } from 'react-native-screens';
-// enableFreeze(true);
+// import { LogLevel, OneSignal } from "react-native-onesignal";
 
 const App = () => {
   const [fontLoaded] = useFonts({
@@ -27,11 +26,18 @@ const App = () => {
     }
   }, [fontLoaded]);
 
+  // useEffect(() => {
+  //   OneSignal.Debug.setLogLevel(LogLevel.Verbose);
+  //   OneSignal.initialize("b1074400-e95f-45be-9f84-60ca19e86821"); 
+  //   OneSignal.Notifications.requestPermission(true);
+  // }, []);
+
   if (!fontLoaded) {
     return null;
   }
 
-  const STRIPE_PUBLISHABLE_KEY = 'pk_test_51OfN36FeGaAoGW3hZ47hPvdH6KlFpyNjGLCpXATFu4RLNmacchmTMYAAVJLqAn8jl0tPw52LGGJv22cgHRaPUik500XeuXA1Ey';
+  const STRIPE_PUBLISHABLE_KEY =
+    "pk_test_51OfN36FeGaAoGW3hZ47hPvdH6KlFpyNjGLCpXATFu4RLNmacchmTMYAAVJLqAn8jl0tPw52LGGJv22cgHRaPUik500XeuXA1Ey";
 
   return (
     <StripeProvider publishableKey={STRIPE_PUBLISHABLE_KEY}>

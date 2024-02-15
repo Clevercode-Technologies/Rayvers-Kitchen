@@ -20,24 +20,21 @@ import { addCart, deleteCart } from "../../Redux/Splice/AppSplice";
 import { formatNumber } from "../../utils/currencyFormatter";
 
 const ItemCard: React.FC<ItemCardProp> = ({ item }) => {
-  const [cartItem, setCartItem] = useState<boolean>(false);
-  const [existInCart, setExistInCart] = useState<boolean>(false);
+  const carts = useSelector((state: RootState) => state.data.carts);
+  const [existInCart, setExistInCart] = useState<boolean | undefined>(false);
+  const [cartItem, setCartItem] = useState<boolean | undefined>(existInCart);
 
   const navigation = useNavigation();
-
-  const carts = useSelector((state: RootState) => state.data.carts);
   const dispatch = useDispatch();
 
-  
   useEffect(() => {
-    const isInCartAlready = carts?.filter((stateCart) => stateCart.id === item.id);
-    if(isInCartAlready?.length === 1) {
-      setExistInCart(true);
-    } else {
-      setExistInCart(false);
-    }
-  }, [carts]); 
-  
+    const isInCartAlready = carts?.some(
+      (stateCart) => stateCart.id === item.id
+    );
+    setExistInCart(isInCartAlready);
+    setCartItem(isInCartAlready);
+  }, [carts, item]);
+
   // console.log('Item Image: ', item);
 
   return (
@@ -110,15 +107,16 @@ const ItemCard: React.FC<ItemCardProp> = ({ item }) => {
             onPress={() => {
               setCartItem((prevState) => !prevState);
               if (!cartItem) {
-                dispatch(addCart({
-                  ...item,
-                  itemCount: 0,
-                }));
+                dispatch(
+                  addCart({
+                    ...item,
+                    itemCount: 0,
+                  })
+                );
               } else {
                 dispatch(deleteCart(item.id));
               }
             }}
-
             style={{
               backgroundColor: colors.primaryBg,
               width: 30,
@@ -133,7 +131,7 @@ const ItemCard: React.FC<ItemCardProp> = ({ item }) => {
                 style={{
                   fontSize: 25,
                   color: colors.white,
-                  marginTop: Platform.OS === "android" ? - 4 : 0,
+                  marginTop: Platform.OS === "android" ? -4 : 0,
                 }}
               >
                 -
@@ -143,7 +141,7 @@ const ItemCard: React.FC<ItemCardProp> = ({ item }) => {
                 style={{
                   fontSize: 25,
                   color: colors.white,
-                  marginTop: Platform.OS === "android" ? - 4 : 0,
+                  marginTop: Platform.OS === "android" ? -4 : 0,
                 }}
               >
                 +

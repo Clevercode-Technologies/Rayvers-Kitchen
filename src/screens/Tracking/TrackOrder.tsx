@@ -11,16 +11,13 @@ import { icons } from "../../../assets/icons";
 import { images } from "../../../assets/images";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import { Actionsheet, useDisclose } from "native-base";
+import { useNavigation } from "@react-navigation/native";
 
 const TrackOrder = () => {
   const [sheetHeight, setSheetHeight] = useState<number>(200);
   const { isOpen, onOpen, onClose } = useDisclose();
 
-  const handleDrag = (gestureState: Record<string, number>) => {
-    // Adjust the sheet height based on the drag gesture
-    const newHeight = 200 + gestureState.dy;
-    setSheetHeight(Math.max(200, newHeight));
-  };
+  const navigation = useNavigation();
 
   return (
     <SafeAreaView
@@ -38,7 +35,8 @@ const TrackOrder = () => {
           top: 60,
         }}
       >
-        <View
+        <Pressable
+        onPress={() => navigation.canGoBack() && navigation.goBack()}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -60,7 +58,7 @@ const TrackOrder = () => {
           >
             Track Order
           </Text>
-        </View>
+        </Pressable>
 
         <Pressable
           onPress={onOpen}

@@ -12,6 +12,7 @@ import { images } from "../../../assets/images";
 import { generateRandomNumber } from "../../utils/idGenerator";
 import { formatNumber } from "../../utils/currencyFormatter";
 import { STATUS } from "../../DATA";
+import { useNavigation } from "@react-navigation/native";
 
 interface OrderItemProps {
   data: {
@@ -29,6 +30,9 @@ interface OrderItemProps {
 }
 
 const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
+
+  const navigation = useNavigation();
+
   return (
     <View
       style={{
@@ -183,7 +187,8 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
       <View style={{ flexDirection: "row" }}>
         <Pressable
           onPress={() =>
-            alert("Shows you the logistic locator screen for tracking")
+            // @ts-ignore
+            navigation.navigate('TrackOrder')
           }
           style={{
             backgroundColor: colors.primaryBg,

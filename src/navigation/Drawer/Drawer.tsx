@@ -25,7 +25,7 @@ import ChefAppTab from "../Tabs/ChefAppTab";
 import DriverAppTab from "../Tabs/DriverAppTab";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
+import { resetCart, setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
 import { Location } from "../../screens";
 import { userAddress } from "../../../type";
 
@@ -280,6 +280,7 @@ const CustomDrawerContent = (props) => {
             dispatch(setUserAddress(null));
             dispatch(setAccessToken(null));
             dispatch(setUserAddress(null));
+            dispatch(resetCart());
           }}
           style={{
             position: "absolute",

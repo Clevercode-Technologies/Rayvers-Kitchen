@@ -273,6 +273,9 @@ export const appSlice = createSlice({
     setCategoryQuery: (state, action: PayloadAction<string>) => {
       state.categoryQuery = action.payload;
     },
+    resetCart: (state) => {
+      state.carts = null;
+    }
   },
 });
 
@@ -310,6 +313,7 @@ export const {
   setCategories,
   setCategoryQuery,
   resetCartSubTotal,
+  resetCart,
 } = appSlice.actions;
 
 export default appSlice.reducer;

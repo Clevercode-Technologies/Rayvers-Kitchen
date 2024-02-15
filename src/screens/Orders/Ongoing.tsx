@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BASE_URL,
   SCREEN_HEIGHT,
@@ -37,63 +37,47 @@ const Ongoing = () => {
   // Redux State
   const token = useSelector((state: RootState) => state.data.token);
 
-  console.log('token: ', token);
+  console.log("token: ", token);
 
   const fetchOngoingOrder = async () => {
     setLoading(true);
     try {
-      const result = await fetch(`${BASE_URL}api/orderitems?options=ongoing`, {
+      const response = await fetch(`${BASE_URL}api/orderitems?options=ongoing`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Token ${token}`,
-        },
+        }
       });
 
-      if (result.ok) {
+      if (response.ok) {
         setLoading(false);
 
-        const response = await result.json();
-        setOngoingOrders(response);
-        console.log(response);
+        const result = await response.json();
+        console.log('result: from ongoing orders', result);
+        setOngoingOrders(result);
+
+        
       } else {
-        const response = await result.json();
         setLoading(false);
-        console.log(response.detail);
-        console.log(`Error: Something went wrong ${response.detail}`);
+        setOngoingOrders(null);
+
+        const res = await response.json();
+        console.log(res);
       }
     } catch (error: any) {
-      console.log(`Error: ${error.message}`);
+      console.log(`Error from sendOrders: ${error.message}`);
+      setOngoingOrders(null);
     }
   };
 
-  const reFetch = async() => {
-    setLoading(true);
-    try {
-      const result = await fetch(`${BASE_URL}api/orderitems?options=ongoing`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      if (result.ok) {
-        setLoading(false);
-
-        const response = await result.json();
-        setOngoingOrders(response);
-        console.log(response);
-      } else {
-        const response = await result.json();
-        setLoading(false);
-        console.log(response.detail);
-        console.log(`Error: Something went wrong ${response.detail}`);
-      }
-    } catch (error: any) {
-      console.log(`Error: ${error.message}`);
-    }
+  const reFetch = async () => {
+    // fetchOngoingOrder()
   };
+
+  useEffect(() => {
+    fetchOngoingOrder();
+  }, []);
 
   return (
     <ScrollView
@@ -130,11 +114,12 @@ const Ongoing = () => {
             />
           </SkeletonContainer>
         ))}
-      {!loading && OngoingData.map((item, index) => (
-        <View style={{ marginTop: index !== 0 ? 24 : 0 }} key={index}>
-          <OrderItem type={"ongoing"} data={item} />
-        </View>
-      ))}
+      {!loading &&
+        OngoingData.map((item, index) => (
+          <View style={{ marginTop: index !== 0 ? 24 : 0 }} key={index}>
+            <OrderItem type={"ongoing"} data={item} />
+          </View>
+        ))}
     </ScrollView>
   );
 };

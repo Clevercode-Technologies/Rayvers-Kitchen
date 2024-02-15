@@ -275,3 +275,9 @@ interface OrderOngoingPayload {
     current_location_longitude: null | string;
   };
 }
+
+interface RedirectParams {
+  status: 'successful' | 'cancelled';
+  transaction_id?: string;
+  tx_ref: string;
+}
