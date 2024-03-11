@@ -241,8 +241,11 @@ const Search = () => {
         >
           Suggested Restaurants
         </Text>
-        <View
-          key={restaurants && restaurants[0]?.id}
+        <Pressable
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate("RestaurantDetails", { data: restaurants[0] });
+          }}
           style={{ marginHorizontal: 24, alignSelf: "flex-start" }}
         >
           <View
@@ -288,9 +291,12 @@ const Search = () => {
               </View>
             </View>
           </View>
-        </View>
-        <View
-          key={restaurants && restaurants[1]?.id}
+        </Pressable>
+        <Pressable
+          onPress={() => {
+            // @ts-ignore
+            navigation.navigate("RestaurantDetails", { data: restaurants[0] });
+          }}
           style={{ marginHorizontal: 24, alignSelf: "flex-start" }}
         >
           <View
@@ -336,7 +342,7 @@ const Search = () => {
               </View>
             </View>
           </View>
-        </View>
+        </Pressable>
 
         <View style={{ width: SCREEN_WIDTH, marginHorizontal: 24 }}>
           {/* Popular Foods */}

@@ -32,7 +32,6 @@ interface FoodDetailsProps {
 const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
   const { data } = route.params;
 
-  // console.log(data.images);
 
   const dispatch = useDispatch();
 
@@ -165,7 +164,7 @@ const FoodDetails: React.FC<FoodDetailsProps> = ({ route }) => {
             Ingredients
           </Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-            {data._ingredients.map((item) => (
+            {data._ingredients?.map((item) => (
               <View key={item} style={{ margin: 10, alignItems: "center" }}>
                 <View
                   style={{

@@ -19,3 +19,4 @@ export { default as Breakfast } from "./Chef/FoodList/Breakfast";
 export { default as Dinner } from "./Chef/FoodList/Dinner";
 export { default as AssignDrivers } from "./Chef/AssignDrivers";
 export { default as UploadItemPhotos } from "./Chef/UploadItemPhotos";
+export { default as Chat } from "./Chat/Chat";

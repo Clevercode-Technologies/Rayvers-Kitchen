@@ -46,12 +46,17 @@ interface Restaurant {
 }
 
 type ProfileType = {
+  id: number;
   email?: string;
   name?: string | null;
   date_of_birth?: null;
-  is_superuser?: boolean;
-  is_staff?: boolean;
-  is_active?: boolean;
+  image_url?: string | null;
+  permissions: {
+    is_superuser?: boolean;
+    is_driver?: boolean;
+    is_restaurant?: boolean;
+    is_customer?: boolean;
+  };
   profile_picture?: string;
   bio?: string | null;
   role?: string;
@@ -129,10 +134,10 @@ interface Dish {
   id: number;
   name: string;
   description: string;
-  price: string;
+  price: number;
   restaurant: number;
   ratings: string;
-  _ingredients: Array<string>;
+  _ingredients?: Array<string>;
   favourite: [];
   restaurant_details: {
     name: string;
@@ -229,9 +234,9 @@ type CardDetails = {
 };
 
 enum STATUS {
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
-  PENDING = 'pending'
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  PENDING = "pending",
 }
 
 interface OrderOngoingPayload {
@@ -277,7 +282,78 @@ interface OrderOngoingPayload {
 }
 
 interface RedirectParams {
-  status: 'successful' | 'cancelled';
+  status: "successful" | "cancelled";
   transaction_id?: string;
   tx_ref: string;
+}
+
+interface ChatRoom {
+  _id: string;
+  name: string;
+  profilePic: any;
+  createdAt: string;
+  updatedAt: string;
+  messages: FetchedMessage[];
+}
+
+interface ChatMessage {
+  $versionError: null;
+  activePaths: {
+    paths: Record<string, unknown>;
+    states: {
+      default: Record<string, unknown>;
+      modify: Record<string, unknown>;
+    };
+  };
+  backup: {
+    activePaths: {
+      default: {
+        _id: boolean;
+      };
+      modify: {
+        clientOffset: boolean;
+        createdAt: boolean;
+        profilePic: boolean;
+        room: boolean;
+        text: boolean;
+        updatedAt: boolean;
+        user: boolean;
+      };
+    };
+    errors: null;
+    validationError: null;
+  };
+  cachedRequired: Record<string, unknown>;
+  inserting: boolean;
+  op: null;
+  saveOptions: null;
+  savedState: Record<string, unknown>;
+  saving: null;
+  validating: null;
+  validationError: null;
+  $errors: null;
+  $isNew: boolean;
+  _doc: {
+    __v: number;
+    _id: string;
+    clientOffset: string;
+    createdAt: string;
+    profilePic: string;
+    room: string;
+    text: string;
+    updatedAt: string;
+    user: string;
+  };
+}
+
+interface FetchedMessage {
+  __v: number;
+  _id: string;
+  clientOffset: string;
+  createdAt: string;
+  profilePic: string;
+  room: string;
+  text: string;
+  updatedAt: string;
+  user: string;
 }

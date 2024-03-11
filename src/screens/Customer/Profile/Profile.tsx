@@ -1,6 +1,7 @@
 import {
   Image,
   Pressable,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,20 +10,45 @@ import {
 } from "react-native";
 import React from "react";
 import { icons } from "../../../../assets/icons";
-import { colors } from "../../../components/DEFAULTS";
+import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
 import { images } from "../../../../assets/images";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAccessToken } from "../../../Redux/Splice/AppSplice";
+import { RootState } from "../../../Redux/store";
+import {
+  GradientProps,
+  SkeletonContainer,
+} from "react-native-dynamic-skeletons";
+import { LinearGradient } from "expo-linear-gradient";
+import { generateRandomNumber } from "../../../utils/idGenerator";
+import { useProfile } from "../../../config/useProfile";
+
+const Gradient = (props: GradientProps) => <LinearGradient {...props} />;
 
 const Profile = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const { error, loading, profile, reFetch } = useProfile();
+
+  console.log("error: ", error);
+
   return (
     <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
       <View style={{ marginHorizontal: 24 }}>
-        <ScrollView style={{ marginBottom: 30 }}>
+        <ScrollView
+          style={{ marginBottom: 30 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={reFetch}
+              tintColor={colors.primaryBg}
+              enabled={true}
+              style={{}}
+            />
+          }
+        >
           {/* Profile Header */}
           {/* <Text
           style={{
@@ -44,14 +70,27 @@ const Profile = () => {
               marginTop: 24,
             }}
           >
-            <Image
-              source={images.myProfile}
-              style={{
-                width: 102.95,
-                height: 102.95,
-              }}
-              resizeMode="contain"
-            />
+            {profile?.image_url ? (
+              <Image
+                source={{ uri: profile.image_url }}
+                style={{
+                  width: 102.95,
+                  height: 102.95,
+                  borderRadius: 102.95 / 2,
+                }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={images.emptyProfile}
+                style={{
+                  width: 102.95,
+                  height: 102.95,
+                  borderRadius: 102.95 / 2,
+                }}
+                resizeMode="contain"
+              />
+            )}
 
             <View
               style={{
@@ -66,7 +105,7 @@ const Profile = () => {
                   marginBottom: 8,
                 }}
               >
-                Vishal Khadok
+                {profile?.name ? profile.name : "Dear Customer"}
               </Text>
               <Text
                 style={{
@@ -75,237 +114,241 @@ const Profile = () => {
                   fontFamily: "Regular-Sen",
                 }}
               >
-                I love fast food
+                {profile?.bio ? profile.bio : "Welcome to Rayvers Kitchen 😆"}
               </Text>
             </View>
           </View>
 
-          {/* Badge 1 */}
-          <View
-            style={{
-              backgroundColor: "#F6F8FA",
-              padding: 20,
-              marginTop: 30,
-              borderRadius: 16,
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-              onPress={() => 
-                // @ts-ignore
-                navigation.navigate("PersonalInfo")}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.personProfile}
+          {!loading && (
+            <>
+              {/* Badge 1 */}
+              <View
+                style={{
+                  backgroundColor: "#F6F8FA",
+                  padding: 20,
+                  marginTop: 30,
+                  borderRadius: 16,
+                }}
+              >
+                <Pressable
                   style={{
-                    width: 40,
-                    height: 40,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
                   }}
-                />
-                <Text style={{ marginLeft: 14 }}>Personal Info</Text>
+                  onPress={() =>
+                    // @ts-ignore
+                    navigation.navigate("PersonalInfo")
+                  }
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.personProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Personal Info</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                  onPress={() =>
+                    // @ts-ignore
+                    navigation.navigate("Address")
+                  }
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.mapProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Address</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
               </View>
 
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-              onPress={() => 
-              // @ts-ignore
-              navigation.navigate("Address")}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.mapProfile}
+              {/* Badge 2 */}
+              <View
+                style={{
+                  backgroundColor: "#F6F8FA",
+                  padding: 20,
+                  marginTop: 30,
+                  borderRadius: 16,
+                  // marginTop:
+                }}
+              >
+                <Pressable
                   style={{
-                    width: 40,
-                    height: 40,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
                   }}
-                />
-                <Text style={{ marginLeft: 14 }}>Address</Text>
+                  onPress={() =>
+                    // @ts-ignore
+                    navigation.navigate("CartScreen")
+                  }
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.cartProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Cart</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
+                  }}
+                  onPress={() =>
+                    // @ts-ignore
+                    navigation.navigate("Favorite")
+                  }
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.favoriteProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Favourite</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
+
+                <Pressable
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: 16,
+                  }}
+                  onPress={() =>
+                    // @ts-ignore
+                    navigation.navigate("Notification")
+                  }
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.notificationProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Notification</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
               </View>
 
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-          </View>
-
-          {/* Badge 2 */}
-          <View
-            style={{
-              backgroundColor: "#F6F8FA",
-              padding: 20,
-              marginTop: 30,
-              borderRadius: 16,
-              // marginTop:
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-              onPress={() => // @ts-ignore
-              navigation.navigate("CartScreen")}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.cartProfile}
+              {/* Badge 3 */}
+              <View
+                style={{
+                  backgroundColor: "#F6F8FA",
+                  padding: 20,
+                  marginTop: 30,
+                  borderRadius: 16,
+                }}
+              >
+                <Pressable
                   style={{
-                    width: 40,
-                    height: 40,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
-                />
-                <Text style={{ marginLeft: 14 }}>Cart</Text>
+                  onPress={() => dispatch(setAccessToken(null))}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Image
+                      source={icons.logoutProfile}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <Text style={{ marginLeft: 14 }}>Log Out</Text>
+                  </View>
+
+                  <Image
+                    source={icons.chevronRight}
+                    style={{ width: 24, height: 24 }}
+                    resizeMode="contain"
+                  />
+                </Pressable>
               </View>
+            </>
+          )}
 
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-              onPress={() => 
-              // @ts-ignore 
-              navigation.navigate("Favorite")}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.favoriteProfile}
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-                <Text style={{ marginLeft: 14 }}>Favourite</Text>
-              </View>
-
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-              onPress={() => 
-                // @ts-ignore
-                navigation.navigate('Notification')}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.notificationProfile}
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-                <Text style={{ marginLeft: 14 }}>Notification</Text>
-              </View>
-
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 16,
-              }}
-              onPress={() => 
-              // @ts-ignore
-              navigation.navigate('Payment')}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.paymentProfile}
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-                <Text style={{ marginLeft: 14 }}>Payment Methods</Text>
-              </View>
-
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
-          </View>
-
-          {/* Badge 3 */}
-          <View
-            style={{
-              backgroundColor: "#F6F8FA",
-              padding: 20,
-              marginTop: 30,
-              borderRadius: 16,
-            }}
-          >
-            <Pressable
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-              onPress={() => dispatch(setAccessToken(null))}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  source={icons.logoutProfile}
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-                <Text style={{ marginLeft: 14 }}>Log Out</Text>
-              </View>
-
-              <Image
-                source={icons.chevronRight}
-                style={{ width: 24, height: 24 }}
-                resizeMode="contain"
-              />
-            </Pressable>
+          <View style={{ marginTop: 40 }}>
+            {loading &&
+              new Array(3).fill(0).map((_) => (
+                <SkeletonContainer
+                  animationType="leftRight"
+                  Gradient={Gradient}
+                  isLoading={loading}
+                  duration={2000}
+                  style={{}}
+                  key={generateRandomNumber(4)}
+                >
+                  <View
+                    style={{
+                      width: SCREEN_WIDTH - 48,
+                      height: 150,
+                      marginBottom: 21,
+                      borderRadius: 15,
+                    }}
+                  />
+                </SkeletonContainer>
+              ))}
           </View>
         </ScrollView>
       </View>

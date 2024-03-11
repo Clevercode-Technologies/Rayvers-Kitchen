@@ -20,11 +20,12 @@ import {
 } from "../../../components/DEFAULTS";
 import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
 import { Spinner } from "native-base";
 import * as ImagePicker from "expo-image-picker";
 import { useToast } from "native-base";
+import { setUserProfile } from "../../../Redux/Splice/AppSplice";
 
 type ImageType = {
   assetId?: string | null | undefined;
@@ -53,9 +54,12 @@ const EditProfile = () => {
   const profileNumber = useSelector((state: RootState) => state.data.profileNumber);
   const profileBio = useSelector((state: RootState) => state.data.profileBio);
 
-  const token = useSelector((state: RootState) => state.data.token);
+  const userProfile = useSelector((state: RootState) => state.data.userProfile);
 
-  console.log("token: ", token);
+  const token = useSelector((state: RootState) => state.data.token);
+  const dispatch = useDispatch();
+
+  console.log("userProfile: ", userProfile);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -129,8 +133,10 @@ const EditProfile = () => {
       if (response.ok) {
         // Handle success if needed
         const userInfo = await response.json();
-        console.log(userInfo);
+        // console.log(userInfo);
+        dispatch(setUserProfile(userInfo));
         setLoading(false);
+        navigation.canGoBack() && navigation.goBack();
       }
     } catch (error: any) {
       // Handle error if needed

@@ -9,32 +9,146 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { icons } from "../../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import { msgs } from "../../DATA";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import socket from "../../utils/socket";
+import { getDateAndTime } from "../../utils/isoStringToDate";
+import { ChatMessage, ChatRoom } from "../../../type";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { Chat } from "../../components";
+import { appendChat, updateChatMsg } from "../../Redux/Splice/AppSplice";
+import { generateRandomNumber } from "../../utils/idGenerator";
+import { generateISOString } from "../../utils/isoDateGenerator";
 
-const TrackMsg = () => {
-  const [message, setMessage] = useState<string>("");
+interface TrackMsgProp {
+  route: {
+    params: {
+      item: ChatRoom;
+    };
+  };
+}
+
+const TrackMsg: React.FC<TrackMsgProp> = ({ route }) => {
+  const { item } = route.params;
+  // console.log('item: ', item);
+
+  const scrollRef = useRef<ScrollView>(null);
+
+  const [read, setRead] = useState<boolean>(false);
+
+  const userProfile = useSelector((state: RootState) => state.data.userProfile);
+  const message = useSelector((state: RootState) => state.data.chatMsg);
+
+  const dispatch = useDispatch();
+
+  const handleMessage = () => {
+    let counter = 0;
+    if (message.length > 0) {
+      if (userProfile?.image_url && userProfile.name) {
+        dispatch(
+          appendChat({
+            __v: Number(generateRandomNumber(12)),
+            _id: `0xb32823-${generateRandomNumber(5)}-98434LKJlkdfend`,
+            clientOffset: `${socket.id}-${counter++}`,
+            createdAt: generateISOString(),
+            profilePic: userProfile.image_url,
+            room: item._id,
+            text: message,
+            updatedAt: generateISOString(),
+            user: userProfile.name,
+          })
+        );
+      }
+      const clientOffset = `${socket.id}-${counter++}`;
+      socket.emit(
+        "newMessage",
+        {
+          room: item._id,
+          text: message,
+          profilePic: userProfile?.image_url,
+          user: userProfile?.name,
+        },
+        clientOffset
+      );
+    }
+    dispatch(updateChatMsg(""));
+  };
 
   const navigation = useNavigation();
 
+  useEffect(() => setRead(true), []);
+
+  useLayoutEffect(() => {
+    socket.emit("findRoom", item._id);
+    socket.on("foundRoom", (roomChats: ChatRoom) => {
+      // console.log("roomChats: ", roomChats);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.emit("findRoom", item._id);
+    socket.on("foundRoom", (roomChats: ChatRoom) => {
+      // console.log("roomChats: ", roomChats);
+    });
+    // socket.on("roomMessage", (message: any, serverOffset: string) => {
+    //   console.log(message);
+    //   socket.auth.serverOffset = serverOffset;
+    // });
+  }, [socket, message]);
+
+  useLayoutEffect(() => {
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, []);
+
+  useEffect(() => {
+    scrollRef.current?.scrollToEnd({ animated: true });
+  }, [message, socket]);
+
   return (
     <SafeAreaView
-      style={{ marginTop: Platform.OS === "android" ? 25 : 0, flex: 1 }}
+      style={{
+        marginTop: Platform.OS === "android" ? 25 : 0,
+        flex: 1,
+        backgroundColor: "#121223",
+      }}
     >
-      <View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          backgroundColor: colors.white,
+          paddingHorizontal: 24,
+          paddingVertical: 15,
+        }}
+      >
         <Pressable
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginLeft: 24,
-            marginBottom: 30,
           }}
-          onPress={() => {}}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
         >
-          <Image source={icons.close} style={{ width: 45, height: 45 }} />
+          <Image source={icons.arrBack} style={{ width: 24, height: 24 }} />
+          <Image
+            source={item.profilePic}
+            style={{
+              width: 45,
+              height: 45,
+              borderRadius: 12,
+            }}
+          />
           <Text
             style={{
               color: colors.tertiaryTxt,
@@ -43,8 +157,19 @@ const TrackMsg = () => {
               marginLeft: 16,
             }}
           >
-            Robert Fox
+            {item.name}
           </Text>
+        </Pressable>
+
+        {/* Implement Phone Call */}
+        <Pressable>
+          <Image
+            source={icons.chatPhone}
+            style={{
+              width: 24,
+              height: 24,
+            }}
+          />
         </Pressable>
       </View>
 
@@ -63,126 +188,21 @@ const TrackMsg = () => {
             width: SCREEN_WIDTH,
             height: SCREEN_HEIGHT,
             // marginHorizontal: 24,
+            backgroundColor: "rgba(18, 18, 35, 0.33)",
           }}
+          ref={scrollRef}
         >
-          <View
-            style={{
-              width: SCREEN_WIDTH,
-              alignItems: "flex-end",
-            }}
-          >
-            {msgs.map((msg) => (
-              <View
-                style={{
-                  alignSelf:
-                    msg.sender === "me"
-                      ? "flex-end"
-                      : msg.sender
-                      ? "flex-start"
-                      : "flex-end",
-                  padding: 24,
-                  position: "relative",
-                }}
-                key={msg.id}
-              >
-                {/* Textual Message including time and read indicator */}
-                <View
-                  style={{
-                    width: "100%",
-                    marginRight: msg.sender === "me" ? 50 : 0,
-                    marginLeft: msg.sender === "recipient" ? 50 : 0,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#ABABAB",
-                      fontSize: 12,
-                      fontFamily: "Regular-Sen",
-                      alignSelf:
-                        msg.sender === "recipient" ? "flex-end" : "flex-start",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {msg.time}
-                  </Text>
-                  <View
-                    style={{
-                      backgroundColor:
-                        msg.sender === "me" ? colors.primaryBg : "#F0F5FA",
-                      maxWidth: "60%",
-                      borderRadius: 10,
-                      padding: 16,
-                      position: "relative",
-                    }}
-                  >
-                    {msg.sender === "me" && (
-                      <Image
-                        source={msg.read ? icons.read : icons.unread}
-                        style={{
-                          position: "absolute",
-                          width: 7,
-                          height: 9,
-                          left: -15,
-                          bottom: 20,
-                        }}
-                      />
-                    )}
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontFamily: "Regular-Sen",
-                        color:
-                          msg.sender === "recipient"
-                            ? colors.primaryTxt
-                            : colors.white,
-                      }}
-                    >
-                      {msg.message}
-                    </Text>
-                  </View>
-                </View>
-
-                {/* Profile Photo */}
-                {msg.sender === "recipient" && (
-                  <Image
-                    source={msg.photo}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      position: "absolute",
-                      bottom: 30,
-                      left: 15,
-                      // right: msg.sender === 'recipient' && -100
-                    }}
-                    resizeMode="contain"
-                  />
-                )}
-                {msg.sender === "me" && (
-                  <Image
-                    source={msg.photo}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      position: "absolute",
-                      bottom: 30,
-                      //   left: '50%',
-                      right: 15,
-                    }}
-                    resizeMode="contain"
-                  />
-                )}
-              </View>
-            ))}
-          </View>
+          <Chat />
         </ScrollView>
 
         {/* Typing Interface */}
         <View
           style={{
-            marginTop: 20,
             width: SCREEN_WIDTH,
             paddingHorizontal: 24,
             position: "relative",
+            backgroundColor: "#F0F5FA",
+            paddingVertical: 15,
           }}
         >
           <Image
@@ -191,35 +211,47 @@ const TrackMsg = () => {
               width: 18,
               height: 18,
               position: "absolute",
-              top: 20,
+              bottom: 35,
               left: 40,
               zIndex: 1,
             }}
           />
           <TextInput
-            onChangeText={(text) => setMessage(text)}
             style={{
               borderRadius: 12,
-              backgroundColor: "#F0F5FA",
-              height: 62,
+              backgroundColor: colors.white,
+              minHeight: 62,
+              maxHeight: 130,
               width: "100%",
               paddingLeft: 50,
               fontSize: 12,
               fontFamily: "Regular-Sen",
+              paddingTop: 25,
             }}
             placeholder="Write somethings"
             placeholderTextColor={"#ABABAB"}
+            onChangeText={(text) => dispatch(updateChatMsg(text))}
+            value={message}
+            onSubmitEditing={handleMessage}
+            multiline
           />
-          <Pressable onPress={() => alert('Implement chat forum')}>
+          {/* <TextInput 
+            
+          /> */}
+          <Pressable
+            style={{
+              position: "absolute",
+              bottom: 25,
+              right: 35,
+              zIndex: 1,
+            }}
+            onPress={handleMessage}
+          >
             <Image
               source={icons.sendIcon}
               style={{
                 width: 42,
                 height: 42,
-                position: "absolute",
-                top: -53,
-                right: 20,
-                zIndex: 1,
               }}
             />
           </Pressable>
@@ -229,6 +261,6 @@ const TrackMsg = () => {
   );
 };
 
-export default TrackMsg;
+export default memo(TrackMsg);
 
 const styles = StyleSheet.create({});

@@ -138,4 +138,7 @@ export const icons = {
     locationFD: require('./LocationFD.png'),
     profileIcon: require('./profile-icon.png'),
     buldEnergy: require('./energy.png'),
+    arrBack: require('./arr_back.png'),
+    chatPhone: require('./chat_phone.png'),
+    message: require('./message.png'),
 }

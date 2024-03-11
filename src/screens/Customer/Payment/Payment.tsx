@@ -34,6 +34,7 @@ const Payment = () => {
   // console.log(cartSubTotal);
   const token = useSelector((state: RootState) => state.data.token);
   const userInfo = useSelector((state: RootState) => state.data.userInfo);
+  console.log(userInfo?.email)
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -82,9 +83,21 @@ const Payment = () => {
     }
   };
 
-  const makePayments = (data: RedirectParams) => {
-    console.log("data: ", data);
-    // sendOrders(true);
+  const makePayments = async (data: RedirectParams) => {
+    setLoading(true);
+    try {
+      setLoading(false);
+      console.log("data: ", data);
+      const { status } = data;
+      
+      // @ts-ignore
+      if(status === 'completed' || status === 'successful') {
+        await sendOrders(true);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   return (
@@ -119,155 +132,17 @@ const Payment = () => {
             </Text>
           </Pressable>
 
-          {/* Card Selection */}
-          {/* <View
+         <View style={{ width: SCREEN_WIDTH, justifyContent: 'center', alignItems: 'center', flex: 1, marginBottom: 100 }}>
+          <Image 
+            source={images.shopImage}
             style={{
-              marginTop: 30,
-              width: SCREEN_WIDTH,
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              alignSelf: "center",
+              width: 1247 / 3,
+              height: 980 / 3,
+              marginLeft: -50,
+              // aspectRatio: 1
             }}
-          >
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                position: "relative",
-              }}
-            >
-              {paymentMethod === "cash" && (
-                <Image
-                  source={icons.activePayment}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                  }}
-                />
-              )}
-            </View>
-
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                position: "relative",
-                marginHorizontal: 16,
-              }}
-            >
-              <Pressable
-                onPress={() => setPaymentMethod("visa")}
-                style={{
-                  backgroundColor:
-                    paymentMethod === "visa" ? colors.white : "#F0F5FA",
-                  borderWidth: 2,
-                  borderColor:
-                    paymentMethod === "visa" ? colors.primaryBg : colors.white,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 85,
-                  height: 72,
-                  borderRadius: 9.62,
-                }}
-              >
-                <Image
-                  source={images.visa}
-                  style={{
-                    width: 40.7,
-                    height: 13.2,
-                  }}
-                  resizeMode="contain"
-                />
-              </Pressable>
-
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: "Regular-Sen",
-                  color: "#464E57",
-                  marginTop: 5,
-                }}
-              >
-                Visa Card
-              </Text>
-
-              {paymentMethod === "visa" && (
-                <Image
-                  source={icons.activePayment}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                  }}
-                />
-              )}
-            </View>
-
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                position: "relative",
-              }}
-            >
-              <Pressable
-                onPress={() => setPaymentMethod("master")}
-                style={{
-                  backgroundColor:
-                    paymentMethod === "master" ? colors.white : "#F0F5FA",
-                  borderWidth: 2,
-                  borderColor:
-                    paymentMethod === "master"
-                      ? colors.primaryBg
-                      : colors.white,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 85,
-                  height: 72,
-                  borderRadius: 9.62,
-                }}
-              >
-                <Image
-                  source={images.masterCard}
-                  style={{
-                    width: 32.22,
-                    height: 24.79,
-                  }}
-                  resizeMode="contain"
-                />
-              </Pressable>
-
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: "Regular-Sen",
-                  color: "#464E57",
-                  marginTop: 5,
-                }}
-              >
-                Master Card
-              </Text>
-
-              {paymentMethod === "master" && (
-                <Image
-                  source={icons.activePayment}
-                  style={{
-                    width: 24,
-                    height: 24,
-                    position: "absolute",
-                    top: -5,
-                    right: -5,
-                  }}
-                />
-              )}
-            </View>
-          </View> */}
+          />
+         </View>
 
           <View style={{ position: "absolute", bottom: 60, width: "100%" }}>
             <View
@@ -306,14 +181,15 @@ const Payment = () => {
                   authorization:
                     "FLWPUBK_TEST-6475cbf72a720613da57b786be2f2604-X",
                   customer: {
-                    email: userInfo?.email,
+                    // Update & debug this redux redundancy
+                    email: 'chriswebdev@gmail.com',
                   },
                   amount: cartSubTotal,
                   currency: "NGN",
                   payment_options: "card",
                 }}
                 customButton={(props) => (
-                  <Pressable
+                  <TouchableOpacity
                     {...props}
                     style={{
                       width: "100%",
@@ -336,7 +212,7 @@ const Payment = () => {
                     >
                       Pay & Confirm
                     </Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 )}
               />
             )}

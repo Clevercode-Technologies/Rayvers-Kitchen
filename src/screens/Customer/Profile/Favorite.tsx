@@ -17,8 +17,9 @@ import {
 } from "../../../components/DEFAULTS";
 import { ItemCard } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store";
+import { deleteFavorite } from "../../../Redux/Splice/AppSplice";
 
 const Favorite = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -28,17 +29,19 @@ const Favorite = () => {
 
   const favorite = useSelector((state: RootState) => state.data.favorite);
 
+  const dispatch = useDispatch();
+
   const handleSearch = (searchQuery: string) => {
-  if (!searchQuery) return favorite;
-  
-  return favorite?.filter((event) =>
-    Object.values(event).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
-};
+    if (!searchQuery) return favorite;
+
+    return favorite?.filter((event) =>
+      Object.values(event).some(
+        (value) =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  };
 
   const searchResult = handleSearch(searchQuery);
 
@@ -119,7 +122,7 @@ const Favorite = () => {
               paddingBottom: 50,
             }}
           >
-            {favorite?.length === 0 && searchResult?.length === 0 && (
+            {/* {searchResult?.length === 0 && (
               <View
                 style={{
                   flex: 1,
@@ -141,8 +144,8 @@ const Favorite = () => {
                   </Text>
                 </View>
               </View>
-            )}
-            {searchQuery && favorite?.length !== 0 && searchResult?.length !== 0 && (
+            )} */}
+            {favorite && favorite.length !== 0 && (
               <View
                 style={{
                   flexDirection: "row",
@@ -152,10 +155,41 @@ const Favorite = () => {
                 }}
               >
                 {searchResult?.map((item, index) => (
-                  <View key={index}>
-                    <ItemCard item={item} />
+                  <View key={index} style={{ position: "relative" }}>
+                    <Pressable onPress={() => dispatch(deleteFavorite(item.id))}>
+                      <Image
+                        source={icons.delete}
+                        style={{
+                          width: 24,
+                          height: 24,
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          zIndex: 1,
+                        }}
+                      />
+                    </Pressable>
+                    <View style={{ zIndex: -1, marginHorizontal: 10 }}>
+                      <ItemCard item={item} />
+                    </View>
                   </View>
                 ))}
+              </View>
+            )}
+
+            {favorite && favorite?.length === 0  && (
+              <View style={{
+                borderWidth: 2,
+                borderColor: colors.tertiaryTxt,
+                borderStyle: 'dashed',
+                borderRadius: 12,
+                padding: 12,
+              }}>
+                <Text style={{
+                  fontSize: 18,
+                  textAlign: 'center',
+                  fontFamily: "Regular-Sen",
+                }}>When you like something, you'll find them here.</Text>
               </View>
             )}
           </View>
@@ -166,5 +200,3 @@ const Favorite = () => {
 };
 
 export default memo(Favorite);
-
-const styles = StyleSheet.create({});

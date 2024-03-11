@@ -10,14 +10,44 @@ import React, { useState } from "react";
 import { icons } from "../../../assets/icons";
 import { images } from "../../../assets/images";
 import { SCREEN_HEIGHT, SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
-import { Actionsheet, useDisclose } from "native-base";
+import { Actionsheet, Spinner, useDisclose } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import { OrderOngoingPayload } from "../../../type";
+import socket from "../../utils/socket";
+import { generateRandomNumber } from "../../utils/idGenerator";
 
-const TrackOrder = () => {
-  const [sheetHeight, setSheetHeight] = useState<number>(200);
+interface TrackOrderProps {
+  route: {
+    params: {
+      data: OrderOngoingPayload;
+    };
+  };
+}
+
+const TrackOrder: React.FC<TrackOrderProps> = ({ route }) => {
+  const { data: item } = route.params;
   const { isOpen, onOpen, onClose } = useDisclose();
 
+  const [driver, setDriver] = useState<number | null>(null);
+
+  // implement long polling
+  // check if the driver's id is available
+
+  // Mocking an actual driver every time
+  let driversList = ['David Bryam', 'Jonathan Miller', 'Osato Michael', 'Joseph Agedo', 'Adanuga Musa'];
+
   const navigation = useNavigation();
+
+  const createChatRoom = () => {
+    const room = {
+      id: generateRandomNumber(10),
+      name: driversList[Math.floor(Math.random() * 5)],
+      profilePic: images.logisticProfilePic,
+    };
+    socket.emit("createRoom", room);
+    // @ts-ignore
+    navigation.navigate('Notification', { tabState: 1 });
+  };
 
   return (
     <SafeAreaView
@@ -36,7 +66,7 @@ const TrackOrder = () => {
         }}
       >
         <Pressable
-        onPress={() => navigation.canGoBack() && navigation.goBack()}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
           style={{
             flexDirection: "row",
             alignItems: "center",
@@ -108,7 +138,7 @@ const TrackOrder = () => {
         >
           <View style={{ flexDirection: "row", width: "90%", marginTop: 24 }}>
             <Image
-              source={images.FoodItem_Potate}
+              source={{ uri: item?.dish?.images[0].file }}
               style={{
                 width: 63,
                 height: 63,
@@ -125,7 +155,7 @@ const TrackOrder = () => {
                   marginBottom: 5,
                 }}
               >
-                Uttora Coffee House
+                {item.dish.name}
               </Text>
               <Text
                 style={{
@@ -144,16 +174,7 @@ const TrackOrder = () => {
                   marginTop: 16,
                 }}
               >
-                2x Burger
-              </Text>
-              <Text
-                style={{
-                  color: "#646982",
-                  fontFamily: "SemiBold-Sen",
-                  fontSize: 13,
-                }}
-              >
-                4x Sanwitch
+                {item.quantity} Item{item.quantity > 1 ? "s" : ""}
               </Text>
             </View>
           </View>
@@ -287,7 +308,7 @@ const TrackOrder = () => {
                   }}
                 />
               </Pressable>
-              <Pressable onPress={() => alert("messaging...")}>
+              <Pressable onPress={createChatRoom}>
                 <Image
                   source={icons.chat}
                   style={{
@@ -299,7 +320,6 @@ const TrackOrder = () => {
               </Pressable>
             </View>
           </View>
-
 
           {/* Tracking indicators absolutely positioned */}
           <View
@@ -325,8 +345,23 @@ const TrackOrder = () => {
                 marginLeft: 8,
               }}
             />
+            <Spinner
+              style={{
+                width: 17,
+                height: 17,
+              }}
+              color={colors.primaryBg}
+            />
+            <View
+              style={{
+                width: 1,
+                height: 30,
+                backgroundColor: colors.grayText,
+                marginLeft: 8,
+              }}
+            />
             <Image
-              source={icons.loadingState}
+              source={icons.incomplete}
               style={{
                 width: 17,
                 height: 17,
@@ -339,30 +374,14 @@ const TrackOrder = () => {
                 height: 30,
                 backgroundColor: colors.grayText,
                 marginLeft: 8,
-            }}
+              }}
             />
             <Image
               source={icons.incomplete}
               style={{
                 width: 17,
                 height: 17,
-            }}
-              resizeMode="contain"
-            />
-            <View
-              style={{
-                width: 1,
-                height: 30,
-                backgroundColor: colors.grayText,
-                marginLeft: 8,
-            }}
-            />
-            <Image
-              source={icons.incomplete}
-              style={{
-                width: 17,
-                height: 17,
-            }}
+              }}
               resizeMode="contain"
             />
           </View>

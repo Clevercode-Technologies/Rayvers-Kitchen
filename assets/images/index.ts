@@ -50,5 +50,7 @@ export const images = {
     assignedDrivers1: require('./assigned-drivers-1.png'),
     assignedDrivers2: require('./assigned-drivers-2.png'),
     assignedDrivers3: require('./assigned-drivers-3.png'),
-    assignedDrivers4: require('./assigned-drivers-4.png')
+    assignedDrivers4: require('./assigned-drivers-4.png'),
+    emptyProfile: require('./empty_profile.png'),
+    shopImage: require('./shop-image.jpeg'),
 }
