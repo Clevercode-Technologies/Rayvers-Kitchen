@@ -1,7 +1,7 @@
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Home from "../../screens/Customer/Home/Home";
+import Home from "../../../screens/Customer/Home/Home";
 import {
   AddCard,
   AddNewAddress,
@@ -13,9 +13,9 @@ import {
   SearchResult,
   Success,
   TrackOrder,
-} from "../../screens";
-import Search from "../../screens/Customer/Search/Search";
-import MyOrders from "../../screens/Orders/MyOrders";
+} from "../../../screens";
+import Search from "../../../screens/Customer/Search/Search";
+import MyOrders from "../../../screens/Orders/MyOrders";
 
 const RootHomeStack = createNativeStackNavigator();
 

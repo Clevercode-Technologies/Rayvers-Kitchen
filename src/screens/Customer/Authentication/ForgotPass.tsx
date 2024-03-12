@@ -11,20 +11,20 @@ import {
   View,
 } from "react-native";
 import React, { memo, useState } from "react";
-import { images } from "../../../assets/images";
+import { images } from "../../../../assets/images";
 import {
   BASE_URL,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   colors,
-} from "../../components/DEFAULTS";
+} from "../../../components/DEFAULTS";
 import { Image } from "react-native";
-import { icons } from "../../../assets/icons";
-import { Button, TextInputs } from "../../components";
+import { icons } from "../../../../assets/icons";
+import { Button, TextInputs } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
-import { setUserId } from "../../Redux/Splice/AppSplice";
+import { RootState } from "../../../Redux/store";
+import { setUserId } from "../../../Redux/Splice/AppSplice";
 import { Modal, Spinner } from "native-base";
 
 const ForgotPass = () => {
@@ -89,7 +89,7 @@ const ForgotPass = () => {
       setError(error.message);
 
       setModalVisible(true);
-  
+
       setTimeout(() => {
         setModalVisible(false);
       }, 3000);
@@ -163,51 +163,51 @@ const ForgotPass = () => {
 
       {/* Modals here -----> */}
       <Modal
-          style={{ zIndex: 100 }}
-          isOpen={modalVisible}
-          onClose={setModalVisible}
-          size={"sm"}
-        >
-          <Modal.Content maxH="212">
-            <Modal.CloseButton />
-            <Modal.Body>
-              <View style={{ padding: 20, alignItems: "center" }}>
-                {message ? (
-                  <Image
-                    source={{
-                      uri: "https://firebasestorage.googleapis.com/v0/b/rayvers-kitchen.appspot.com/o/success.gif?alt=media&token=763dbeb2-c1f6-441c-9ef9-29d891ca3847",
-                    }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      marginBottom: 10,
-                    }}
-                  />
-                ) : error ? (
-                  <Image
-                    source={{
-                      uri: "https://firebasestorage.googleapis.com/v0/b/rayvers-kitchen.appspot.com/o/error.gif?alt=media&token=60359522-9bcb-473d-8d9a-6bf3d194692e",
-                    }}
-                    style={{
-                      width: 100,
-                      height: 100,
-                      marginBottom: 10,
-                    }}
-                  />
-                ) : null}
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "Regular-Sen",
-                    fontSize: 14,
+        style={{ zIndex: 100 }}
+        isOpen={modalVisible}
+        onClose={setModalVisible}
+        size={"sm"}
+      >
+        <Modal.Content maxH="212">
+          <Modal.CloseButton />
+          <Modal.Body>
+            <View style={{ padding: 20, alignItems: "center" }}>
+              {message ? (
+                <Image
+                  source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/rayvers-kitchen.appspot.com/o/success.gif?alt=media&token=763dbeb2-c1f6-441c-9ef9-29d891ca3847",
                   }}
-                >
-                  {error ? error : message ? message : ""}
-                </Text>
-              </View>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
+                  style={{
+                    width: 100,
+                    height: 100,
+                    marginBottom: 10,
+                  }}
+                />
+              ) : error ? (
+                <Image
+                  source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/rayvers-kitchen.appspot.com/o/error.gif?alt=media&token=60359522-9bcb-473d-8d9a-6bf3d194692e",
+                  }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    marginBottom: 10,
+                  }}
+                />
+              ) : null}
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontFamily: "Regular-Sen",
+                  fontSize: 14,
+                }}
+              >
+                {error ? error : message ? message : ""}
+              </Text>
+            </View>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </SafeAreaView>
   );
 };

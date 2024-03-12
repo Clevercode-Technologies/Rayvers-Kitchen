@@ -8,23 +8,59 @@ import {
   ScrollView,
   TextInput,
   Pressable,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import { images } from "../../../../assets/images";
 import {
+  BASE_URL,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   colors,
 } from "../../../components/DEFAULTS";
 import { icons } from "../../../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
-import { StatusBar } from "native-base";
+import { useDispatch, useSelector } from "react-redux";
+import { setAccessToken } from "../../../Redux/Splice/AppSplice";
+import { generateRandomNumber } from "../../../utils/idGenerator";
+import { RootState } from "../../../Redux/store";
+import { Button } from "../../../components";
+import { Spinner } from "native-base";
 
 export const Login = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [driverId, setDriverId] = useState<string>("");
+  const [driverPass, setDriverPass] = useState<string>("");
 
+  // UseHooks
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  // Redux States
+
+  const loginUser = async () => {
+    dispatch(setAccessToken(generateRandomNumber(25).toString()));
+    // setLoading(true);
+    // try {
+    //   const response = await fetch(`${BASE_URL}auth/driver/token`, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({}),
+    //   });
+
+    //   if(response.ok) {
+
+    //   } else {
+
+    //   }
+
+    // } catch (error: any) {
+    //   console.log(`Error: ${error.message}`);
+    //   setError(`Error: ${error.message}`);
+    // }
+  };
 
   return (
     <SafeAreaView
@@ -35,9 +71,9 @@ export const Login = () => {
         flex: 1,
       }}
     >
-      <StatusBar animated backgroundColor={"#121223"} barStyle={"light-content"} />
+      <StatusBar backgroundColor={"#121223"} barStyle={"light-content"} />
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Chef Login Header  */}
         <ImageBackground
           source={images.topArea}
@@ -71,7 +107,7 @@ export const Login = () => {
                 marginTop: 23,
               }}
             >
-              Login as Chef
+              Login as Driver
             </Text>
             <Text
               style={{
@@ -120,7 +156,7 @@ export const Login = () => {
                 textTransform: "uppercase",
               }}
             >
-              Kitchen ID
+              Driver ID
             </Text>
 
             <TextInput
@@ -145,7 +181,7 @@ export const Login = () => {
                 textTransform: "uppercase",
               }}
             >
-              kitchen password
+              Driver password
             </Text>
 
             <TextInput
@@ -163,52 +199,45 @@ export const Login = () => {
           </View>
 
           {/* LOgin Buttton */}
-          <Pressable
-            onPress={() => alert("Implement Login for Chef")}
+          <View
             style={{
-              marginTop: 20,
-              width: "100%",
-              height: 62,
-              backgroundColor: colors.primaryBg,
+              marginTop: 53,
+            }}
+          >
+            <Button loading={loading} onPress={loginUser} type="login" />
+            {error && (
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Regular-Sen",
+                  color: "red",
+                  marginTop: 5,
+                }}
+              >
+                {error}
+              </Text>
+            )}
+          </View>
+        </View>
+        {loading && (
+          <View
+            style={{
+              position: "absolute",
+              top: "35%",
+              bottom: "65%",
+              left: "40%",
+              right: "70%",
+              width: 100,
+              height: 100,
+              backgroundColor: "#121223",
               justifyContent: "center",
               alignItems: "center",
               borderRadius: 12,
             }}
           >
-            <Text
-              style={{
-                color: colors.white,
-                fontFamily: "SemiBold-Sen",
-                fontSize: 14,
-                textTransform: "uppercase",
-              }}
-            >
-              Login
-            </Text>
-          </Pressable>
-
-          <View style={{ marginTop: 12 }}>
-            <Text
-              style={{
-                fontFamily: "Regular-Sen",
-                fontSize: 14,
-                color: colors.abstractTxt,
-              }}
-            >
-              Don't have an approved account?{" "}
-              <Text
-                onPress={() =>
-                  alert(
-                    "Open website page containing creating a verified logistic account"
-                  )
-                }
-                style={{ color: "#3BB726" }}
-              >
-                Get One.
-              </Text>
-            </Text>
+            <Spinner color={colors.white} size="lg" />
           </View>
-        </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

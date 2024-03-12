@@ -141,4 +141,6 @@ export const icons = {
     arrBack: require('./arr_back.png'),
     chatPhone: require('./chat_phone.png'),
     message: require('./message.png'),
+    messageActive: require('./message-active.png'),
+    messageInactive: require('./message-inactive.png'),
 }

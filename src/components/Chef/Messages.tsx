@@ -77,57 +77,6 @@ const Messages = () => {
     });
   }, [socket]);
 
-  // console.log('hotMessages: ', hotMessages);
-
-  //👇🏻 Dummy list of rooms
-  // const rooms = [
-  //   {
-  //     id: "1",
-  //     name: "David Bryam",
-  //     profilePic: images.msg2,
-  //     messages: [
-  //       {
-  //         id: "1a",
-  //         text: "Hello guys, welcome!",
-  //         time: "07:50",
-  //         user: "Chris Imade",
-  //         read: false,
-  //         profilePic: images.msg1,
-  //       },
-  //       {
-  //         id: "1b",
-  //         text: "Hi Chris, thank you! 😇",
-  //         time: "08:50",
-  //         user: "David Bryam",
-  //         read: false,
-  //         profilePic: images.msg2,
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     id: "2",
-  //     name: "Jonathan Miller",
-  //     profilePic: images.msg3,
-  //     messages: [
-  //       {
-  //         id: "2a",
-  //         text: "Guys, who's awake? 🙏🏽",
-  //         time: "12:50",
-  //         user: "Chris Imade",
-  //         read: false,
-  //         profilePic: images.msg1,
-  //       },
-  //       {
-  //         id: "2b",
-  //         text: "What's up? 🧑🏻‍💻",
-  //         time: "03:50",
-  //         user: "Jonathan Miller",
-  //         read: false,
-  //         profilePic: images.msg3,
-  //       },
-  //     ],
-  //   },
-  // ];
 
   return (
     <View

@@ -16,8 +16,8 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: [
-    'token',
-    'userType',
+    // 'token',
+    // 'userType',
     'carts',
     'address',
     'userId',

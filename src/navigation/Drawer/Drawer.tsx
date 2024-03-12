@@ -12,10 +12,10 @@ import {
   DrawerItemList,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
-import Profile from "../Stacks/Profile";
-import Favourite from "../Stacks/Favourite";
-import Orders from "../Stacks/Orders";
-import Notification from "../Stacks/Notification";
+import Profile from "../Stacks/CustomerStacks/Profile";
+import Favourite from "../Stacks/CustomerStacks/Favourite";
+import Orders from "../Stacks/CustomerStacks/Orders";
+import Notification from "../Stacks/CustomerStacks/Notification";
 import { useNavigation } from "@react-navigation/native";
 import { BASE_URL, SCREEN_HEIGHT, colors } from "../../components/DEFAULTS";
 import { images } from "../../../assets/images";
@@ -25,7 +25,11 @@ import ChefAppTab from "../Tabs/ChefAppTab";
 import DriverAppTab from "../Tabs/DriverAppTab";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { resetCart, setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
+import {
+  resetCart,
+  setAccessToken,
+  setUserAddress,
+} from "../../Redux/Splice/AppSplice";
 import { Location } from "../../screens";
 import { userAddress } from "../../../type";
 
@@ -82,23 +86,23 @@ const CustomDrawerContent = (props) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           {userProfile?.image_url ? (
             <Image
-            source={{ uri: userProfile.image_url }}
-            style={{
-              width: 64.53,
-              height: 64.53,
-              borderRadius: 64.53
-            }}
-            resizeMode={"contain"}
-          />
+              source={{ uri: userProfile.image_url }}
+              style={{
+                width: 64.53,
+                height: 64.53,
+                borderRadius: 64.53,
+              }}
+              resizeMode={"contain"}
+            />
           ) : (
             <Image
-            source={images.profileDemo}
-            style={{
-              width: 64.53,
-              height: 64.53,
-            }}
-            resizeMode={"contain"}
-          />
+              source={images.profileDemo}
+              style={{
+                width: 64.53,
+                height: 64.53,
+              }}
+              resizeMode={"contain"}
+            />
           )}
           <View style={{ marginLeft: 23 }}>
             <Text
@@ -109,7 +113,7 @@ const CustomDrawerContent = (props) => {
                 marginBottom: 5,
               }}
             >
-              {userProfile?.name ? userProfile.name : 'Dear Customer'}
+              {userProfile?.name ? userProfile.name : "Dear Customer"}
             </Text>
             <Text
               style={{
@@ -118,7 +122,9 @@ const CustomDrawerContent = (props) => {
                 fontFamily: "Regular-Sen",
               }}
             >
-              {userProfile?.bio ? userProfile.bio : 'Welcome to Rayvers Kitchen esteemed guest 😇'}
+              {userProfile?.bio
+                ? userProfile.bio
+                : "Welcome to Rayvers Kitchen esteemed guest 😇"}
             </Text>
           </View>
         </View>
@@ -289,7 +295,7 @@ const CustomDrawerContent = (props) => {
         </Pressable>
         <Pressable
           // @ts-ignore
-          onPress={() => navigation.navigate('Notification', { tabState: 1 })}
+          onPress={() => navigation.navigate("Notification", { tabState: 1 })}
           onPressIn={() => setMessage(true)}
           onPressOut={() => setMessage(false)}
           style={{
@@ -390,7 +396,17 @@ const DrawerNavigation = (props) => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
-      initialRouteName={address === null ? "Location" : "AppTabs"}
+      initialRouteName={
+        (!address || address === null)
+          ? "Location"
+          : userType === "Customer"
+          ? "AppTabs"
+          : userType === "Chef"
+          ? "ChefTabs"
+          : userType === "Driver"
+          ? "DriverTabs"
+          : "Location"
+      }
       defaultStatus={"closed"}
       screenOptions={() => ({
         headerShown: false,
@@ -432,7 +448,7 @@ const DrawerNavigation = (props) => {
           // @ts-ignore
           component={ChefAppTab}
         />
-      ) : (
+      ) : userType === "Driver" ? (
         <Drawer.Screen
           options={() => ({
             drawerActiveBackgroundColor: "white",
@@ -446,7 +462,7 @@ const DrawerNavigation = (props) => {
           // @ts-ignore
           component={DriverAppTab}
         />
-      )}
+      ) : null}
       <Drawer.Screen name="Profile" component={Profile} />
       <Drawer.Screen name="Favorite" component={Favourite} />
       <Drawer.Screen name="Orders" component={Orders} />

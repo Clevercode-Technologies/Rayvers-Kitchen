@@ -60,7 +60,7 @@ const NotificationsTabs: React.FC<NotificationProps> = ({ activeTab, setActiveTa
             color: activeTab === 1 ? colors.primaryBg : "#CED7DF",
           }}
         >
-          Messages(3)
+          Messages
         </Text>
       </Pressable>
     </View>
