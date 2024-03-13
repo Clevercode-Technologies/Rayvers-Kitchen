@@ -11,19 +11,19 @@ import {
   View,
 } from "react-native";
 import React, { memo, useEffect, useRef, useState } from "react";
-import { images } from "../../../assets/images";
+import { images } from "../../../../assets/images";
 import {
   BASE_URL,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   colors,
-} from "../../components/DEFAULTS";
+} from "../../../components/DEFAULTS";
 import { Image } from "react-native";
-import { icons } from "../../../assets/icons";
-import { Button, TextInputs } from "../../components";
+import { icons } from "../../../../assets/icons";
+import { Button, TextInputs } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { RootState } from "../../Redux/store";
+import { RootState } from "../../../Redux/store";
 import { Modal, Spinner } from "native-base";
 
 interface VerifyCodeProps {
@@ -227,7 +227,7 @@ const VerifyCode: React.FC<VerifyCodeProps> = ({ route }) => {
             setModalVisible(false);
 
             // @ts-ignore
-            navigation.navigate('Login');
+            navigation.navigate("Login");
           }, 3000);
         }
       } else {
@@ -359,7 +359,7 @@ const VerifyCode: React.FC<VerifyCodeProps> = ({ route }) => {
             />
           </View>
         </View>
-        
+
         {/* Show verification of code spinner */}
         {loading && (
           <View

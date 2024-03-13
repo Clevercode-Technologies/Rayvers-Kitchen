@@ -629,7 +629,7 @@ export const slideData: SlideData[] = [
   },
   {
     id: 4,
-    preview: images.onboardThree,
+    preview: images.onboardFour,
     title: "Journey to Your Doorstep",
     desc: "Experience the joy of free delivery! Your favorite foods, delivered to your door—because great tastes should come to you effortlessly.",
   },

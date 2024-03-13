@@ -75,7 +75,7 @@ const Onboard = () => {
     }
 
   return (
-      <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
+      <SafeAreaView style={{ backgroundColor: colors.white, flex: 1, height: SCREEN_HEIGHT }}>
         <StatusBar backgroundColor={'white'} barStyle={'light-content'} />
         <View style={styles.container}>
            <Animated.FlatList 
@@ -122,7 +122,7 @@ const Onboard = () => {
                 alignItems: 'center',
                 flex: 20
            }}>
-            <View style={{ marginTop: 32, marginBottom: 69 }}>
+            <View style={{ marginTop: 32, marginBottom: 29 }}>
                 <Indicator />
             </View>
             <Pressable

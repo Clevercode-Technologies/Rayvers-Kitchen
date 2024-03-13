@@ -11,43 +11,38 @@ import {
   View,
 } from "react-native";
 import React, { memo, useState } from "react";
-import { images } from "../../../assets/images";
+import { images } from "../../../../assets/images";
 import {
   BASE_URL,
   SCREEN_HEIGHT,
   SCREEN_WIDTH,
   colors,
-} from "../../components/DEFAULTS";
+} from "../../../components/DEFAULTS";
 import { Image } from "react-native";
-import { icons } from "../../../assets/icons";
-import { Button, TextInputs } from "../../components";
+import { icons } from "../../../../assets/icons";
+import { Button, TextInputs } from "../../../components";
 import { useNavigation } from "@react-navigation/native";
-import { RootState } from "../../Redux/store";
 import { useDispatch, useSelector } from "react-redux";
-import { Spinner } from "native-base";
-import { setAccessToken } from "../../Redux/Splice/AppSplice";
+import { RootState } from "../../../Redux/store";
+import { Modal, Spinner } from "native-base";
+import { setUserId, setUserInfo } from "../../../Redux/Splice/AppSplice";
 
-const Login = () => {
-  const [remember, setRemember] = useState<boolean>(false);
-  const name = useSelector((state: RootState) => state.data.name);
+const Register = () => {
   const email = useSelector((state: RootState) => state.data.email);
   const password = useSelector((state: RootState) => state.data.password);
-  const [loading, setLoading] = useState<boolean>(false);
+  const rePassword = useSelector((state: RootState) => state.data.rePassword);
+  const name = useSelector((state: RootState) => state.data.name);
   const [error, setError] = useState<string | null>(null);
-  console.log("name: ", name, "email: ", email, "password: ", password);
-
-  // Profile Update Begins
-  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
-  // Profile Update Ends
-
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const loginUser = async () => {
+  const handleRegistration = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}auth/token/`, {
+      const response = await fetch(`${BASE_URL}auth/users/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -55,64 +50,49 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-        if(response.ok) {
-          setLoading(false);
-          try {
-            const responseBody = await response.json();
-            if(response.status === 200 && responseBody.token) {
-              const token = responseBody.token;
-              if(name.length > 0) {
-                await updateProfile(token);
-              } else {
-                dispatch(setAccessToken(token));
-              }
-            }
-          } catch (error) {
-            
-          }
-        }  else {
-          setLoading(false);
-          try {
-            const responseBody = await response.json(); // Parse the JSON response
-            if (response.status === 400 && responseBody.non_field_errors) {
-              setError(responseBody.non_field_errors[0]);
-            } else {
-              setError('An error occurred. Please try again.');
-            }
-          } catch (error: any) {
-            setLoading(false);
-            console.error(error);
-            setError(`Login Error: ${error.message}`);
-          }
-        } 
-    } catch (error) {}
-  };
-
-  const updateProfile = async (token: string) => {
-    setLoadingUpdate(true);
-    try {
-      const response = await fetch(`${BASE_URL}auth/users/me/`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`,
-        },
-        body: JSON.stringify({ name }),
-      })
-      
-      if(response.ok) {
+      if (response.ok) {
         setLoading(false);
-        if(response.status === 201) {
-          dispatch(setAccessToken(token));
+        if (response.status === 201) {
+          // Successful registration, navigate to Verify Code screen
+          const responseBody = await response.json();
+          console.log(responseBody);
+          if (response.status === 201 && responseBody.user_id) {
+            setModalVisible(true);
+
+            dispatch(setUserId(responseBody.user_id));
+            dispatch(setUserInfo({ name, email }));
+          }
+          setTimeout(() => {
+            setModalVisible(false);
+            // @ts-ignore
+            navigation.navigate("VerifyCode");
+          }, 3000);
         }
-      } else {
-        dispatch(setAccessToken(token));
       }
-    } catch (error) {
-      setLoading(false);
+      // else {
+      //   setLoading(false);
+      //   try {
+      //     const responseBody = await response.json(); // Parse the JSON response
+      //     // console.log(responseBody);
+      //     if (response.status === 400 && responseBody.email) {
+      //       setError(responseBody.email[0]);
+      //     } else {
+      //       setError("An error occurred. Please try again.");
+      //     }
+      //   } catch (error) {
+      //     console.error("Error parsing JSON:", error);
+      //     setError("Unexpected error occurred. Please try again.");
+      //   }
+      // }
+      // store token temporarily and use for the next phase
+      // update profile
+      // make token global
+    } catch (error: any) {
       console.log(error);
+      setError(`Sign Up Error: ${error.message}`);
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView
@@ -138,15 +118,17 @@ const Login = () => {
           >
             <Image source={icons.back} style={{ width: 45, height: 45 }} />
           </Pressable>
-          <Text style={styles.majorTxt}>Log In</Text>
-          <Text style={styles.minorTxt}>
-            Please sign in to your existing account
-          </Text>
+          <Text style={styles.majorTxt}>Sign Up</Text>
+          <Text style={styles.minorTxt}>Please sign up to get started</Text>
         </ImageBackground>
 
-        {/* Input Fields */}
         <View style={styles.mainContent}>
+          {/* Input Fields */}
           <View>
+            <Text style={styles.inputLabel}>Name</Text>
+            <TextInputs type="name" />
+          </View>
+          <View style={{ marginTop: 20.5 }}>
             <Text style={styles.inputLabel}>Email</Text>
             <TextInputs type="email" />
           </View>
@@ -154,61 +136,29 @@ const Login = () => {
             <Text style={styles.inputLabel}>Password</Text>
             <TextInputs type="password" />
           </View>
-
-          {/* Remember Me */}
-          <View
-            style={{
-              marginTop: 24,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TouchableOpacity
-                onPress={() => setRemember((prevState) => !prevState)}
-                style={{
-                  borderWidth: 2,
-                  borderColor: colors.strokeColor,
-                  width: 20,
-                  height: 20,
-                  borderRadius: 5,
-                  marginRight: 10,
-                  backgroundColor: remember ? colors.primaryBg : colors.white,
-                }}
-              ></TouchableOpacity>
-
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontFamily: "Regular-Sen",
-                  color: colors.secondaryTxt,
-                }}
-              >
-                Remember me
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                // @ts-ignore
-                navigation.navigate("ForgotPass");
-              }}
-            >
-              <Text style={styles.forgotTxt}>Forgot Password</Text>
-            </TouchableOpacity>
+          <View style={{ marginTop: 20.5 }}>
+            <Text style={styles.inputLabel}>Re-Type Password</Text>
+            <TextInputs type="re-password" />
           </View>
 
           {/* Authenticate button */}
           <View style={{ marginTop: 53 }}>
-            <Button loading={loading} onPress={loginUser} type="login" />
+            <Button
+              onPress={handleRegistration}
+              loading={loading}
+              type="register"
+            />
             {error && (
-              <Text style={{
-                fontSize: 12,
-                fontFamily: 'Regular-Sen',
-                color: 'red',
-                marginTop: 5
-              }}>{error}</Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Regular-Sen",
+                  color: "red",
+                  marginTop: 5,
+                }}
+              >
+                {error}
+              </Text>
             )}
           </View>
 
@@ -230,7 +180,7 @@ const Login = () => {
                 marginTop: 38,
               }}
             >
-              Don't have an account?
+              Already have an account?
               <View style={{ width: 10 }} />
               <Text
                 style={{
@@ -241,9 +191,9 @@ const Login = () => {
                   textTransform: "uppercase",
                 }}
                 // @ts-ignore
-                onPress={() => navigation.navigate("Register")}
+                onPress={() => navigation.navigate("Login")}
               >
-                SIGN UP
+                Sign In
               </Text>
             </Text>
           </View>
@@ -313,7 +263,6 @@ const Login = () => {
             </View>
           </View> */}
         </View>
-
         {loading && (
           <View
             style={{
@@ -333,32 +282,45 @@ const Login = () => {
             <Spinner color={colors.white} size="lg" />
           </View>
         )}
-        {loadingUpdate && (
-          <View
-            style={{
-              position: "absolute",
-              top: "35%",
-              bottom: "65%",
-              left: "40%",
-              right: "70%",
-              width: 100,
-              height: 100,
-              backgroundColor: "#121223",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 12,
-            }}
-          >
-            <Spinner color={colors.white} size="lg" />
-            <Text style={{ color: colors.white, fontFamily: 'Regular-Sen', fontSize: 10, marginTop: 10 }}>Updating User</Text>
-          </View>
-        )}
+        <Modal
+          style={{ zIndex: 100 }}
+          isOpen={modalVisible}
+          onClose={setModalVisible}
+          size={"sm"}
+        >
+          <Modal.Content maxH="212">
+            <Modal.CloseButton />
+            <Modal.Body>
+              <View style={{ padding: 20, alignItems: "center" }}>
+                <Image
+                  source={{
+                    uri: "https://gifdb.com/images/high/email-icon-notification-cx5j6sw64pod96cr.gif",
+                  }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    marginBottom: 10,
+                  }}
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontFamily: "Regular-Sen",
+                    fontSize: 14,
+                  }}
+                >
+                  A verification code has been sent to your mail.
+                </Text>
+              </View>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default memo(Login);
+export default memo(Register);
 
 const styles = StyleSheet.create({
   mainContent: {
