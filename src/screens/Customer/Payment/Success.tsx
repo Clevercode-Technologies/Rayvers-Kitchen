@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Pressable
+  Pressable,
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -25,6 +25,30 @@ const Success = () => {
         marginHorizontal: 24,
       }}
     >
+      <Pressable
+        onPress={() => navigation.canGoBack() && navigation.goBack()}
+        style={{ flexDirection: "row", alignItems: "center", position: 'absolute', top: 54, left: 0 }}
+      >
+        <Image
+          source={icons.backArrDark}
+          style={{
+            width: 45,
+            height: 45,
+          }}
+          resizeMode="contain"
+        />
+
+        <Text
+          style={{
+            color: "#181C2E",
+            fontSize: 17,
+            fontFamily: "Regular-Sen",
+            marginLeft: 18,
+          }}
+        >
+          Success
+        </Text>
+      </Pressable>
       <View style={{}}>
         <Image
           source={icons.successVerified}
@@ -59,14 +83,14 @@ const Success = () => {
             lineHeight: 24,
           }}
         >
-          You successfully maked a payment, enjoy our service!!
+          You successfully made a payment, enjoy our service!!
         </Text>
       </View>
 
       {/* Bottom Button */}
       <Pressable
         // @ts-ignore
-        onPress={() => navigation.navigate("TrackOrder")}
+        onPress={() => navigation.navigate("MyOrders")}
         style={{
           width: "100%",
           height: 63,

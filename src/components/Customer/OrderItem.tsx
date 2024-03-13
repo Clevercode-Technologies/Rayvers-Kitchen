@@ -6,29 +6,74 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
-import { SCREEN_WIDTH, colors } from "../DEFAULTS";
+import React, { memo, useState } from "react";
+import { BASE_URL, SCREEN_WIDTH, colors } from "../DEFAULTS";
 import { images } from "../../../assets/images";
 import { generateRandomNumber } from "../../utils/idGenerator";
 import { formatNumber } from "../../utils/currencyFormatter";
-import { STATUS } from "../../DATA";
+import { useNavigation } from "@react-navigation/native";
+import { OrderOngoingPayload } from "../../../type";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../Redux/store";
+import { addCart } from "../../Redux/Splice/AppSplice";
 
 interface OrderItemProps {
-  data: {
-    id: number;
-    name: string;
-    category: string;
-    image: ImageSourcePropType;
-    price: number;
-    number: number;
-    date?: string;
-    time?: string;
-    status?: STATUS;
-  };
+  data: OrderOngoingPayload;
   type: string;
+  setCancelledLoading?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
+enum STATUS {
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  PENDING = "pending",
+}
+
+const OrderItem: React.FC<OrderItemProps> = ({
+  data,
+  type,
+  setCancelledLoading,
+}) => {
+  const [error, setError] = useState<any | null>("");
+  const [message, setMessage] = useState<string | null>("");
+
+  // Redux States
+  const token = useSelector((state: RootState) => state.data.token);
+
+  const cancelOrder = async () => {
+    setCancelledLoading && setCancelledLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}api/orderitems/${data.id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+        body: JSON.stringify({
+          status: STATUS.CANCELLED,
+        }),
+      });
+
+      if (response.ok) {
+        setMessage("Order Cancelled Successfully");
+        setError(null);
+        setCancelledLoading && setCancelledLoading(false);
+      } else {
+        setMessage(null);
+        setError("Failed to cancel order");
+        setCancelledLoading && setCancelledLoading(false);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+      setMessage(null);
+      setError(error.message);
+    }
+  };
+
+  const navigation = useNavigation();
+
+  const dispatch = useDispatch();
+
   return (
     <View
       style={{
@@ -43,14 +88,14 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
             color: colors.tertiaryTxt,
           }}
         >
-          {data.category}
+          {data.dish.get_category.name}
         </Text>
         {type === "history" && (
           <Text
             style={{
               fontSize: 14,
               fontFamily: "SemiBold-Sen",
-              color: data.status === "Completed" ? "#059C6A" : "#FF0000",
+              color: data.status === STATUS.COMPLETED ? "#059C6A" : "#FF0000",
               marginLeft: 28,
             }}
           >
@@ -75,7 +120,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
         }}
       >
         <Image
-          source={data.image}
+          source={{ uri: data.dish.images[0].file }}
           style={{
             width: 70,
             height: 70,
@@ -105,7 +150,7 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
                   color: colors.tertiaryTxt,
                 }}
               >
-                {data.name}
+                {data.dish.name}
               </Text>
             </Pressable>
             <Text
@@ -134,17 +179,17 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
                 color: colors.tertiaryTxt,
               }}
             >
-              ₦{formatNumber(data.price)}
+              ₦{formatNumber(data.dish.price)}
             </Text>
             <View
               style={{
                 width: 1,
                 height: "100%",
                 backgroundColor: "#CACCDA",
-                marginLeft: type === "history" ? 10 : 0,
+                marginHorizontal: 10,
               }}
             />
-            {type === "ongoing" && (
+            {
               <Text
                 style={{
                   color: "#6B6E82",
@@ -152,9 +197,9 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
                   fontFamily: "Regular-Sen",
                 }}
               >
-                {data.number.toString().padStart(2, "0")} Items
+                {data.quantity.toString().padStart(2, "0")} Items
               </Text>
-            )}
+            }
             {type === "history" && (
               <Text
                 style={{
@@ -165,14 +210,14 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
                   width: SCREEN_WIDTH / 2,
                 }}
               >
-                {data.date +
+                {/* {data.date +
                   "," +
                   " " +
                   data.time +
                   " · " +
                   data.number.toString().padStart(2, "0") +
                   " " +
-                  "Items"}
+                  "Items"} */}
               </Text>
             )}
           </View>
@@ -182,39 +227,67 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
       {/* bottom Buttons */}
       <View style={{ flexDirection: "row" }}>
         <Pressable
-          onPress={() =>
-            alert("Shows you the logistic locator screen for tracking")
-          }
+          onPress={() => {
+            if (type === "ongoing") {
+              // @ts-ignore
+              navigation.navigate("TrackOrder", { data });
+            } else if (type === "history") {
+              // @ts-ignore
+              navigation.navigate('FoodDetails', {data: data.dish})
+            }
+          }}
           style={{
-            backgroundColor: colors.primaryBg,
+            backgroundColor:
+              type === "ongoing" ? colors.primaryBg : colors.white,
             width: 139,
             height: 38,
             borderRadius: 8,
             justifyContent: "center",
             alignItems: "center",
             marginTop: 24,
+            borderWidth: type === "history" ? 1 : 0,
+            borderColor: colors.primaryBg,
           }}
         >
           <Text
             style={{
-              color: colors.white,
+              color: type === "ongoing" ? colors.white : colors.primaryBg,
               fontFamily: "SemiBold-Sen",
               fontSize: 12,
             }}
           >
-            Track Order
+            {type === "ongoing"
+              ? "Track Order"
+              : type === "history"
+              ? "View More"
+              : ""}
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => alert("Should cancel the order")}
+          onPress={() => {
+            if (type === "ongoing") {
+              cancelOrder();
+            } else if (type === "history") {
+              // @ts-ignore
+              dispatch(addCart({
+                itemCount: 1,
+                ...data.dish,
+                favourite: [],
+                category: 0,
+              }));
+              // @ts-ignore
+              navigation.navigate("Cart");
+            }
+          }}
           style={{
-            backgroundColor: colors.white,
+            backgroundColor:
+              type === "history" ? colors.primaryBg : colors.white,
             width: 139,
             height: 38,
             borderRadius: 8,
             justifyContent: "center",
             alignItems: "center",
-            borderWidth: 1,
+            borderWidth: type === "ongoing" ? 1 : 0,
             borderColor: colors.primaryBg,
             marginTop: 24,
             marginLeft: 50,
@@ -222,12 +295,12 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
         >
           <Text
             style={{
-              color: colors.primaryBg,
+              color: type === "history" ? colors.white : colors.primaryBg,
               fontFamily: "SemiBold-Sen",
               fontSize: 12,
             }}
           >
-            Cancel
+            {type === "ongoing" ? "Cancel" : "Re-Order"}
           </Text>
         </Pressable>
       </View>
@@ -235,6 +308,6 @@ const OrderItem: React.FC<OrderItemProps> = ({ data, type }) => {
   );
 };
 
-export default OrderItem;
+export default memo(OrderItem);
 
 const styles = StyleSheet.create({});

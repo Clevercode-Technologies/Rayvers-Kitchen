@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BASE_URL,
   SCREEN_HEIGHT,
@@ -23,26 +23,45 @@ import {
 } from "react-native-dynamic-skeletons";
 import { LinearGradient } from "expo-linear-gradient";
 import { generateRandomNumber } from "../../utils/idGenerator";
+import { Spinner } from "native-base";
+
+enum STATUS {
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  PENDING = "pending",
+}
 
 const Gradient = (props: GradientProps) => <LinearGradient {...props} />;
 
 const Ongoing = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const [CancelledLoading, setCancelledLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>("");
   const [ongoingOrders, setOngoingOrders] =
     useState<Array<OrderOngoingPayload> | null>(null);
+  const [unfilteredOrders, setUnfilteredOrders] =
+    useState<Array<OrderOngoingPayload> | null>(null);
 
-  console.log("ongoingOrders: ", ongoingOrders);
+  // console.log("ongoingOrders: ", ongoingOrders);
 
   // Redux State
   const token = useSelector((state: RootState) => state.data.token);
 
-  console.log('token: ', token);
+  useEffect(() => {
+    if (unfilteredOrders) {
+      const filteredOrders = unfilteredOrders.filter(
+        (order) => order.status === STATUS.PENDING
+      );
+      setOngoingOrders(filteredOrders);
+    }
+  }, [unfilteredOrders]);
+
+  console.log("token: ", token);
 
   const fetchOngoingOrder = async () => {
     setLoading(true);
     try {
-      const result = await fetch(`${BASE_URL}api/orderitems?options=ongoing`, {
+      const response = await fetch(`${BASE_URL}api/orderitems/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -50,50 +69,31 @@ const Ongoing = () => {
         },
       });
 
-      if (result.ok) {
+      if (response.ok) {
         setLoading(false);
-
-        const response = await result.json();
-        setOngoingOrders(response);
-        console.log(response);
+        const result = await response.json();
+        // console.log("result: ", result);
+        setUnfilteredOrders(result);
+        setError(null);
       } else {
-        const response = await result.json();
+        const res = await response.json();
         setLoading(false);
-        console.log(response.detail);
-        console.log(`Error: Something went wrong ${response.detail}`);
+        setOngoingOrders(null);
+        console.log(res);
       }
     } catch (error: any) {
-      console.log(`Error: ${error.message}`);
+      console.log(error.message);
+      setError(error.message);
     }
   };
 
-  const reFetch = async() => {
-    setLoading(true);
-    try {
-      const result = await fetch(`${BASE_URL}api/orderitems?options=ongoing`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      if (result.ok) {
-        setLoading(false);
-
-        const response = await result.json();
-        setOngoingOrders(response);
-        console.log(response);
-      } else {
-        const response = await result.json();
-        setLoading(false);
-        console.log(response.detail);
-        console.log(`Error: Something went wrong ${response.detail}`);
-      }
-    } catch (error: any) {
-      console.log(`Error: ${error.message}`);
-    }
+  const reFetch = async () => {
+    await fetchOngoingOrder();
   };
+
+  useEffect(() => {
+    fetchOngoingOrder();
+  }, []);
 
   return (
     <ScrollView
@@ -130,11 +130,81 @@ const Ongoing = () => {
             />
           </SkeletonContainer>
         ))}
-      {!loading && OngoingData.map((item, index) => (
-        <View style={{ marginTop: index !== 0 ? 24 : 0 }} key={index}>
-          <OrderItem type={"ongoing"} data={item} />
+      {!loading &&
+        ongoingOrders?.map((item, index) => (
+          <View style={{ marginTop: index !== 0 ? 24 : 0 }} key={index}>
+            <OrderItem
+              setCancelledLoading={setCancelledLoading}
+              type={"ongoing"}
+              data={item}
+            />
+          </View>
+        ))}
+      {!loading && (ongoingOrders?.length === 0 || ongoingOrders === null) && (
+        <View
+          style={{
+            borderRadius: 12,
+            borderWidth: 2,
+            borderStyle: "dashed",
+            padding: 12,
+            paddingVertical: 24,
+            width: SCREEN_WIDTH - 48,
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Regular-Sen",
+              fontSize: 18,
+              color: colors.primaryTxt,
+              textAlign: "center",
+            }}
+          >
+            You have no ongoing orders
+          </Text>
         </View>
-      ))}
+      )}
+      {error && (
+        <Text
+          style={{
+            fontSize: 12,
+            fontFamily: "Regular-Sen",
+            color: "red",
+            marginTop: 5,
+          }}
+        >
+          {error}
+        </Text>
+      )}
+      {CancelledLoading && (
+        <View
+          style={{
+            position: "absolute",
+            top: "35%",
+            bottom: "65%",
+            left: "40%",
+            right: "70%",
+            width: 150,
+            height: 100,
+            backgroundColor: "#121223",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: 12,
+          }}
+        >
+          <Spinner color={colors.white} size="lg" />
+          <Text
+            style={{
+              color: colors.white,
+              fontSize: 16,
+              fontFamily: "Regular-Sen",
+              marginTop: 15,
+            }}
+          >
+            Cancelling Order
+          </Text>
+        </View>
+      )}
+      <View style={{ height: 100, width: SCREEN_WIDTH - 13 }} />
     </ScrollView>
   );
 };

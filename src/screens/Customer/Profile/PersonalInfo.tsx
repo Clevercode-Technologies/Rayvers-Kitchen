@@ -1,6 +1,7 @@
 import {
   Image,
   Pressable,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,17 +10,41 @@ import {
 } from "react-native";
 import React from "react";
 import { icons } from "../../../../assets/icons";
-import { colors } from "../../../components/DEFAULTS";
+import { SCREEN_WIDTH, colors } from "../../../components/DEFAULTS";
 import { images } from "../../../../assets/images";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store";
+import { useProfile } from "../../../config/useProfile";
+import {
+  GradientProps,
+  SkeletonContainer,
+} from "react-native-dynamic-skeletons";
+import { LinearGradient } from "expo-linear-gradient";
+import { generateRandomNumber } from "../../../utils/idGenerator";
+const Gradient = (props: GradientProps) => <LinearGradient {...props} />;
 
 const PersonalInfo = () => {
   const navigation = useNavigation();
+  const user = useSelector((state: RootState) => state.data.userProfile);
+  const email = useSelector((state: RootState) => state.data.email);
+  const { error, loading, profile, reFetch } = useProfile();
 
   return (
     <SafeAreaView style={{ backgroundColor: colors.white, flex: 1 }}>
       <View style={{ marginHorizontal: 24, flex: 1 }}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={reFetch}
+              tintColor={colors.primaryBg}
+              enabled={true}
+              style={{}}
+            />
+          }
+        >
           {/* Header - Profile Info */}
           <View
             style={{
@@ -53,9 +78,10 @@ const PersonalInfo = () => {
               </Text>
             </Pressable>
 
-            <Pressable 
-            // @ts-ignore
-            onPress={() => navigation.navigate('EditProfile')}>
+            <Pressable
+              // @ts-ignore
+              onPress={() => navigation.navigate("EditProfile")}
+            >
               <Text
                 style={{
                   fontSize: 14,
@@ -76,14 +102,26 @@ const PersonalInfo = () => {
               marginTop: 24,
             }}
           >
-            <Image
-              source={images.myProfile}
-              style={{
-                width: 102.95,
-                height: 102.95,
-              }}
-              resizeMode="contain"
-            />
+            {profile?.image_url ? (
+              <Image
+                source={{ uri: profile.image_url }}
+                style={{
+                  width: 102.95,
+                  height: 102.95,
+                  borderRadius: 102.95 / 2,
+                }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={images.emptyProfile}
+                style={{
+                  width: 102.95,
+                  height: 102.95,
+                }}
+                resizeMode="contain"
+              />
+            )}
 
             <View
               style={{
@@ -98,7 +136,7 @@ const PersonalInfo = () => {
                   marginBottom: 8,
                 }}
               >
-                Vishal Khadok
+                {profile ? profile.name : "Dear Customer"}
               </Text>
               <Text
                 style={{
@@ -107,117 +145,110 @@ const PersonalInfo = () => {
                   fontFamily: "Regular-Sen",
                 }}
               >
-                I love fast food
+                {profile ? profile.bio : "Welcome to Rayvers Kitchen 😆"}
               </Text>
             </View>
           </View>
 
-          <View
-            style={{
-              padding: 20,
-              backgroundColor: "#F6F8FA",
-              borderRadius: 16,
-              marginTop: 30,
-            }}
-          >
-            <Pressable style={{ flexDirection: "row", marginBottom: 16 }}>
-              <Image
-                source={icons.personProfile}
+          {!loading && (
+            <>
+              <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  marginRight: 14,
+                  padding: 20,
+                  backgroundColor: "#F6F8FA",
+                  borderRadius: 16,
+                  marginTop: 30,
                 }}
-              />
+              >
+                <Pressable style={{ flexDirection: "row", marginBottom: 16 }}>
+                  <Image
+                    source={icons.personProfile}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      marginRight: 14,
+                    }}
+                  />
 
-              <View>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: colors.primaryTxt,
-                    fontFamily: "Regular-Sen",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Full Name
-                </Text>
-                <Text
-                  style={{
-                    color: "#6B6E82",
-                    fontSize: 14,
-                    fontFamily: "Regular-Sen",
-                  }}
-                >
-                  Vishal Khadok
-                </Text>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: colors.primaryTxt,
+                        fontFamily: "Regular-Sen",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Full Name
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#6B6E82",
+                        fontSize: 14,
+                        fontFamily: "Regular-Sen",
+                      }}
+                    >
+                      {profile ? profile.name : "Dear Customer"}
+                    </Text>
+                  </View>
+                </Pressable>
+
+                <Pressable style={{ flexDirection: "row", marginBottom: 16 }}>
+                  <Image
+                    source={icons.phoneIconProfile}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      marginRight: 14,
+                    }}
+                  />
+
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: colors.primaryTxt,
+                        fontFamily: "Regular-Sen",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Phone Number
+                    </Text>
+                    <Text
+                      style={{
+                        color: "#6B6E82",
+                        fontSize: 14,
+                        fontFamily: "Regular-Sen",
+                      }}
+                    >
+                      408-841-0926
+                    </Text>
+                  </View>
+                </Pressable>
               </View>
-            </Pressable>
-
-            <Pressable style={{ flexDirection: "row", marginBottom: 16 }}>
-              <Image
-                source={icons.mailIconProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                  marginRight: 14,
-                }}
-              />
-
-              <View>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: colors.primaryTxt,
-                    fontFamily: "Regular-Sen",
-                    textTransform: "uppercase",
-                  }}
+            </>
+          )}
+          <View style={{ marginTop: 24 }}>
+            {loading &&
+              new Array(2).fill(0).map((_) => (
+                <SkeletonContainer
+                  animationType="leftRight"
+                  Gradient={Gradient}
+                  isLoading={loading}
+                  duration={2000}
+                  style={{}}
+                  key={generateRandomNumber(4)}
                 >
-                  Email
-                </Text>
-                <Text
-                  style={{
-                    color: "#6B6E82",
-                    fontSize: 14,
-                    fontFamily: "Regular-Sen",
-                  }}
-                >
-                  hello@halallab.co
-                </Text>
-              </View>
-            </Pressable>
-
-            <Pressable style={{ flexDirection: "row", marginBottom: 16 }}>
-              <Image
-                source={icons.phoneIconProfile}
-                style={{
-                  width: 40,
-                  height: 40,
-                  marginRight: 14,
-                }}
-              />
-
-              <View>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: colors.primaryTxt,
-                    fontFamily: "Regular-Sen",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Phone Number
-                </Text>
-                <Text
-                  style={{
-                    color: "#6B6E82",
-                    fontSize: 14,
-                    fontFamily: "Regular-Sen",
-                  }}
-                >
-                  408-841-0926
-                </Text>
-              </View>
-            </Pressable>
+                  <View
+                    style={{
+                      width: SCREEN_WIDTH - 48,
+                      height: 150,
+                      marginBottom: 21,
+                      borderRadius: 15,
+                    }}
+                  />
+                </SkeletonContainer>
+              ))}
           </View>
         </ScrollView>
       </View>

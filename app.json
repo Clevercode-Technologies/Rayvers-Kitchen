@@ -11,32 +11,41 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rayvers.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.rayvers.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugin": [
       "expo-image-picker",
+      {
+        "photosPermission": "The app accesses your photos to let you share items with the community."
+      },
+      [
+        "expo-location",
         {
-          "photosPermission": "The app accesses your photos to let you share items with the community."
-        },
-        [
-          "expo-location",
-          {
-            "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-          }
-        ]
-    ]
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ]
+    ],
+    "extra": {
+      "oneSignalAppId": "b1074400-e95f-45be-9f84-60ca19e86821"
+    }
   }
 }

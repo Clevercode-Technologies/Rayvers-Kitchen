@@ -21,7 +21,6 @@ interface FloatingCartActionProps {
 }
 
 const FloatingCartAction: React.FC<FloatingCartActionProps> = ({ item }) => {
-  const [itemCount, setItemCount] = useState<number>(1);
   const [showToast, setShowToast] = useState<boolean>(false);
 
   const dispatch = useDispatch();
@@ -45,88 +44,6 @@ const FloatingCartAction: React.FC<FloatingCartActionProps> = ({ item }) => {
         zIndex: 10,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text
-          style={{ fontSize: 28, fontFamily: "Regular-Sen", color: "#181C2E" }}
-        >
-          ₦{formatNumber(Number(item.price) * itemCount)}
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: "#121223",
-            width: 135,
-            height: 55,
-            borderRadius: 50,
-            justifyContent: "space-around",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            disabled={itemCount <= 1}
-            onPress={() =>
-              setItemCount((prevCount) => (prevCount >= 2 ? prevCount - 1 : 1))
-            }
-            style={{
-              backgroundColor: itemCount <= 1 ? colors.primaryBg : "#41414F",
-              width: 30,
-              height: 30,
-              borderRadius: 30 / 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Bold-Sen",
-                fontSize: 20,
-                color: colors.white,
-              }}
-            >
-              -
-            </Text>
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              fontFamily: "Bold-Sen",
-              color: colors.white,
-              fontSize: 16,
-            }}
-          >
-            {itemCount}
-          </Text>
-
-          <TouchableOpacity
-            onPress={() => setItemCount((prevCount) => prevCount + 1)}
-            style={{
-              backgroundColor: "#41414F",
-              width: 30,
-              height: 30,
-              borderRadius: 30 / 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: "Bold-Sen",
-                fontSize: 20,
-                color: colors.white,
-              }}
-            >
-              +
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
       {/* Final touch - Cart btn */}
       <Pressable
         onPress={() => {

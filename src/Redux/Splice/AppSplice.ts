@@ -4,8 +4,10 @@ import {
   CardDetails,
   Cart,
   Categories,
+  ChatMessage,
   DeleteRecentProps,
   Dish,
+  FetchedMessage,
   ProfileType,
   RecentPayload,
   RecentType,
@@ -45,6 +47,8 @@ interface AppState {
   dishes: Array<Dish> | null;
   categories: Categories[] | null;
   categoryQuery: string;
+  chatMsg: string;
+  chats: FetchedMessage[];
 }
 
 const initialState: AppState = {
@@ -54,7 +58,7 @@ const initialState: AppState = {
   availableCards: null,
   email: "",
   password: "",
-  name: "",
+  name: "Chris Imade",
   rePassword: "",
   userProfile: null,
   profileName: "",
@@ -68,12 +72,17 @@ const initialState: AppState = {
   carouselImages: null,
   favorite: null,
   userId: null,
-  userInfo: null,
+  userInfo: {
+    name: "Chris Imade",
+    email: "chriswebdev@gmail.com",
+  },
   userAddress: null,
   restaurants: null,
   dishes: null,
   categories: null,
   categoryQuery: "default",
+  chatMsg: "",
+  chats: [],
 };
 
 export const appSlice = createSlice({
@@ -92,8 +101,7 @@ export const appSlice = createSlice({
     //   );
     // }
     addCard: (state, action: PayloadAction<CardDetails>) => {
-      console.log('cards: ', state.availableCards);
-      if(state.availableCards !== null) {
+      if (state.availableCards !== null) {
         const newCard = [...state.availableCards, action.payload];
         state.availableCards = newCard;
       } else {
@@ -273,6 +281,22 @@ export const appSlice = createSlice({
     setCategoryQuery: (state, action: PayloadAction<string>) => {
       state.categoryQuery = action.payload;
     },
+    resetCart: (state) => {
+      state.carts = null;
+    },
+    setUserProfile: (state, action: PayloadAction<ProfileType>) => {
+      state.userProfile = action.payload;
+    },
+    updateChatMsg: (state, action: PayloadAction<string>) => {
+      state.chatMsg = action.payload;
+    },
+    updateChats: (state, action: PayloadAction<FetchedMessage[]>) => {
+      state.chats = action.payload;
+    },
+    appendChat: (state, action: PayloadAction<FetchedMessage>) => {
+      const newChats = [...state.chats, action.payload];
+      state.chats = newChats;
+    },
   },
 });
 
@@ -310,6 +334,11 @@ export const {
   setCategories,
   setCategoryQuery,
   resetCartSubTotal,
+  resetCart,
+  setUserProfile,
+  updateChatMsg,
+  updateChats,
+  appendChat,
 } = appSlice.actions;
 
 export default appSlice.reducer;

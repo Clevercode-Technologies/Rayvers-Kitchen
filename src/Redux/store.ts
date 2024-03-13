@@ -22,10 +22,15 @@ const persistConfig = {
     'address',
     'userId',
     'userInfo',
+    'userProfile',
     'userAddress',
     'restaurants',
     'dishes',
+    'restaurants',
     'availableCards',
+    'name',
+    'email',
+    'chats'
   ],
 };
 

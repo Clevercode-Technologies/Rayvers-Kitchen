@@ -15,6 +15,7 @@ import {
   TrackOrder,
 } from "../../screens";
 import Search from "../../screens/Customer/Search/Search";
+import MyOrders from "../../screens/Orders/MyOrders";
 
 const RootHomeStack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const HomeStack = () => {
       <RootHomeStack.Screen name="TrackOrder" component={TrackOrder} />
       <RootHomeStack.Screen name="AddNewAddress" component={AddNewAddress} />
       <RootHomeStack.Screen name="Address" component={Address} />
+      <RootHomeStack.Screen name="MyOrders" component={MyOrders} />
     </RootHomeStack.Navigator>
   );
 };

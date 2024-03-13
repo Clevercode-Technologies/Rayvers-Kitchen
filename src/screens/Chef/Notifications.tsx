@@ -7,7 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useLayoutEffect, useState } from "react";
 import { icons } from "../../../assets/icons";
 import { SCREEN_WIDTH, colors } from "../../components/DEFAULTS";
 import NotificationsTabs from "../../components/Chef/NotificationsTabs";
@@ -15,12 +15,34 @@ import Notifies from "../../components/Chef/Notifies";
 import Messages from "../../components/Chef/Messages";
 import { useNavigation } from "@react-navigation/native";
 
-const Notifications = () => {
+interface NotificationProps {
+  route: {
+    params: {
+      tabState: number;
+    };
+  };
+}
+
+const Notifications: React.FC<NotificationProps> = ({ route }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    if(route.params !== undefined) {
+      setActiveTab(route.params.tabState);
+    } else {
+      setActiveTab(0);
+    }
+  }, [route?.params?.tabState]);
+
   return (
-    <SafeAreaView style={{ marginTop: Platform.OS === "android" ? 25 : 0, backgroundColor: colors.white, flex: 1 }}>
+    <SafeAreaView
+      style={{
+        marginTop: Platform.OS === "android" ? 25 : 0,
+        backgroundColor: colors.white,
+        flex: 1,
+      }}
+    >
       <View style={{ marginHorizontal: 24, width: SCREEN_WIDTH }}>
         {/* header */}
         <Pressable
@@ -60,7 +82,9 @@ const Notifications = () => {
           />
         </View>
 
-        <View style={{ width: SCREEN_WIDTH - 48 }}>{activeTab === 0 ? <Notifies /> : <Messages />}</View>
+        <View style={{ width: SCREEN_WIDTH - 48 }}>
+          {activeTab === 0 ? <Notifies /> : <Messages />}
+        </View>
       </View>
     </SafeAreaView>
   );

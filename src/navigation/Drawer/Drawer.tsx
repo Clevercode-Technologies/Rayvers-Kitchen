@@ -25,19 +25,21 @@ import ChefAppTab from "../Tabs/ChefAppTab";
 import DriverAppTab from "../Tabs/DriverAppTab";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../Redux/store";
-import { setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
+import { resetCart, setAccessToken, setUserAddress } from "../../Redux/Splice/AppSplice";
 import { Location } from "../../screens";
 import { userAddress } from "../../../type";
 
 const Drawer = createDrawerNavigator();
 // @ts-ignore
 const CustomDrawerContent = (props) => {
-  const [profileFocus, setProfileFocus] = useState<boolean>();
-  const [favoriteFocus, setFavoriteFocus] = useState<boolean>();
-  const [ordersFocus, setOrdersFocus] = useState<boolean>();
-  const [notification, setNotification] = useState<boolean>();
+  const [profileFocus, setProfileFocus] = useState<boolean>(false);
+  const [favoriteFocus, setFavoriteFocus] = useState<boolean>(false);
+  const [ordersFocus, setOrdersFocus] = useState<boolean>(false);
+  const [notification, setNotification] = useState<boolean>(false);
+  const [message, setMessage] = useState<boolean>(false);
 
   const token = useSelector((state: RootState) => state.data.token);
+  const userProfile = useSelector((state: RootState) => state.data.userProfile);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -78,7 +80,18 @@ const CustomDrawerContent = (props) => {
       >
         {/* Profile Preview Row */}
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image
+          {userProfile?.image_url ? (
+            <Image
+            source={{ uri: userProfile.image_url }}
+            style={{
+              width: 64.53,
+              height: 64.53,
+              borderRadius: 64.53
+            }}
+            resizeMode={"contain"}
+          />
+          ) : (
+            <Image
             source={images.profileDemo}
             style={{
               width: 64.53,
@@ -86,6 +99,7 @@ const CustomDrawerContent = (props) => {
             }}
             resizeMode={"contain"}
           />
+          )}
           <View style={{ marginLeft: 23 }}>
             <Text
               style={{
@@ -95,7 +109,7 @@ const CustomDrawerContent = (props) => {
                 marginBottom: 5,
               }}
             >
-              Sonny Shangai
+              {userProfile?.name ? userProfile.name : 'Dear Customer'}
             </Text>
             <Text
               style={{
@@ -104,7 +118,7 @@ const CustomDrawerContent = (props) => {
                 fontFamily: "Regular-Sen",
               }}
             >
-              Customer
+              {userProfile?.bio ? userProfile.bio : 'Welcome to Rayvers Kitchen esteemed guest 😇'}
             </Text>
           </View>
         </View>
@@ -193,7 +207,7 @@ const CustomDrawerContent = (props) => {
         </Pressable>
         <Pressable
           // @ts-ignore
-          onPress={() => navigation.navigate("Favorite")}
+          onPress={() => navigation.navigate("Order")}
           onPressIn={() => setOrdersFocus(true)}
           onPressOut={() => setOrdersFocus(false)}
           style={{
@@ -234,7 +248,7 @@ const CustomDrawerContent = (props) => {
         </Pressable>
         <Pressable
           // @ts-ignore
-          onPress={() => navigation.navigate("Favorite")}
+          onPress={() => navigation.navigate("Notification")}
           onPressIn={() => setNotification(true)}
           onPressOut={() => setNotification(false)}
           style={{
@@ -273,13 +287,56 @@ const CustomDrawerContent = (props) => {
             </Text>
           </View>
         </Pressable>
+        <Pressable
+          // @ts-ignore
+          onPress={() => navigation.navigate('Notification', { tabState: 1 })}
+          onPressIn={() => setMessage(true)}
+          onPressOut={() => setMessage(false)}
+          style={{
+            backgroundColor: message ? "#EEFFFF" : colors.white,
+            marginBottom: 33,
+            paddingHorizontal: 5,
+            paddingVertical: 10,
+            borderRadius: 6,
+            width: "100%",
+            marginTop: 20,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Image
+              source={icons.message}
+              style={{
+                width: 27,
+                height: 27,
+                marginRight: 14,
+              }}
+              resizeMode="contain"
+            />
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "Regular-Sen",
+                color: colors.tertiaryTxt,
+              }}
+            >
+              Messages
+            </Text>
+          </View>
+        </Pressable>
 
+        {/* Logout */}
         <Pressable
           onPress={() => {
             handleLogout();
             dispatch(setUserAddress(null));
             dispatch(setAccessToken(null));
             dispatch(setUserAddress(null));
+            dispatch(resetCart());
           }}
           style={{
             position: "absolute",

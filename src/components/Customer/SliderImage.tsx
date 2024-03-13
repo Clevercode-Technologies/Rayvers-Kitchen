@@ -13,9 +13,10 @@ import { SCREEN_WIDTH, colors } from "../DEFAULTS";
 import { icons } from "../../../assets/icons";
 import { useNavigation } from "@react-navigation/native";
 import Toast, { BaseToast } from "react-native-toast-message";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Dish, Popular } from "../../../type";
 import { addFavorite, deleteFavorite } from "../../Redux/Splice/AppSplice";
+import { RootState } from "../../Redux/store";
 
 const toastConfig = {
   success: (props: any) => (
@@ -39,7 +40,12 @@ interface SliderImageProps {
 }
 
 const SliderImage: React.FC<SliderImageProps> = ({ image, mainData }) => {
-  const [favourite, setFavourite] = useState<boolean>(false);
+  
+  const favorite = useSelector((state: RootState) => state.data.favorite);
+
+  const itemExist: undefined | Dish[] = favorite?.filter((item) => item.id === mainData.id);
+  
+  const [favourite, setFavourite] = useState<boolean>(itemExist === undefined ? false : itemExist.length === 1 ? true : false);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
